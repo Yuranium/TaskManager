@@ -10,6 +10,7 @@ import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -40,7 +41,7 @@ public class TaskEntity
     private TaskStatus taskStatus;
 
     @Column(name = "date_added", columnDefinition = "DATE")
-    private LocalDate dateAdded;
+    private LocalDateTime dateAdded;
 
     @Column(name = "date_finished", columnDefinition = "DATE")
     private LocalDate dateFinished;
@@ -55,6 +56,6 @@ public class TaskEntity
     @PrePersist
     private void setDateAdded()
     {
-        this.dateAdded = LocalDate.now();
+        this.dateAdded = LocalDateTime.now();
     }
 }

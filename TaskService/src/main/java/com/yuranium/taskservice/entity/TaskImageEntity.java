@@ -30,7 +30,7 @@ public class TaskImageEntity
     @Column(name = "size")
     private Long size;
 
-    @Column(name = "binaryData", columnDefinition = "BYTEA")
+    @Column(name = "binary_data", columnDefinition = "BYTEA")
     private byte[] binaryData;
 
     @Column(name = "date_added", columnDefinition = "DATE")

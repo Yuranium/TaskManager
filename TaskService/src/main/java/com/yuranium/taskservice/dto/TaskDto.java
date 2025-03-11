@@ -6,6 +6,7 @@ import com.yuranium.taskservice.enums.TaskStatus;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record TaskDto(
@@ -17,7 +18,7 @@ public record TaskDto(
 
         TaskStatus taskStatus,
 
-        LocalDate dateAdded,
+        LocalDateTime dateAdded,
 
         LocalDate dateFinished,
 
