@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -65,12 +66,12 @@ public class TaskService
     }
 
     @Transactional(readOnly = true)
-    public TaskDto getTask(Long id)
+    public TaskDto getTask(UUID id)
     {
         return taskMapper.toDto(
                 taskRepository.findById(id)
                         .orElseThrow(() -> new TaskEntityNotFoundException(
-                                String.format("The task with id=%d was not found!", id)
+                                String.format("The task with id=%s was not found!", id)
                         ))
         );
     }
@@ -84,25 +85,25 @@ public class TaskService
     }
 
     @Transactional
-    public void updateTask(Long id, TaskUpdateDto updatedTask)
+    public void updateTask(UUID id, TaskUpdateDto updatedTask)
     {
         if (taskRepository.findById(id).isPresent())
             taskRepository.save(
                     taskMapper.toEntity(updatedTask)
             );
         else throw new TaskEntityNotFoundException(
-                String.format("The task with id=%d does not exist", id)
+                String.format("The task with id=%s does not exist", id)
         );
     }
 
     @Transactional
-    public void deleteTask(Long id)
+    public void deleteTask(UUID id)
     {
         if (taskRepository.findById(id).isPresent())
             taskRepository.deleteById(id);
         else throw new TaskEntityNotFoundException(
                 String.format(
-                        "The task with id=%d cannot be removed because it does not exist",
+                        "The task with id=%s cannot be removed because it does not exist",
                         id
                 )
         );

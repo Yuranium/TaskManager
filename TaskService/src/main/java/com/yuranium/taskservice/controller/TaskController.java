@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -66,7 +67,7 @@ public class TaskController
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TaskDto> getTask(@PathVariable Long id)
+    public ResponseEntity<TaskDto> getTask(@PathVariable UUID id)
     {
         return new ResponseEntity<>(
                 taskService.getTask(id), HttpStatus.OK
@@ -81,7 +82,7 @@ public class TaskController
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateTask(@PathVariable Long id,
+    public ResponseEntity<?> updateTask(@PathVariable UUID id,
                                         @RequestBody TaskUpdateDto updatedDto)
     {
         taskService.updateTask(id, updatedDto);
@@ -89,7 +90,7 @@ public class TaskController
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> updateTask(@PathVariable Long id)
+    public ResponseEntity<?> updateTask(@PathVariable UUID id)
     {
         taskService.deleteTask(id);
         return new ResponseEntity<>(HttpStatus.OK);

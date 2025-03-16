@@ -12,6 +12,7 @@ import org.hibernate.annotations.BatchSize;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -24,7 +25,7 @@ public class TaskEntity
     @Id
     @Column(name = "id_task")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
 
     @Column(name = "name", columnDefinition = "VARCHAR(50)")
     private String name;
@@ -40,8 +41,11 @@ public class TaskEntity
     @Column(name = "status")
     private TaskStatus taskStatus;
 
-    @Column(name = "date_added", columnDefinition = "DATE")
+    @Column(name = "date_added", columnDefinition = "TIMESTAMP")
     private LocalDateTime dateAdded;
+
+    @Column(name = "date_updated", columnDefinition = "TIMESTAMP")
+    private LocalDateTime dateUpdated;
 
     @Column(name = "date_finished", columnDefinition = "DATE")
     private LocalDate dateFinished;
@@ -56,6 +60,7 @@ public class TaskEntity
     @PrePersist
     private void setDateAdded()
     {
+        this.id = UUID.randomUUID();
         this.dateAdded = LocalDateTime.now();
     }
 }
