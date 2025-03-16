@@ -1,6 +1,8 @@
 package com.yuranium.taskservice.controller;
 
 import com.yuranium.taskservice.dto.TaskDto;
+import com.yuranium.taskservice.dto.TaskInputDto;
+import com.yuranium.taskservice.dto.TaskUpdateDto;
 import com.yuranium.taskservice.enums.TaskImportance;
 import com.yuranium.taskservice.enums.TaskStatus;
 import com.yuranium.taskservice.sevice.TaskService;
@@ -69,5 +71,27 @@ public class TaskController
         return new ResponseEntity<>(
                 taskService.getTask(id), HttpStatus.OK
         );
+    }
+
+    @PostMapping("/createTask")
+    public ResponseEntity<?> createTask(@RequestBody TaskInputDto newTask)
+    {
+        taskService.createTask(newTask);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateTask(@PathVariable Long id,
+                                        @RequestBody TaskUpdateDto updatedDto)
+    {
+        taskService.updateTask(id, updatedDto);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> updateTask(@PathVariable Long id)
+    {
+        taskService.deleteTask(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -3,13 +3,10 @@ package com.yuranium.taskservice.sevice;
 import com.yuranium.taskservice.dto.TaskDto;
 import com.yuranium.taskservice.dto.TaskInputDto;
 import com.yuranium.taskservice.dto.TaskUpdateDto;
-import com.yuranium.taskservice.entity.TaskEntity;
 import com.yuranium.taskservice.enums.TaskImportance;
 import com.yuranium.taskservice.enums.TaskStatus;
-import com.yuranium.taskservice.mapper.TaskImageMapper;
 import com.yuranium.taskservice.mapper.TaskMapper;
 import com.yuranium.taskservice.repository.TaskRepository;
-import com.yuranium.taskservice.util.exception.TaskEntityExistException;
 import com.yuranium.taskservice.util.exception.TaskEntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -26,8 +23,6 @@ public class TaskService
     private final TaskRepository taskRepository;
 
     private final TaskMapper taskMapper;
-
-    private final TaskImageMapper imageMapper;
 
     @Transactional(readOnly = true)
     public List<TaskDto> getAll()
@@ -83,16 +78,9 @@ public class TaskService
     @Transactional
     public void createTask(TaskInputDto newTask)
     {
-        TaskEntity task = new TaskEntity();
-        task.setName(newTask.name());
-        task.setDescription(newTask.description());
-        task.setTaskImportance(newTask.taskImportance());
-        task.setDateFinished(newTask.dateFinished());
-        task.setImages(
-                imageMapper.toEntity(newTask.images())
+        taskRepository.save(
+                taskMapper.toEntity(newTask)
         );
-
-        taskRepository.save(task);
     }
 
     @Transactional
@@ -102,7 +90,7 @@ public class TaskService
             taskRepository.save(
                     taskMapper.toEntity(updatedTask)
             );
-        else throw new TaskEntityExistException(
+        else throw new TaskEntityNotFoundException(
                 String.format("The task with id=%d does not exist", id)
         );
     }
@@ -110,6 +98,13 @@ public class TaskService
     @Transactional
     public void deleteTask(Long id)
     {
-        taskRepository.deleteById(id);
+        if (taskRepository.findById(id).isPresent())
+            taskRepository.deleteById(id);
+        else throw new TaskEntityNotFoundException(
+                String.format(
+                        "The task with id=%d cannot be removed because it does not exist",
+                        id
+                )
+        );
     }
 }
