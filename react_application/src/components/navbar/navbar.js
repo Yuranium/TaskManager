@@ -4,19 +4,17 @@ import './navbar.css'
 function Navbar()
 {
     return (
-        <nav>
-            <ul>
-                <li><a href={"/"}>Главная</a></li>
-                <li>Аккаунт</li>
-                <li className={"innerList"}>Проекты
-                    <ul>
-                        <li>Создать проект</li>
-                        <li>Просмотр проектов</li>
-                        <li>Инфографика</li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
+        <header>
+            <nav>
+                <ul className="navbar">
+                    <li><a href="#">Главная</a></li>
+                    <li><a href="#">Аккаунт</a></li>
+                    <li><a href="#">Создать проект</a></li>
+                    <li><a href="#">Просмотр проектов</a></li>
+                    <li><a href="#">Инфографика</a></li>
+                </ul>
+            </nav>
+        </header>
     )
 }
 

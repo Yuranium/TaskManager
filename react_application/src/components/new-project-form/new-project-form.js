@@ -1,27 +1,149 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './new-project-form.css'
+import axios from "axios";
 
-function NewProjectForm()
-{
-    const namePlaceHolder = "Введите название нового проекта";
-    const descriptionPlaceHolder = "Описание проекта"
+const NewProjectForm = () => {
+    const [formData, setFormData] = useState({
+        uploadProjectImage: null,
+        projectName: '',
+        projectDescription: '',
+    });
+
+    const [errors, setErrors] = useState({
+        uploadProjectImage: '',
+        projectName: '',
+        projectDescription: '',
+    });
+
+    const handleChange = (e) => {
+        const { name, value, files } = e.target;
+
+        if (name === 'uploadProjectImage') {
+            const file = files[0];
+            setFormData({
+                ...formData,
+                [name]: file,
+            });
+        } else {
+            setFormData({
+                ...formData,
+                [name]: value,
+            });
+        }
+    };
+
+    const validateForm = () => {
+        let isValid = true;
+        const newErrors = {
+            uploadProjectImage: '',
+            projectName: '',
+            projectDescription: '',
+        };
+
+        if (!formData.uploadProjectImage) {
+            newErrors.uploadProjectImage = 'Изображение обязательно для загрузки';
+            isValid = false;
+        } else {
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            if (!allowedTypes.includes(formData.uploadProjectImage.type)) {
+                newErrors.uploadProjectImage = 'Недопустимый формат файла. Разрешены только JPEG, PNG и GIF.';
+                isValid = false;
+            } else if (formData.uploadProjectImage.size > (5 * 1024 * 1024)) {
+                newErrors.uploadProjectImage = 'Файл слишком большой. Максимальный размер — 5 МБ.';
+                isValid = false;
+            }
+        }
+
+        if (!formData.projectName.trim()) {
+            newErrors.projectName = 'Название проекта обязательно для заполнения';
+            isValid = false;
+        } else if (formData.projectName.length > 50) {
+            newErrors.projectName = 'Название проекта не должно превышать 50 символов';
+            isValid = false;
+        }
+
+        if (formData.projectDescription.length > 500) {
+            newErrors.projectDescription = 'Описание проекта не должно превышать 500 символов';
+            isValid = false;
+        }
+
+        setErrors(newErrors);
+        return isValid;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (validateForm()) {
+            const formDataToSend = new FormData();
+            formDataToSend.append('uploadProjectImage', formData.uploadProjectImage);
+            formDataToSend.append('projectName', formData.projectName);
+            formDataToSend.append('projectDescription', formData.projectDescription);
+
+            try {
+                const backHost = process.env.REACT_APP_BACKEND_PROJECT_SERVICE_HOST
+                const backPort = process.env.REACT_APP_BACKEND_PORT
+
+                // console.log(formDataToSend.get('uploadProjectImage'), formDataToSend.get('projectName'))
+                await axios.post(`http://${backHost}:${backPort}/api/projects/create`,
+                    formDataToSend, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+            } finally {}
+        } else {
+            console.log('Форма содержит ошибки');
+        }
+    };
+
     return (
-        <div>
-            <form method={"POST"}>
+        <div className="main">
+            <form method="POST" onSubmit={handleSubmit}>
+                <h3>Создание нового проекта</h3>
                 <p>
-                    <input placeholder={namePlaceHolder}
-                           type={"text"}
-                           name={"projectName"}/>
+                    <label htmlFor="uploadProjectImage">Выберите фото для проекта</label>
+                    <input
+                        id="uploadProjectImage"
+                        type="file"
+                        name="uploadProjectImage"
+                        accept="image/jpeg, image/png, image/gif"
+                        onChange={handleChange}
+                    />
+                    {errors.uploadProjectImage && (
+                        <span style={{ color: 'red' }}>{errors.uploadProjectImage}</span>
+                    )}
                 </p>
                 <p>
-                    <input placeholder={descriptionPlaceHolder}
-                           type={"text"}
-                           name={"projectDescription"}/>
+                    <label htmlFor="projectName">Название проекта:</label>
+                    <input
+                        placeholder="Введите название проекта"
+                        id="projectName"
+                        type="text"
+                        name="projectName"
+                        onChange={handleChange}
+                    />
+                    {errors.projectName && (
+                        <span style={{ color: 'red' }}>{errors.projectName}</span>
+                    )}
+                </p>
+                <p>
+                    <label htmlFor="projectDescription">Описание проекта:</label>
+                    <textarea
+                        placeholder="Описание проекта (опционально)"
+                        id="projectDescription"
+                        name="projectDescription"
+                        rows="10"
+                        onChange={handleChange}
+                    />
+                    {errors.projectDescription && (
+                        <span style={{ color: 'red' }}>{errors.projectDescription}</span>
+                    )}
                 </p>
                 <button type="submit">Создать</button>
             </form>
         </div>
-    )
-}
+    );
+};
 
 export default NewProjectForm;
