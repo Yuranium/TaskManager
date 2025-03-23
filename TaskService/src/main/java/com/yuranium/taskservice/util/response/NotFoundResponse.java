@@ -1,4 +1,4 @@
-package com.yuranium.taskservice.util.responce;
+package com.yuranium.taskservice.util.response;
 
 import org.springframework.http.HttpStatus;
 

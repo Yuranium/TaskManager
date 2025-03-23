@@ -1,7 +1,7 @@
 package com.yuranium.taskservice.util;
 
 import com.yuranium.taskservice.util.exception.TaskEntityNotFoundException;
-import com.yuranium.taskservice.util.responce.NotFoundResponse;
+import com.yuranium.taskservice.util.response.NotFoundResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

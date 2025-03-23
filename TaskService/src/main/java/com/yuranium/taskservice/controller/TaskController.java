@@ -93,6 +93,6 @@ public class TaskController
     public ResponseEntity<?> updateTask(@PathVariable UUID id)
     {
         taskService.deleteTask(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

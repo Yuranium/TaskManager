@@ -3,6 +3,11 @@
   <component name="AmplicodePersistenceUnitSettings">
     <persistence-units>
       <persistence-unit moduleName="TaskService" name="Default" />
+      <persistence-unit moduleName="ProjectService" name="Default">
+        <packages>
+          <package value="com.yuranium.projectservice" />
+        </packages>
+      </persistence-unit>
     </persistence-units>
   </component>
 </project>
