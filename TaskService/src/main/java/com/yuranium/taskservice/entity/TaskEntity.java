@@ -17,7 +17,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "Task")
+@Table(name = "task")
 @AllArgsConstructor
 @NoArgsConstructor
 public class TaskEntity
@@ -58,9 +58,9 @@ public class TaskEntity
     private List<TaskImageEntity> images;
 
     @PrePersist
-    private void setDateAdded()
+    private void prePersist()
     {
         this.id = UUID.randomUUID();
-        this.dateAdded = LocalDateTime.now();
+        this.dateUpdated = LocalDateTime.now();
     }
 }

@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-@Table(name = "TaskImage")
+@Table(name = "task_image")
 @AllArgsConstructor
 @NoArgsConstructor
 public class TaskImageEntity
@@ -41,8 +41,9 @@ public class TaskImageEntity
     private TaskEntity task;
 
     @PrePersist
-    private void setSize()
+    private void prePersist()
     {
         this.size = (long) binaryData.length;
+        this.dateAdded = LocalDate.now();
     }
 }
