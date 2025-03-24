@@ -62,5 +62,8 @@ public class TaskEntity
     {
         this.id = UUID.randomUUID();
         this.dateUpdated = LocalDateTime.now();
+
+        if (this.dateAdded == null)
+            this.dateAdded = LocalDateTime.now();
     }
 }

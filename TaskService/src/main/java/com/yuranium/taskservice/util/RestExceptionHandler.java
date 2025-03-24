@@ -11,7 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.time.LocalDateTime;
 
 @ControllerAdvice
-public class RestErrorHandler extends ResponseEntityExceptionHandler
+public class RestExceptionHandler extends ResponseEntityExceptionHandler
 {
     @ExceptionHandler(TaskEntityNotFoundException.class)
     public ResponseEntity<NotFoundResponse> handleTaskEntityNotFoundException(TaskEntityNotFoundException exc)

@@ -76,16 +76,15 @@ const NewProjectForm = () => {
 
         if (validateForm()) {
             const formDataToSend = new FormData();
-            formDataToSend.append('uploadProjectImage', formData.uploadProjectImage);
-            formDataToSend.append('projectName', formData.projectName);
-            formDataToSend.append('projectDescription', formData.projectDescription);
+            formDataToSend.append('avatars', formData.uploadProjectImage);
+            formDataToSend.append('name', formData.projectName);
+            formDataToSend.append('description', formData.projectDescription);
 
             try {
                 const backHost = process.env.REACT_APP_BACKEND_PROJECT_SERVICE_HOST
                 const backPort = process.env.REACT_APP_BACKEND_PORT
 
-                // console.log(formDataToSend.get('uploadProjectImage'), formDataToSend.get('projectName'))
-                await axios.post(`http://${backHost}:${backPort}/api/projects/create`,
+                await axios.post(`http://${backHost}:${backPort}/api/projects/createProject`,
                     formDataToSend, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
@@ -99,7 +98,7 @@ const NewProjectForm = () => {
 
     return (
         <div className="main">
-            <form method="POST" onSubmit={handleSubmit}>
+            <form method="POST" onSubmit={handleSubmit} encType="multipart/form-data">
                 <h3>Создание нового проекта</h3>
                 <p>
                     <label htmlFor="uploadProjectImage">Выберите фото для проекта</label>
