@@ -11,6 +11,7 @@ import org.hibernate.annotations.BatchSize;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,7 +56,7 @@ public class TaskEntity
 
     @BatchSize(size = 5)
     @OneToMany(mappedBy = "task")
-    private List<TaskImageEntity> images;
+    private List<TaskImageEntity> images = new ArrayList<>();
 
     @PrePersist
     private void prePersist()

@@ -31,9 +31,10 @@ public class TaskController
     }
 
     @GetMapping("/allTasksByName")
-    public ResponseEntity<List<TaskDto>> getAllTasks(@RequestParam String name,
-                                                     @RequestParam int pageNumber,
-                                                     @RequestParam int size)
+    public ResponseEntity<List<TaskDto>> getAllTasks(
+            @RequestParam String name,
+            @RequestParam(required = false, defaultValue = "0") int pageNumber,
+            @RequestParam(required = false, defaultValue = "15") int size)
     {
         return new ResponseEntity<>(
                 taskService.getAllByName(name,
@@ -43,9 +44,10 @@ public class TaskController
     }
 
     @GetMapping("/allTasksByImportance")
-    public ResponseEntity<List<TaskDto>> getAllTasks(@RequestParam TaskImportance importance,
-                                                     @RequestParam int pageNumber,
-                                                     @RequestParam int size)
+    public ResponseEntity<List<TaskDto>> getAllTasks(
+            @RequestParam TaskImportance importance,
+            @RequestParam(required = false, defaultValue = "0") int pageNumber,
+            @RequestParam(required = false, defaultValue = "15") int size)
     {
         return new ResponseEntity<>(
                 taskService.getAllByTaskImportance(importance,
@@ -55,9 +57,10 @@ public class TaskController
     }
 
     @GetMapping("/allTasksByStatus")
-    public ResponseEntity<List<TaskDto>> getAllTasks(@RequestParam TaskStatus status,
-                                                     @RequestParam int pageNumber,
-                                                     @RequestParam int size)
+    public ResponseEntity<List<TaskDto>> getAllTasks(
+            @RequestParam TaskStatus status,
+            @RequestParam(required = false, defaultValue = "0") int pageNumber,
+            @RequestParam(required = false, defaultValue = "15") int size)
     {
         return new ResponseEntity<>(
                 taskService.getAllByTaskStatus(status,
