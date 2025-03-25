@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import './new-project-form.css'
+import '../button/button.css'
 import axios from "axios";
 
 const NewProjectForm = () => {
@@ -139,7 +140,7 @@ const NewProjectForm = () => {
                         <span style={{ color: 'red' }}>{errors.projectDescription}</span>
                     )}
                 </p>
-                <button type="submit">Создать</button>
+                <button>Создать</button>
             </form>
         </div>
     );
