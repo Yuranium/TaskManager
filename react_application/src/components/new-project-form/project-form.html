@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test</title>
+    <link rel="stylesheet" href="./new-project-form.css">
+</head>
+<body>
+<div class="main">
+    <form method="POST" onsubmit="">
+        <h3>Создание нового проекта</h3>
+        <p>
+            <label for="uploadProjectImage">Выберите фото для проекта:</label>
+            <input id="uploadProjectImage"
+            type="file"
+            name="uploadProjectImage" />
+        </p>
+        <p>
+            <label for="projectName">Название проекта:</label>
+            <input placeholder="Введи название проекта"
+                   id="projectName"
+                   type="text"
+                   name="projectName" />
+        </p>
+        <p>
+            <label for="projectDescription">Описание проекта:</label>
+            <textarea placeholder="Описание проекта (опционально)"
+                      id="projectDescription"
+                      name="projectDescription"
+                      rows="10"
+
+            ></textarea>
+        </p>
+        <button type="submit">Создать</button>
+    </form>
+</div>
+</body>
+</html>
