@@ -1,9 +1,11 @@
 import React, {useState} from 'react';
+import { useNavigate } from 'react-router-dom';
 import './new-project-form.css'
 import '../button/button.css'
 import axios from "axios";
 
 const NewProjectForm = () => {
+    //const navigate = useNavigate();
     const [formData, setFormData] = useState({
         uploadProjectImage: null,
         projectName: '',
@@ -91,6 +93,7 @@ const NewProjectForm = () => {
                         'Content-Type': 'multipart/form-data',
                     },
                 });
+                //navigate('/')
             } finally {}
         } else {
             console.log('Форма содержит ошибки');
