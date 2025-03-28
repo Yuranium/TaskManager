@@ -1,0 +1,55 @@
+.container {
+    display: inline-flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    background-color: #ececec;
+    border-radius: 20px;
+    width: 300px;
+    padding: .5%;
+    margin: .5%;
+    box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
+    transition: transform 0.4s ease;
+}
+
+.main-info {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.task-name {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 60%;
+}
+
+img {
+    border-radius: 10px;
+    width: 40%;
+    height: 100%;
+}
+
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+button {
+    flex-grow: 1;
+}
+
+p {
+    margin: 0.5em 0;
+}
+
+a {
+    text-decoration: none;
+    padding: 0;
+    margin: 0;
+    color: inherit;
+}
+
+.container:hover {
+    transform: translateY(-7px);
+}

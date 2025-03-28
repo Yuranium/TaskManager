@@ -1,6 +1,7 @@
 import React from 'react';
 import './navbar.css'
 import {BrowserRouter, Link, Route, Routes} from "react-router-dom";
+import Main from "../main/main";
 
 function Navbar() {
     return (
@@ -31,10 +32,11 @@ function Navbar() {
             </nav>
 
             <Routes>
-                <Route path="/" element=''/>
-                <Route path="/about" element=''/>
-                <Route path="/contact" element=''/>
-                <Route path="*" element=''/> {}
+                <Route path="/" element={<Main/>}/>
+                <Route path="/account" element=''/>
+                <Route path="/createProject" element=''/>
+                <Route path="/projects" element=''/>
+                <Route path="/info" element=''/> {}
             </Routes>
         </BrowserRouter>
     )
