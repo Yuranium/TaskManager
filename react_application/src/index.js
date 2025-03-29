@@ -2,15 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import Navbar from "./components/navbar/navbar";
-import NewProjectForm from "./components/new-project-form/new-project-form";
+import NewTaskForm from "./components/new-task-form/new-task-form";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-      <Navbar />
-      <NewProjectForm />
-  </React.StrictMode>
+    <React.StrictMode>
+        <NewTaskForm></NewTaskForm>
+    </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

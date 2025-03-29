@@ -1,0 +1,51 @@
+.parent {
+    display: flex;
+    justify-content: center;
+}
+
+.newTaskForm {
+    display: flex;
+    flex-direction: column;
+    width: 35%;
+    text-align: center;
+    justify-content: center;
+    background-color: #ececec;
+    padding: 0 2% 2% 2%;
+    border-radius: 2%;
+    box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
+}
+
+div {
+    margin-bottom: 1em;
+}
+
+.taskDescriptionLabel
+{
+    display: block;
+}
+
+textarea {
+    width: 95%;
+    font-size: larger;
+}
+
+textarea, #taskName {
+    padding: 1em;
+}
+
+button {
+    padding: 1em;
+    cursor: pointer;
+}
+
+label {
+    font-size: large;
+}
+
+.fileFormat {
+    color: firebrick
+}
+
+fieldset label {
+    padding: 0 1%;
+}

@@ -12,8 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -97,5 +96,23 @@ public class TaskController
     {
         taskService.deleteTask(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/allTaskImportance")
+    public ResponseEntity<List<TaskImportance>> getAllTaskImportance()
+    {
+        return new ResponseEntity<>(
+                Arrays.asList(TaskImportance.values()),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/allTaskStatus")
+    public ResponseEntity<List<TaskStatus>> getAllTaskStatus()
+    {
+        return new ResponseEntity<>(
+                Arrays.asList(TaskStatus.values()),
+                HttpStatus.OK
+        );
     }
 }
