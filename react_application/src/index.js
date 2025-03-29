@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import NewTaskForm from "./components/new-task-form/new-task-form";
+import NewTaskForm from "./components/task-form/new-task-form/new-task-form";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
