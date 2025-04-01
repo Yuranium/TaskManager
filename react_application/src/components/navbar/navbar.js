@@ -5,7 +5,7 @@ import Main from "../main/main";
 
 function Navbar() {
     return (
-        <BrowserRouter>
+        <>
             <nav>
                 <ul className="navbar">
                     <li>
@@ -33,12 +33,12 @@ function Navbar() {
 
             <Routes>
                 <Route path="/" element={<Main/>}/>
-                <Route path="/account" element=''/>
-                <Route path="/createProject" element=''/>
-                <Route path="/projects" element=''/>
-                <Route path="/info" element=''/> {}
+                <Route path="/account" element={<Main/>}/>
+                <Route path="/createProject" element={<Main/>}/>
+                <Route path="/projects" element={<Main/>}/>
+                <Route path="/info" element={<Main/>}/>
             </Routes>
-        </BrowserRouter>
+        </>
     )
 }
 

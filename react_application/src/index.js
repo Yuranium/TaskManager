@@ -3,11 +3,16 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import NewTaskForm from "./components/task-form/new-task-form/new-task-form";
+import {BrowserRouter} from "react-router-dom";
+import Navbar from "./components/navbar/navbar";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
-        <NewTaskForm></NewTaskForm>
+        <BrowserRouter>
+            <Navbar></Navbar>
+            {/*<NewTaskForm></NewTaskForm>*/}
+        </BrowserRouter>
     </React.StrictMode>
 );
 
