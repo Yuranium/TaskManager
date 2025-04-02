@@ -18,14 +18,6 @@ public class AvatarService
     private final AvatarRepository avatarRepository;
 
     @Transactional
-    public List<AvatarEntity> convertAndSaveAll(List<MultipartFile> avatars)
-    {
-        return avatarRepository.saveAll(
-                multipartToEntity(avatars)
-        );
-    }
-
-    @Transactional
     public List<AvatarEntity> saveAll(List<AvatarEntity> avatars)
     {
         return avatarRepository.saveAll(avatars);

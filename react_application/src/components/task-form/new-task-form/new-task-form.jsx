@@ -2,6 +2,7 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import './new-task-form.css'
+import Button from "../../button/button";
 
 export default function NewTaskForm() {
     const [data, setData] = useState({
@@ -106,7 +107,7 @@ export default function NewTaskForm() {
                     />
                     <p className="fileFormat">Формат файлов: PNG, JPEG, GIF</p>
                 </div>
-                <button>Создать</button>
+                <Button>Создать</Button>
             </form>
         </div>
     )

@@ -88,22 +88,24 @@ const NewProjectForm = () => {
                 const backHost = process.env.REACT_APP_BACKEND_PROJECT_SERVICE_HOST
                 const backPort = process.env.REACT_APP_BACKEND_PORT
 
-                await axios.post(`http://${backHost}:${backPort}/api/projects/createProject`,
+                const response = await axios.post(
+                    `http://${backHost}:${backPort}/api/projects/createProject`,
                     formDataToSend, {
                         headers: {
                             'Content-Type': 'multipart/form-data',
                         },
                     });
-                navigate('/')
-            } finally {
-            }
+                if (response.data && response.data.id)
+                    navigate(`/projects/${response.data.id}`);
+                else navigate('/');
+            } finally {}
         } else {
             console.log('Форма содержит ошибки');
         }
     };
 
     return (
-        <div className="main">
+        <div className="project-form-main">
             <form method="POST" onSubmit={handleSubmit} encType="multipart/form-data">
                 <h3>Создание нового проекта</h3>
                 <div className="input-wrap">

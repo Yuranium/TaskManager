@@ -46,12 +46,14 @@ public class ProjectService
     }
 
     @Transactional
-    public void createProject(ProjectInputDto newProject)
+    public ProjectDto createProject(ProjectInputDto newProject)
     {
         ProjectEntity project = projectMapper.toEntity(newProject);
         project.setAvatars(avatarService.multipartToEntity(newProject.avatars()));
         avatarService.saveAll(project.getAvatars());
-        projectRepository.save(project);
+        return projectMapper.toDto(
+                projectRepository.save(project)
+        );
     }
 
     @Transactional

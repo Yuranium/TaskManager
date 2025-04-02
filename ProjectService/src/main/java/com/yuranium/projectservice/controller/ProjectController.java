@@ -40,10 +40,12 @@ public class ProjectController
     }
 
     @PostMapping("/createProject")
-    public ResponseEntity<?> createProject(@ModelAttribute ProjectInputDto newProject)
+    public ResponseEntity<ProjectDto> createProject(@ModelAttribute ProjectInputDto newProject)
     {
-        projectService.createProject(newProject);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                projectService.createProject(newProject),
+                HttpStatus.CREATED
+        );
     }
 
     @PutMapping("/update/{id}")
@@ -60,4 +62,12 @@ public class ProjectController
         projectService.deleteProject(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+//    @GetMapping("/{projectId}/avatars")
+//    public ResponseEntity<List<AvatarDto>> getAvatars(@PathVariable UUID projectId)
+//    {
+//        return new ResponseEntity<>(
+//                avatarService
+//        )
+//    }
 }
