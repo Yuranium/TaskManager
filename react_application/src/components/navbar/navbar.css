@@ -1,35 +1,31 @@
-nav {
+.navigation-menu {
     width: auto;
-    height: 50px;
     background-color: #f5f6f5;
     margin-bottom: 20px;
-    padding: 1.2% 1px;
+    padding: .5% 1px;
     border: 3px solid #ececec;
     border-radius: 5px;
 }
 
 .navbar li {
-    margin: 10px 0; /* Отступы между элементами */
+    margin: 10px 0;
 }
 
 .navbar {
     display: flex;
     flex-direction: row;
     justify-content: center;
-}
-
-ul {
     padding: 0;
     margin: 0;
 }
 
-ul li {
+.navbar li {
     display: inline;
     list-style: none;
     padding: 5px 10px;
 }
 
-li a, .innerList {
+.navbar li a {
     text-decoration: none;
     color: rgba(66, 66, 66, 0.99);
     font-weight: 600;
@@ -37,6 +33,6 @@ li a, .innerList {
     transition: color 0.5s ease;
 }
 
-li a:hover, .innerList:hover {
+.navbar li a:hover {
     color: #4b9b7e;
 }

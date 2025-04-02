@@ -1,9 +1,8 @@
-import classes from "./button.css";
-
-export default function Button({isActive = true}) {
+export default function Button({children, isActive = true}) {
     return (
         <button
-            className={isActive ? `${classes.button}` : `${classes.button} ${classes.disabled}`}>
+            className={isActive ? `button` : `button disabled`}>
+            {children}
         </button>
     )
 }

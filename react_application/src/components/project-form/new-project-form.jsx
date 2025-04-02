@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import './new-project-form.css'
 import '../button/button.css'
 import axios from "axios";
+import Button from "../button/button";
 
 const NewProjectForm = () => {
-    //const navigate = useNavigate();
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         uploadProjectImage: null,
         projectName: '',
@@ -19,7 +20,7 @@ const NewProjectForm = () => {
     });
 
     const handleChange = (e) => {
-        const { name, value, files } = e.target;
+        const {name, value, files} = e.target;
 
         if (name === 'uploadProjectImage') {
             const file = files[0];
@@ -89,12 +90,13 @@ const NewProjectForm = () => {
 
                 await axios.post(`http://${backHost}:${backPort}/api/projects/createProject`,
                     formDataToSend, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                });
-                //navigate('/')
-            } finally {}
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    });
+                navigate('/')
+            } finally {
+            }
         } else {
             console.log('Форма содержит ошибки');
         }
@@ -104,7 +106,7 @@ const NewProjectForm = () => {
         <div className="main">
             <form method="POST" onSubmit={handleSubmit} encType="multipart/form-data">
                 <h3>Создание нового проекта</h3>
-                <p>
+                <div className="input-wrap">
                     <label htmlFor="uploadProjectImage">Выберите фото для проекта</label>
                     <input
                         id="uploadProjectImage"
@@ -114,10 +116,10 @@ const NewProjectForm = () => {
                         onChange={handleChange}
                     />
                     {errors.uploadProjectImage && (
-                        <span style={{ color: 'red' }}>{errors.uploadProjectImage}</span>
+                        <span style={{color: 'red'}}>{errors.uploadProjectImage}</span>
                     )}
-                </p>
-                <p>
+                </div>
+                <div className="input-wrap">
                     <label htmlFor="projectName">Название проекта:</label>
                     <input
                         placeholder="Введите название проекта"
@@ -127,12 +129,12 @@ const NewProjectForm = () => {
                         onChange={handleChange}
                     />
                     {errors.projectName && (
-                        <span style={{ color: 'red' }}>{errors.projectName}</span>
+                        <span style={{color: 'red'}}>{errors.projectName}</span>
                     )}
-                </p>
-                <p>
+                </div>
+                <div className="input-wrap">
                     <label htmlFor="projectDescription">Описание проекта:</label>
-                    <textarea
+                    <textarea className="new-project-textarea"
                         placeholder="Описание проекта (опционально)"
                         id="projectDescription"
                         name="projectDescription"
@@ -140,10 +142,10 @@ const NewProjectForm = () => {
                         onChange={handleChange}
                     />
                     {errors.projectDescription && (
-                        <span style={{ color: 'red' }}>{errors.projectDescription}</span>
+                        <span style={{color: 'red'}}>{errors.projectDescription}</span>
                     )}
-                </p>
-                <button>Создать</button>
+                </div>
+                <Button>Создать</Button>
             </form>
         </div>
     );

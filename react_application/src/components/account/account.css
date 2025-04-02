@@ -1,7 +1,3 @@
-body {
-    font-size: larger;
-}
-
 .main {
     margin: 3%;
     display: grid;
@@ -31,11 +27,11 @@ body {
     grid-row: 2;
 }
 
-p {
+.main-info p, .tasks p {
     font-weight: 500;
     transition: color .5s ease;
 }
 
-p:hover {
+.main-info p:hover, .tasks p:hover {
     color: #4b9b7e;
 }

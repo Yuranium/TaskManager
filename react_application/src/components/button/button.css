@@ -4,11 +4,10 @@
     margin: 1%;
     cursor: pointer;
     font-size: 15px;
-    background-color: #7bf5c8;
+    background-color: #80d0b2;
     border: none;
-    font-weight: bold;
+    font-weight: bolder;
     transition: opacity 0.4s ease;
-    color: #414141;
 }
 
 .button:hover {

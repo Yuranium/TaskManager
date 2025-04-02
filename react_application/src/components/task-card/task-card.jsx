@@ -1,21 +1,24 @@
 import './task-card.css'
+import Button from "../button/button";
 
 export default function TaskCard({task}) {
     return (
         <div className="main">
             <div className="container">
-                <a href={`/tasks/${task.id}`}>
+                <a className="anchor-task-card" href={`/tasks/${task.id}`}>
                     <div className="main-info">
-                        <img src="../account/Кактус.png" alt="avatar"/>
+                        <img className="image-task-card" src="../account/Кактус.png" alt="avatar"/>
                         <p className="task-name">{task.name}</p>
                     </div>
-                    <p>{task.description}</p>
-                    <p>{task.importance}</p>
-                    <p>{task.status}</p>
-                    <p>{task.dateFinish}</p>
+                    <div className="container-task-card-info">
+                        <p>{task.description}</p>
+                        <p>{task.importance}</p>
+                        <p>{task.status}</p>
+                        <p>{task.dateFinish}</p>
+                    </div>
                     <div className="buttons">
-                        <button>Изменить</button>
-                        <button>Удалить</button>
+                        <Button>Изменить</Button>
+                        <Button>Удалить</Button>
                     </div>
                 </a>
             </div>

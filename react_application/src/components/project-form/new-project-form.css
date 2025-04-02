@@ -14,25 +14,26 @@ form {
     background-color: #ececec;
     width: 30%;
     border-radius: 5px;
+    box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
 }
 
-input[type=text], textarea {
+input[type=text], .new-project-textarea {
     border-radius: 10px;
     transition: border-top-color 0.5s ease, border-bottom-color 0.5s ease,
     border-left-color 0.5s ease, border-right-color 0.5s ease;
 }
 
-input:focus, textarea:focus {
+input:focus, .new-project-textarea:focus {
     outline: none;
-    box-shadow: 0 0 0 1px #4b9b7e; /* Зеленая тень вместо синей рамки */
-    border-color: #4b9b7e; /* Можно изменить цвет границы */
-}
-
-input[type=text]:hover, textarea:hover {
+    box-shadow: 0 0 0 1px #4b9b7e;
     border-color: #4b9b7e;
 }
 
-textarea {
+input[type=text]:hover, .new-project-textarea:hover {
+    border-color: #4b9b7e;
+}
+
+.new-project-textarea {
     resize: none;
     font-size: 1.2em;
     width: 90%;
@@ -43,6 +44,7 @@ textarea {
 input {
     width: 90%;
     padding: 2%;
+    font-size: .9em;
 }
 
 label {
@@ -50,21 +52,7 @@ label {
      padding: 1em 0;
 }
 
-p {
+.input-wrap {
     padding: 2%;
-}
-
-button {
-    border: 2px solid #bbe2e3;
-    border-radius: 5px;
-    padding: 1em;
-    margin: 1%;
-    cursor: pointer;
-    transition: background-color 0.5s ease;
-    font-size: 15px;
-    background-color: aliceblue;
-}
-
-button:hover {
-    background-color: #80d0b2;
+    margin: 0;
 }

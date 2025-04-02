@@ -24,7 +24,7 @@
     width: 60%;
 }
 
-img {
+.image-task-card {
     border-radius: 10px;
     width: 40%;
     height: 100%;
@@ -35,15 +35,11 @@ img {
     flex-wrap: wrap;
 }
 
-button {
-    flex-grow: 1;
-}
-
-p {
+.container-task-card-info p {
     margin: 0.5em 0;
 }
 
-a {
+.anchor-task-card {
     text-decoration: none;
     padding: 0;
     margin: 0;
