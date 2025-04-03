@@ -4,7 +4,7 @@ import axios from "axios";
 import Button from "../button/button";
 import './project-page.css'
 
-export default function ProjectPage()
+export default function ProjectPage() // todo сделать sidebar слева
 {
     const { id } = useParams();
     const navigate = useNavigate();

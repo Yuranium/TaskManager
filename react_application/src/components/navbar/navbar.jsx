@@ -6,8 +6,10 @@ import Account from "../account/account";
 import NewProjectForm from "../project-form/new-project-form";
 import Http404 from "../http-error/404";
 import ProjectPage from "../project-page/project-page";
+import ProjectShow from "../project-show/project-show";
 
-function Navbar() {
+export default function Navbar()
+{
     return (
         <>
             <nav className="navigation-menu">
@@ -39,7 +41,7 @@ function Navbar() {
                 <Route path="/" element={<Main/>}/>
                 <Route path="/account" element={<Account/>}/>
                 <Route path="/createProject" element={<NewProjectForm/>}/>
-                <Route path="/projects" element={<Main/>}/>
+                <Route path="/projects" element={<ProjectShow/>}/>
                 <Route path="/info" element={<Main/>}/>
                 <Route path="*" element={<Http404/>}/>
                 <Route path="/projects/:id" element={<ProjectPage/>}/>
@@ -47,5 +49,3 @@ function Navbar() {
         </>
     )
 }
-
-export default Navbar;

@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import NewTaskForm from "./components/task-form/new-task-form/new-task-form";
 import {BrowserRouter} from "react-router-dom";
 import Navbar from "./components/navbar/navbar";
 
