@@ -32,7 +32,7 @@ export default function ProjectShow() {
                 setProjects(response.data);
             else setProjects(prev => [...prev, ...response.data]);
 
-            if (response.data.length < PAGE_SIZE)
+            if (response.data.length < PAGE_SIZE - 1)
                 setHasMore(false);
         } catch (err) {
             navigate('/404');
@@ -55,7 +55,9 @@ export default function ProjectShow() {
         }
     };
 
-    if (loading && projects.length === 0) return <div>Загрузка проекта...</div>;
+    if (loading && projects.length === 0) return <div style={
+        {display: "flex", justifyContent: "center"
+        }}><span>Загрузка проекта...</span></div>;
     if (!projects || projects.length === 0) return <div>Проект не найден</div>;
 
     return (

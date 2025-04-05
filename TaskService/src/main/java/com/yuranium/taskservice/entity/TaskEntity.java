@@ -58,6 +58,9 @@ public class TaskEntity
     @OneToMany(mappedBy = "task")
     private List<TaskImageEntity> images = new ArrayList<>();
 
+    @Column(name = "id_project")
+    private UUID projectId;
+
     @PrePersist
     private void prePersist()
     {

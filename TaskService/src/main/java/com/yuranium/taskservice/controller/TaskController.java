@@ -77,9 +77,10 @@ public class TaskController
     }
 
     @PostMapping("/createTask")
-    public ResponseEntity<?> createTask(@RequestBody TaskInputDto newTask)
+    public ResponseEntity<?> createTask(@RequestParam UUID projectId,
+                                        @RequestBody TaskInputDto newTask)
     {
-        taskService.createTask(newTask);
+        taskService.createTask(projectId, newTask);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

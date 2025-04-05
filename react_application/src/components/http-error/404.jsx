@@ -3,7 +3,7 @@ import './404.css'
 export default function Http404()
 {
     return (
-    <div className="container">
+    <div className="container404">
         <div className="error-container">
             <div className="error-code">404</div>
             <div className="error-message">Страница не найдена</div>
