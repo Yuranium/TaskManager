@@ -4,9 +4,9 @@
     flex-direction: column;
     background-color: #ececec;
     border-radius: 20px;
-    width: 300px;
+    width: 310px;
     padding: .5%;
-    margin: .5%;
+    margin: 0 .7% .7% 0;
     box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
     transition: transform 0.4s ease;
 }
@@ -30,9 +30,22 @@
     height: 100%;
 }
 
-.buttons {
+.task-card-buttons {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
+}
+
+.image-task-avatar {
+    width: 40%;
+    height: 40%;
+}
+
+.task-name {
+    width: 60%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .container-task-card-info p {
@@ -41,6 +54,7 @@
 
 .anchor-task-card {
     text-decoration: none;
+    width: 100%;
     padding: 0;
     margin: 0;
     color: inherit;
