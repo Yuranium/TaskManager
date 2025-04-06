@@ -5,9 +5,11 @@ import Button from "../button/button";
 import './project-page.css'
 import TaskCard from "../task-card/task-card";
 import Http404 from "../http-error/404";
+import {useParams} from "react-router-dom";
 
-export default function ProjectPage({projectId = "0ffa8f42-c3c6-4ca8-974f-d1620c52e2b1"})
+export default function ProjectPage()
 {
+    const { projectId } = useParams();
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [projectEmpty, setProjectEmpty] = useState(false);

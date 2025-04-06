@@ -1,10 +1,10 @@
 'use client';
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import './new-task-form.css'
-import Button from "../../button/button";
+import './task-form.css'
+import Button from "../button/button";
 
-export default function NewTaskForm() {
+export default function TaskForm({isNewTask, projectId}) {
     const [data, setData] = useState({
         allImportance: [],
         allStatus: [],
@@ -15,9 +15,12 @@ export default function NewTaskForm() {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                const backHost = process.env.REACT_APP_BACKEND_PROJECT_SERVICE_HOST;
+                const backPort = process.env.REACT_APP_BACKEND_PORT;
+
                 const [importanceRes, statusRes] = await Promise.all([
-                    axios.get('http://localhost:8080/api/tasks/allTaskImportance'),
-                    axios.get('http://localhost:8080/api/tasks/allTaskStatus')
+                    axios.get(`http://${backHost}:${backPort}/api/tasks/allTaskImportance`),
+                    axios.get(`http://${backHost}:${backPort}/api/tasks/allTaskStatus`)
                 ]);
 
                 setData({
@@ -38,9 +41,15 @@ export default function NewTaskForm() {
         fetchData();
     }, []);
 
+
+    const handleNewTask = (e) => {
+        e.preventDefault()
+
+    }
+
     return (
         <div className="parent">
-            <form method="POST" encType="multipart/form-data" className="newTaskForm">
+            <form method="POST" onSubmit={handleNewTask} encType="multipart/form-data" className="newTaskForm">
                 <h3>Создание новой задачи</h3>
                 <div>
                     <label htmlFor="taskName">Название задачи:</label>
@@ -94,7 +103,7 @@ export default function NewTaskForm() {
                         placeholder="Описание (опционально)"
                         id="taskDescription"
                         name="taskDescription"
-                        rows="15"
+                        rows="12"
                     ></textarea>
                 </div>
                 <div>

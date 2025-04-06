@@ -31,6 +31,7 @@ textarea {
 
 textarea, #taskName {
     padding: 1em;
+    width: 96%;
 }
 
 button {
@@ -40,10 +41,18 @@ button {
 
 label {
     font-size: large;
+    padding: 0 0 1em 0;
 }
 
 .fileFormat {
     color: firebrick
+}
+
+fieldset {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-radius: 10px;
 }
 
 fieldset label {

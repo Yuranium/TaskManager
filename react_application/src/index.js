@@ -4,12 +4,14 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from "react-router-dom";
 import Navbar from "./components/navbar/navbar";
+import TaskForm from "./components/task-form/task-form";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
         <BrowserRouter>
             <Navbar></Navbar>
+            <TaskForm></TaskForm>
             {/*<NewTaskForm></NewTaskForm>*/}
         </BrowserRouter>
     </React.StrictMode>
