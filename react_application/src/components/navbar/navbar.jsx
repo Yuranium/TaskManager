@@ -44,7 +44,7 @@ export default function Navbar()
                 <Route path="/projects" element={<ProjectShow/>}/>
                 <Route path="/info" element={<Main/>}/>
                 <Route path="*" element={<Http404/>}/>
-                <Route path="/projects/:id" element={<ProjectPage/>}/>
+                <Route path="/projects/:projectId" element={<ProjectPage/>}/>
             </Routes>
         </>
     )

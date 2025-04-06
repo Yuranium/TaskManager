@@ -63,15 +63,34 @@ export default function TaskForm({isNewTask, projectId}) {
 
         if (taskNameInput.value.length <= 2)
             errors.taskName = "Имя слишком короткое";
-        console.log(errors.taskName)
 
-        // Проверка загрузки файла
         if (!taskPhotoInput.files || taskPhotoInput.files.length === 0)
             errors.taskPhoto.photoAbsent = "Изображение обязательно для загрузки";
         else if (taskPhotoInput.files[0].size > 5 * 1024 * 1024)
-            errors.taskPhoto.photoOverSize = "Изображение слишком большое для загрузки";
+            errors.taskPhoto.photoOverSize = "Изображение слишком большое для загрузки. Max: 5MB";
 
         setMessageError(errors);
+
+        if (!errors.taskName && Object.keys(errors.taskPhoto).length === 0) {
+            const backHost = process.env.REACT_APP_BACKEND_PROJECT_SERVICE_HOST;
+            const backPort = process.env.REACT_APP_BACKEND_PORT;
+
+            const newTask = new FormData();
+            newTask.append("name", taskNameInput.value);
+            newTask.append("description", formElements.taskDescription.value);
+            newTask.append("taskImportance", formElements.taskImportance.value);
+            newTask.append("taskStatus", formElements.taskStatus.value);
+            newTask.append("dateFinished", formElements.dateFinish.value);
+            newTask.append("images", taskPhotoInput.files[0]);
+            newTask.append("projectId", projectId)
+
+            console.log(newTask)
+            axios.post(
+                `http://${backHost}:${backPort}/api/tasks/createTask`,
+                newTask,
+                {headers: {'Content-Type': 'multipart/form-data'}}
+            )
+        }
     };
 
     const acceptedTime = new Date().toISOString().split("T")[0];
@@ -102,7 +121,7 @@ export default function TaskForm({isNewTask, projectId}) {
                                     name="taskImportance"
                                     value={item}
                                 />
-                                {`${item}`}
+                                {item}
                             </label>
                         ))}
                     </fieldset>
@@ -118,7 +137,7 @@ export default function TaskForm({isNewTask, projectId}) {
                                     name="taskStatus"
                                     value={item}
                                 />
-                                {`${item}`}
+                                {item}
                             </label>
                         ))}
                     </fieldset>
@@ -154,8 +173,8 @@ export default function TaskForm({isNewTask, projectId}) {
                             }
                         }}>
                         Сбросить файл</Button>
-                        {Object.keys(messageError.taskPhoto).length > 0 &&
-                            Object.keys(messageError.taskPhoto).map((key) => (
+                    {Object.keys(messageError.taskPhoto).length > 0 &&
+                        Object.keys(messageError.taskPhoto).map((key) => (
                             <div style={{color: "red"}} key={key}>{messageError.taskPhoto[key]}</div>
                         ))}
                     <p className="fileFormat">Формат файлов: PNG, JPEG, GIF</p>

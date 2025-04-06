@@ -4,10 +4,7 @@ import com.yuranium.taskservice.dto.TaskDto;
 import com.yuranium.taskservice.dto.TaskInputDto;
 import com.yuranium.taskservice.dto.TaskUpdateDto;
 import com.yuranium.taskservice.entity.TaskEntity;
-import org.mapstruct.AfterMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingConstants;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 
 import java.util.List;
 
@@ -27,5 +24,6 @@ public interface TaskMapper
 
     TaskEntity toEntity(TaskUpdateDto updatedDto);
 
+    @Mapping(target = "images", ignore = true)
     TaskEntity toEntity(TaskInputDto taskInputDto);
 }

@@ -6,10 +6,10 @@ import './project-page.css'
 import TaskCard from "../task-card/task-card";
 import Http404 from "../http-error/404";
 import {useParams} from "react-router-dom";
+import ModalWindow from "../modal-window/modal-window";
 
-export default function ProjectPage()
-{
-    const { projectId } = useParams();
+export default function ProjectPage() {
+    const {projectId} = useParams();
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [projectEmpty, setProjectEmpty] = useState(false);
@@ -22,7 +22,7 @@ export default function ProjectPage()
             const backPort = process.env.REACT_APP_BACKEND_PORT;
             const [tasksRes, projectRes] = await Promise.all([
                 axios.get(`http://${backHost}:${backPort}/api/tasks/allTasks`, {
-                    params: { projectId }
+                    params: {projectId}
                 }),
                 axios.get(`http://${backHost}:${backPort}/api/projects/${projectId}`)
             ]);
@@ -31,11 +31,9 @@ export default function ProjectPage()
                 setProjectExists(true);
 
             const tasksData = tasksRes.data;
-            if (Array.isArray(tasksData) && tasksData.length > 0) {
+            if (Array.isArray(tasksData) && tasksData.length > 0)
                 setTasks(tasksData);
-            } else {
-                setProjectEmpty(true);
-            }
+            else setProjectEmpty(true);
         } catch (err) {
             console.error("Ошибка получения данных:", err);
             setProjectExists(false);
@@ -52,13 +50,15 @@ export default function ProjectPage()
     }, []);
 
     if (loading) return <div>Загрузка проекта...</div>;
-    if (!projectExists) return <Http404 />;
-    if (projectEmpty) return <div className="project-empty">
-        <div className="project-page-wrapper-empty">
-            <p>Данный проект на данный момент пустой</p>
-            <Button>Создать новую задачу</Button>
-        </div>
-    </div>;
+    if (!projectExists) return <Http404/>;
+    if (projectEmpty)
+        return (
+            <div className="project-empty">
+                <div className="project-page-wrapper-empty">
+                    <p>Данный проект на данный момент пустой</p>
+                    <ModalWindow projectId={projectId} isNewTask={true}/>
+                </div>
+            </div>);
 
     return (
         <div className="project-page-main">
@@ -79,7 +79,7 @@ export default function ProjectPage()
 
             <div className="project-page-main-1">
                 <nav className="task-navbar">
-                    <Button><CiCirclePlus /></Button>
+                    <Button><CiCirclePlus/></Button>
 
                     <label htmlFor="task-search" className="project-page-label"></label>
                     <input
@@ -122,7 +122,7 @@ export default function ProjectPage()
                 </nav>
                 {
                     tasks.map(task => {
-                        return <TaskCard task={task} avatars={task.avatars} />
+                        return <TaskCard task={task} avatars={task.avatars}/>
                     })
                 }
             </div>

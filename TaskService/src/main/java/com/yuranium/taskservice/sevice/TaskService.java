@@ -78,7 +78,7 @@ public class TaskService
     }
 
     @Transactional
-    public void createTask(UUID projectId, TaskInputDto newTask)
+    public void createTask(TaskInputDto newTask)
     {
         taskRepository.save(
                 taskMapper.toEntity(newTask)
