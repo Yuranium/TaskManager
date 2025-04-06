@@ -1,5 +1,5 @@
 'use client';
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import axios from "axios";
 import './task-form.css'
 import Button from "../button/button";
@@ -11,6 +11,13 @@ export default function TaskForm({isNewTask, projectId}) {
         loading: true,
         error: null
     });
+
+    const [messageError, setMessageError] = useState({
+        taskName: '',
+        taskPhoto: {}
+    })
+
+    const fileInputRef = useRef(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -43,9 +50,31 @@ export default function TaskForm({isNewTask, projectId}) {
 
 
     const handleNewTask = (e) => {
-        e.preventDefault()
+        e.preventDefault();
 
-    }
+        const errors = {
+            taskName: "",
+            taskPhoto: {},
+        };
+
+        const formElements = e.target.elements;
+        const taskNameInput = formElements.taskName;
+        const taskPhotoInput = formElements.taskPhoto;
+
+        if (taskNameInput.value.length <= 2)
+            errors.taskName = "Имя слишком короткое";
+        console.log(errors.taskName)
+
+        // Проверка загрузки файла
+        if (!taskPhotoInput.files || taskPhotoInput.files.length === 0)
+            errors.taskPhoto.photoAbsent = "Изображение обязательно для загрузки";
+        else if (taskPhotoInput.files[0].size > 5 * 1024 * 1024)
+            errors.taskPhoto.photoOverSize = "Изображение слишком большое для загрузки";
+
+        setMessageError(errors);
+    };
+
+    const acceptedTime = new Date().toISOString().split("T")[0];
 
     return (
         <div className="parent">
@@ -60,10 +89,12 @@ export default function TaskForm({isNewTask, projectId}) {
                         name="taskName"
                         required
                     />
+                    {messageError.taskName && <span style={{color: "red"}}>{messageError.taskName}</span>}
                 </div>
                 <div>
                     <fieldset>
                         <legend>Важность задачи</legend>
+                        {data.loading && <div>Загрузка...</div>}
                         {data.allImportance.map((item) => (
                             <label key={item}>
                                 <input
@@ -79,6 +110,7 @@ export default function TaskForm({isNewTask, projectId}) {
                 <div>
                     <fieldset>
                         <legend>Статус задачи</legend>
+                        {data.loading && <div>Загрузка...</div>}
                         {data.allStatus.map((item) => (
                             <label key={item}>
                                 <input
@@ -93,7 +125,7 @@ export default function TaskForm({isNewTask, projectId}) {
                 </div>
                 <div>
                     <label htmlFor="dateFinish">Дедлайн:</label>
-                    <input type="date" id="dateFinish" name="dateFinish" required/>
+                    <input type="date" id="dateFinish" name="dateFinish" min={acceptedTime} required/>
                 </div>
                 <div>
                     <label htmlFor="taskDescription" className="taskDescriptionLabel">
@@ -113,7 +145,19 @@ export default function TaskForm({isNewTask, projectId}) {
                         type="file"
                         name="taskPhoto"
                         accept="image/jpeg, image/png, image/gif"
+                        ref={fileInputRef}
                     />
+                    <Button
+                        onClickFunction={() => {
+                            if (fileInputRef.current) {
+                                fileInputRef.current.value = "";
+                            }
+                        }}>
+                        Сбросить файл</Button>
+                        {Object.keys(messageError.taskPhoto).length > 0 &&
+                            Object.keys(messageError.taskPhoto).map((key) => (
+                            <div style={{color: "red"}} key={key}>{messageError.taskPhoto[key]}</div>
+                        ))}
                     <p className="fileFormat">Формат файлов: PNG, JPEG, GIF</p>
                 </div>
                 <Button>Создать</Button>
