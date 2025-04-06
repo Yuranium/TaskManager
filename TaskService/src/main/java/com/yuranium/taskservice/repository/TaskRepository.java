@@ -13,6 +13,8 @@ import java.util.UUID;
 @Repository
 public interface TaskRepository extends JpaRepository<TaskEntity, UUID>
 {
+    List<TaskEntity> findAllByProjectId(UUID projectId, Pageable pageable);
+
     List<TaskEntity> findByName(String name, Pageable pageable);
 
     List<TaskEntity> findByTaskImportance(TaskImportance importance, Pageable pageable);

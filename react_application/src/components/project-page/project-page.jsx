@@ -1,39 +1,43 @@
-import {useNavigate} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
 import {CiCirclePlus} from "react-icons/ci";
 import axios from "axios";
 import Button from "../button/button";
 import './project-page.css'
 import TaskCard from "../task-card/task-card";
+import Http404 from "../http-error/404";
 
-export default function ProjectPage({projectId}) {
-    //const {id} = useParams();
-    const navigate = useNavigate();
-    const [tasks, setTasks] = useState(null);
+export default function ProjectPage({projectId = "0ffa8f42-c3c6-4ca8-974f-d1620c52e2b1"})
+{
+    const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
-    const didFetch = useRef(false);
     const [projectEmpty, setProjectEmpty] = useState(false);
+    const [projectExists, setProjectExists] = useState(true);
+    const didFetch = useRef(false);
 
-
-    // todo проверять на наличие данного проекта на бэке
     const fetchTasks = async () => {
         try {
-            const backHost = process.env.REACT_APP_BACKEND_PROJECT_SERVICE_HOST
-            const backPort = process.env.REACT_APP_BACKEND_PORT
-            const response = await axios.get(
-                `http://${backHost}:${backPort}/api/tasks/getAllTasks`, {
-                    params: {
-                        projectId: projectId
-                    }
-                });
-            setTasks(response.data);
-            console.log(response.data)
+            const backHost = process.env.REACT_APP_BACKEND_PROJECT_SERVICE_HOST;
+            const backPort = process.env.REACT_APP_BACKEND_PORT;
+            const [tasksRes, projectRes] = await Promise.all([
+                axios.get(`http://${backHost}:${backPort}/api/tasks/allTasks`, {
+                    params: { projectId }
+                }),
+                axios.get(`http://${backHost}:${backPort}/api/projects/${projectId}`)
+            ]);
+
+            if (projectRes.status === 200)
+                setProjectExists(true);
+
+            const tasksData = tasksRes.data;
+            if (Array.isArray(tasksData) && tasksData.length > 0) {
+                setTasks(tasksData);
+            } else {
+                setProjectEmpty(true);
+            }
         } catch (err) {
-            if (err.response?.status === 404)
-                navigate('/404');
+            console.error("Ошибка получения данных:", err);
+            setProjectExists(false);
         } finally {
-            if (!tasks || tasks.length === 0)
-                setProjectEmpty(true)
             setLoading(false);
         }
     };
@@ -43,18 +47,16 @@ export default function ProjectPage({projectId}) {
             didFetch.current = true;
             fetchTasks();
         }
-
-        fetchTasks();
-    }, [navigate]);
+    }, []);
 
     if (loading) return <div>Загрузка проекта...</div>;
-
-    if (projectEmpty)
-        return (
-            <div>
-                Данный проект на данный момент пустой
-            </div>
-        )
+    if (!projectExists) return <Http404 />;
+    if (projectEmpty) return <div className="project-empty">
+        <div className="project-page-wrapper-empty">
+            <p>Данный проект на данный момент пустой</p>
+            <Button>Создать новую задачу</Button>
+        </div>
+    </div>;
 
     return (
         <div className="project-page-main">

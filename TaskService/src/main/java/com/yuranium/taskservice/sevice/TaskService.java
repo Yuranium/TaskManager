@@ -26,10 +26,11 @@ public class TaskService
     private final TaskMapper taskMapper;
 
     @Transactional(readOnly = true)
-    public List<TaskDto> getAll()
+    public List<TaskDto> getAll(UUID projectId)
     {
         return taskMapper.toDto(
-                taskRepository.findAll(PageRequest.of(0, 15))
+                taskRepository.findAllByProjectId(projectId,
+                                PageRequest.of(0, 15))
                         .stream()
                         .toList()
         );

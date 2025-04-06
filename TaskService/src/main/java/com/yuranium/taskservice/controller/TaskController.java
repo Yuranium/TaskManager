@@ -22,10 +22,10 @@ public class TaskController
     private final TaskService taskService;
 
     @GetMapping("/allTasks")
-    public ResponseEntity<List<TaskDto>> getAllTasks()
+    public ResponseEntity<List<TaskDto>> getAllTasks(@RequestParam UUID projectId)
     {
         return new ResponseEntity<>(
-                taskService.getAll(), HttpStatus.OK
+                taskService.getAll(projectId), HttpStatus.OK
         );
     }
 

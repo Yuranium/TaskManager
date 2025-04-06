@@ -83,3 +83,14 @@
 .project-page-label {
     display: inline;
 }
+
+.project-empty {
+    display: flex;
+    justify-content: center;
+}
+
+.project-page-wrapper-empty {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
