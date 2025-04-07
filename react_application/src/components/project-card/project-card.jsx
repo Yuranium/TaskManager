@@ -18,7 +18,7 @@ export default function ProjectCard({project, avatars})
                 <div className="project-card-container">
                     <img
                         src={`data:${avatars[0].contentType};base64,${avatars[0].binaryData}`}
-                        alt={`Название: ${avatars[0].name}`}
+                        alt={`Аватар: ${avatars[0].name}`}
                     />
                     <div className="text-info">
                         <h2>{`Название: ${project.name}`}</h2>

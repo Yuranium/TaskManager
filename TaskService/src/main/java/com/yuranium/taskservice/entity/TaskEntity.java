@@ -24,8 +24,7 @@ import java.util.UUID;
 public class TaskEntity
 {
     @Id
-    @Column(name = "id_task")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_task", columnDefinition = "UUID")
     private UUID id;
 
     @Column(name = "name", columnDefinition = "VARCHAR(50)")
@@ -54,12 +53,12 @@ public class TaskEntity
     @Column(name = "finished")
     private Boolean isFinished;
 
-    @BatchSize(size = 5)
-    @OneToMany(mappedBy = "task")
-    private List<TaskImageEntity> images = new ArrayList<>();
-
     @Column(name = "id_project")
     private UUID projectId;
+
+    @BatchSize(size = 15)
+    @OneToMany(mappedBy = "task")
+    private List<TaskImageEntity> images = new ArrayList<>();
 
     @PrePersist
     private void prePersist()
@@ -69,5 +68,12 @@ public class TaskEntity
 
         if (this.dateAdded == null)
             this.dateAdded = LocalDateTime.now();
+    }
+
+    public void setImages(List<TaskImageEntity> images)
+    {
+        for (TaskImageEntity avatar : images)
+            avatar.setTask(this);
+        this.images = images;
     }
 }

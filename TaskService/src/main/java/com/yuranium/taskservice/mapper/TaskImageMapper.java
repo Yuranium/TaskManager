@@ -1,5 +1,6 @@
 package com.yuranium.taskservice.mapper;
 
+import com.yuranium.taskservice.dto.TaskImageDto;
 import com.yuranium.taskservice.dto.TaskImageInputDto;
 import com.yuranium.taskservice.entity.TaskImageEntity;
 import org.mapstruct.Mapper;
@@ -10,11 +11,11 @@ import java.util.List;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface TaskImageMapper
 {
-    TaskImageEntity toEntity(TaskImageInputDto taskImageInputDto);
+    TaskImageEntity toEntity(TaskImageDto avatarDto);
 
-    List<TaskImageEntity> toEntity(List<TaskImageInputDto> taskImageInputDto);
+    List<TaskImageDto> toDto(List<TaskImageDto> avatarEntity);
 
-    TaskImageInputDto toDto(TaskImageEntity taskImageEntity);
+    TaskImageDto toDto(TaskImageEntity avatarEntity);
 
-    List<TaskImageInputDto> toDto(List<TaskImageEntity> taskImageEntity);
+    List<TaskImageEntity> toEntity(List<TaskImageDto> avatarDto);
 }

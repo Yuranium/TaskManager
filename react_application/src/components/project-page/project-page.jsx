@@ -1,7 +1,6 @@
 import {useEffect, useRef, useState} from "react";
 import {CiCirclePlus} from "react-icons/ci";
 import axios from "axios";
-import Button from "../button/button";
 import './project-page.css'
 import TaskCard from "../task-card/task-card";
 import Http404 from "../http-error/404";
@@ -79,7 +78,7 @@ export default function ProjectPage() {
 
             <div className="project-page-main-1">
                 <nav className="task-navbar">
-                    <Button><CiCirclePlus/></Button>
+                    <ModalWindow projectId={projectId}><CiCirclePlus/></ModalWindow>
 
                     <label htmlFor="task-search" className="project-page-label"></label>
                     <input
@@ -122,7 +121,10 @@ export default function ProjectPage() {
                 </nav>
                 {
                     tasks.map(task => {
-                        return <TaskCard task={task} avatars={task.avatars}/>
+                        return <TaskCard
+                            key={task.id}
+                            task={task}
+                            avatars={task.images}/>
                     })
                 }
             </div>

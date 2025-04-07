@@ -36,7 +36,7 @@ public class ProjectEntity
     @Column(name = "date_updated", columnDefinition = "TIMESTAMP")
     private LocalDateTime dateUpdated;
 
-    @BatchSize(size = 5)
+    @BatchSize(size = 15)
     @OneToMany(mappedBy = "project")
     private List<AvatarEntity> avatars = new ArrayList<>();
 

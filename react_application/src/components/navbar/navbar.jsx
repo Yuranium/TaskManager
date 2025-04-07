@@ -7,6 +7,7 @@ import NewProjectForm from "../project-form/new-project-form";
 import Http404 from "../http-error/404";
 import ProjectPage from "../project-page/project-page";
 import ProjectShow from "../project-show/project-show";
+import TaskCard from "../task-card/task-card";
 
 export default function Navbar()
 {
@@ -45,6 +46,7 @@ export default function Navbar()
                 <Route path="/info" element={<Main/>}/>
                 <Route path="*" element={<Http404/>}/>
                 <Route path="/projects/:projectId" element={<ProjectPage/>}/>
+                <Route path="/projects/:projectId/tasks/:taskId" element={<TaskCard/>}/>
             </Routes>
         </>
     )

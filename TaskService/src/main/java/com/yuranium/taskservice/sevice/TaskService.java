@@ -3,6 +3,7 @@ package com.yuranium.taskservice.sevice;
 import com.yuranium.taskservice.dto.TaskDto;
 import com.yuranium.taskservice.dto.TaskInputDto;
 import com.yuranium.taskservice.dto.TaskUpdateDto;
+import com.yuranium.taskservice.entity.TaskEntity;
 import com.yuranium.taskservice.enums.TaskImportance;
 import com.yuranium.taskservice.enums.TaskStatus;
 import com.yuranium.taskservice.mapper.TaskMapper;
@@ -23,17 +24,17 @@ public class TaskService
 {
     private final TaskRepository taskRepository;
 
+    private final TaskImageService imageService;
+
     private final TaskMapper taskMapper;
 
     @Transactional(readOnly = true)
     public List<TaskDto> getAll(UUID projectId)
     {
-        return taskMapper.toDto(
-                taskRepository.findAllByProjectId(projectId,
-                                PageRequest.of(0, 15))
-                        .stream()
-                        .toList()
-        );
+        List<TaskEntity> taskEntities = taskRepository.findAllByProjectId(projectId,
+                PageRequest.of(0, 15));
+        taskEntities.forEach(task -> task.getImages().size());
+        return taskMapper.toDto(taskEntities);
     }
 
     @Transactional(readOnly = true)
@@ -78,10 +79,13 @@ public class TaskService
     }
 
     @Transactional
-    public void createTask(TaskInputDto newTask)
+    public TaskDto createTask(TaskInputDto newTask)
     {
-        taskRepository.save(
-                taskMapper.toEntity(newTask)
+        TaskEntity task = taskMapper.toEntity(newTask);
+        task.setImages(imageService.multipartToEntity(newTask.images()));
+        imageService.saveAll(task.getImages());
+        return taskMapper.toDto(
+                taskRepository.save(task)
         );
     }
 

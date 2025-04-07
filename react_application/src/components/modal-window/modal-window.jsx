@@ -3,7 +3,7 @@ import Button from "../button/button";
 import "./modal-window.css";
 import TaskForm from "../task-form/task-form";
 
-export default function ModalWindow({isNewTask, projectId}) {
+export default function ModalWindow({isNewTask, projectId, children}) {
     const [isOpen, setIsOpen] = useState(false);
 
     const handleKeyDown = useCallback((e) => {
@@ -29,7 +29,10 @@ export default function ModalWindow({isNewTask, projectId}) {
     return (
         <>
 
-            <Button onClickFunction={() => setIsOpen(true)}>Создать новую задачу</Button>
+            <Button
+                onClickFunction={() => setIsOpen(true)}>
+                {!children ? 'Создать новую задачу' : children}
+            </Button>
             <div
                 className={`modal ${isOpen ? "open" : ""}`}
                 onClick={handleOverlayClick}>
