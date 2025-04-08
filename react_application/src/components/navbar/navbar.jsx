@@ -42,6 +42,7 @@ export default function Navbar()
                 <Route path="/" element={<Main/>}/>
                 <Route path="/account" element={<Account/>}/>
                 <Route path="/createProject" element={<NewProjectForm/>}/>
+                <Route path="/updateProject/:projectId" element={<NewProjectForm/>}/>
                 <Route path="/projects" element={<ProjectShow/>}/>
                 <Route path="/info" element={<Main/>}/>
                 <Route path="*" element={<Http404/>}/>

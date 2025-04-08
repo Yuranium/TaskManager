@@ -1,10 +1,40 @@
 import Button from "../button/button";
 import './project-card.css';
 import {useNavigate} from "react-router-dom";
+import axios from "axios";
 
 export default function ProjectCard({project, avatars})
 {
     const navigate = useNavigate();
+
+    const openProject = (e) => {
+        if (e.target.closest(".project-card-buttons"))
+            return;
+        navigate(`/projects/${project.id}`);
+    }
+
+    const updateProject = (e) => {
+        e.stopPropagation()
+        navigate(`updateProject/${project.id}`)
+    }
+
+    const deleteProject = (e) => {
+        e.stopPropagation()
+        // eslint-disable-next-line no-restricted-globals
+        let confirmDelete = confirm("Действительно удалить проект?")
+        if (confirmDelete)
+        {
+            const backHost = process.env.REACT_APP_BACKEND_PROJECT_SERVICE_HOST;
+            const backPort = process.env.REACT_APP_BACKEND_PORT;
+            axios.delete(`http://${backHost}:${backPort}/projects/delete/${project.id}`)
+                .then(res => {
+                    if (res.status === 204)
+                        navigate('/projects')
+                })
+        }
+        // todo запрос на бэк для удаления проекта с каскадным удалением задач
+    }
+
     return (
         <div
             className="project-card"
@@ -12,8 +42,7 @@ export default function ProjectCard({project, avatars})
             role="button"
             tabIndex={0}
             aria-label={`Перейти к проекту ${project.name}`}
-            onKeyDown={(e) => e.key === 'Enter' && navigate(`/projects/${project.id}`)}
-        >
+            onKeyDown={openProject}>
             <div className="project-card-main">
                 <div className="project-card-container">
                     <img
@@ -28,8 +57,8 @@ export default function ProjectCard({project, avatars})
 
                     <div className="project-card-buttons">
                         <div className="inner-buttons">
-                            <Button>Изменить</Button>
-                            <Button>Удалить</Button>
+                            <Button onClickFunction={updateProject}>Изменить</Button>
+                            <Button onClickFunction={deleteProject}>Удалить</Button>
                         </div>
                     </div>
                 </div>

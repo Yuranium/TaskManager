@@ -1,17 +1,19 @@
 import React from 'react';
 import './main.css'
 import Button from "../button/button";
+import {useNavigate} from "react-router-dom";
 
-function Main()
+export default function Main()
 {
+    const navigate = useNavigate()
     return (
         <div>
             <h1>Task-Manager</h1>
             <p>Инструмент для отслеживания поставленных задач</p>
             <h2>Создать новый проект</h2>
-            <Button>Создать проект</Button>
+            <Button onClickFunction={() => navigate('/createProject')}>
+                Создать проект
+            </Button>
         </div>
     )
 }
-
-export default Main;
