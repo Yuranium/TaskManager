@@ -1,10 +1,40 @@
 import './task-card.css'
 import Button from "../button/button";
 import {useNavigate} from "react-router-dom";
+import axios from "axios";
 
 export default function TaskCard({task, avatars})
 {
     const navigate = useNavigate()
+
+    const openTask = (e) => {
+        if (e.target.closest(".task-card-buttons"))
+            return;
+        navigate(`/projects/${task.id}`);
+    }
+
+    const updateTask = (e) => {
+        e.stopPropagation()
+        //return <ModalWindow task={task} isNewTask={false}/>
+        navigate(`updateTask/${task.id}`)
+    }
+
+    const deleteTask = (e) => {
+        e.stopPropagation()
+        // eslint-disable-next-line no-restricted-globals
+        let confirmDelete = confirm("Действительно удалить задачу?")
+        if (confirmDelete)
+        {
+            const backHost = process.env.REACT_APP_BACKEND_PROJECT_SERVICE_HOST;
+            const backPort = process.env.REACT_APP_BACKEND_PORT;
+            axios.delete(`http://${backHost}:${backPort}/tasks/delete/${task.id}`)
+                .then(res => {
+                    if (res.status === 204)
+                        navigate('/projects')
+                })
+        }
+    }
+
     return (
         <div className="container">
             <div
@@ -22,11 +52,11 @@ export default function TaskCard({task, avatars})
                     <p>{task.description}</p>
                     <p>{`Важность: ${task.taskImportance}`}</p>
                     <p>{`Статус: ${task.taskStatus}`}</p>
-                    <p>{task.isFinished}</p>
+                    <p>{`Завершена? ${task.isFinished ? 'Да' : 'Нет'}`}</p>
                 </div>
                 <div className="task-card-buttons">
-                    <Button>Изменить</Button>
-                    <Button>Удалить</Button>
+                    <Button onClickFunction={updateTask}>Изменить</Button>
+                    <Button onClickFunction={deleteTask}>Удалить</Button>
                 </div>
             </div>
         </div>

@@ -14,11 +14,13 @@ export default function ProjectPage() {
     const [projectEmpty, setProjectEmpty] = useState(false);
     const [projectExists, setProjectExists] = useState(true);
     const didFetch = useRef(false);
+    const [projectList, setProjects] = useState(null);
+
+    const backHost = process.env.REACT_APP_BACKEND_PROJECT_SERVICE_HOST;
+    const backPort = process.env.REACT_APP_BACKEND_PORT;
 
     const fetchTasks = async () => {
         try {
-            const backHost = process.env.REACT_APP_BACKEND_PROJECT_SERVICE_HOST;
-            const backPort = process.env.REACT_APP_BACKEND_PORT;
             const [tasksRes, projectRes] = await Promise.all([
                 axios.get(`http://${backHost}:${backPort}/api/tasks/allTasks`, {
                     params: {projectId}
@@ -31,7 +33,13 @@ export default function ProjectPage() {
 
             const tasksData = tasksRes.data;
             if (Array.isArray(tasksData) && tasksData.length > 0)
+            {
                 setTasks(tasksData);
+                const response= await
+                    axios.get(`http://${backHost}:${backPort}/api/projects/allProjects`)
+                if (response.status === 200)
+                    setProjects(response.data)
+            }
             else setProjectEmpty(true);
         } catch (err) {
             console.error("Ошибка получения данных:", err);
@@ -70,9 +78,15 @@ export default function ProjectPage() {
                     name="projectSearch"
                     id="project-search"/>
                 <ul>
-                    <li>Проект №1</li>
-                    <li>Проект №2</li>
-                    <li>Проект №3</li>
+
+                    {projectList?.map(project =>
+                    {
+                        if (project.id !== projectId)
+                            return (
+                                <li key={project.id}>
+                                    <a href={`/projects/${project.id}`}>{project.name}</a>
+                                </li>)
+                    })}
                 </ul>
             </aside>
 

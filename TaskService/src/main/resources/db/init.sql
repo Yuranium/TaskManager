@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS task(
     date_added DATE NOT NULL DEFAULT current_date,
     date_updated TIMESTAMP NOT NULL,
     date_finished TIMESTAMP NOT NULL DEFAULT current_timestamp,
-    finished BOOLEAN DEFAULT FALSE,
+    finished BOOLEAN NOT NULL DEFAULT FALSE,
     id_project UUID NOT NULL
 );
 

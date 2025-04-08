@@ -2,7 +2,6 @@ package com.yuranium.taskservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.yuranium.taskservice.entity.TaskImageEntity;
 import com.yuranium.taskservice.enums.TaskImportance;
 import com.yuranium.taskservice.enums.TaskStatus;
 
@@ -10,9 +9,13 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record TaskDto(
+
+        UUID id,
+
         String name,
 
         String description,

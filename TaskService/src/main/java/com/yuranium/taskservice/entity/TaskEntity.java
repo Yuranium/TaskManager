@@ -68,6 +68,9 @@ public class TaskEntity
 
         if (this.dateAdded == null)
             this.dateAdded = LocalDateTime.now();
+
+        if (this.isFinished == null)
+            this.isFinished = false;
     }
 
     public void setImages(List<TaskImageEntity> images)
