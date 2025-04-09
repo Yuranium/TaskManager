@@ -26,13 +26,12 @@ export default function ProjectCard({project, avatars})
         {
             const backHost = process.env.REACT_APP_BACKEND_PROJECT_SERVICE_HOST;
             const backPort = process.env.REACT_APP_BACKEND_PORT;
-            axios.delete(`http://${backHost}:${backPort}/projects/delete/${project.id}`)
+            axios.delete(`http://${backHost}:${backPort}/api/projects/delete/${project.id}`)
                 .then(res => {
                     if (res.status === 204)
                         navigate('/projects')
                 })
         }
-        // todo запрос на бэк для удаления проекта с каскадным удалением задач
     }
 
     return (

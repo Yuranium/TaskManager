@@ -25,6 +25,8 @@ public class ProjectService
 
     private final AvatarService avatarService;
 
+    private final KafkaProducer kafkaProducer;
+
     @Transactional(readOnly = true)
     public List<ProjectDto> getAll(Pageable pageable)
     {
@@ -75,7 +77,10 @@ public class ProjectService
     public void deleteProject(UUID id)
     {
         if (projectRepository.findById(id).isPresent())
+        {
             projectRepository.deleteById(id);
+            kafkaProducer.sendDeleteProjectEvent(id);
+        }
         else throw new ProjectEntityNotFoundException(
                 String.format(
                         "The project with id=%s cannot be removed because it does not exist",

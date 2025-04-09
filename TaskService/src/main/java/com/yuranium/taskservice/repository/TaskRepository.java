@@ -20,4 +20,6 @@ public interface TaskRepository extends JpaRepository<TaskEntity, UUID>
     List<TaskEntity> findByTaskImportance(TaskImportance importance, Pageable pageable);
 
     List<TaskEntity> findByTaskStatus(TaskStatus status, Pageable pageable);
+
+    void deleteAllByProjectId(UUID id);
 }

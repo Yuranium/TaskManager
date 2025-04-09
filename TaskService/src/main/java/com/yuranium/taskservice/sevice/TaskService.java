@@ -113,4 +113,10 @@ public class TaskService
                 )
         );
     }
+
+    @Transactional
+    public void deleteAllTask(UUID id)
+    {
+        taskRepository.deleteAllByProjectId(id);
+    }
 }

@@ -1,6 +1,10 @@
 server:
   port: ${PROJECT_PORT:8082}
 
+kafka:
+  topic-names:
+    project-delete: project-deleted-events-topic
+
 spring:
   application:
     name: project-service
@@ -18,3 +22,8 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: none
+  kafka:
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      retries: 100

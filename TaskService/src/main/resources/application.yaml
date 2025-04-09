@@ -1,6 +1,10 @@
 server:
   port: ${TASK_PORT:8081}
 
+kafka:
+  topic-names:
+    project-delete: project-deleted-events-topic
+
 spring:
   application:
     name: task-service
@@ -15,3 +19,7 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: none
+  kafka:
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
