@@ -1,5 +1,6 @@
 package com.yuranium.taskservice.sevice;
 
+import com.yuranium.taskservice.dto.TaskChartDto;
 import com.yuranium.taskservice.dto.TaskDto;
 import com.yuranium.taskservice.dto.TaskInputDto;
 import com.yuranium.taskservice.dto.TaskUpdateDto;
@@ -118,5 +119,13 @@ public class TaskService
     public void deleteAllTask(UUID id)
     {
         taskRepository.deleteAllByProjectId(id);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TaskChartDto> getAllByProjectIds(List<UUID> uuids)
+    {
+        return taskMapper.toChartDto(
+                taskRepository.findByProjectIds(uuids)
+        );
     }
 }

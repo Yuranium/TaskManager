@@ -1,5 +1,6 @@
 package com.yuranium.taskservice.controller;
 
+import com.yuranium.taskservice.dto.TaskChartDto;
 import com.yuranium.taskservice.dto.TaskDto;
 import com.yuranium.taskservice.dto.TaskInputDto;
 import com.yuranium.taskservice.dto.TaskUpdateDto;
@@ -26,6 +27,16 @@ public class TaskController
     {
         return new ResponseEntity<>(
                 taskService.getAll(projectId), HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/allTasks-ProjectIds")
+    public ResponseEntity<List<TaskChartDto>> getAllTaskByIds(
+            @RequestParam List<UUID> uuids)
+    {
+        return new ResponseEntity<>(
+                taskService.getAllByProjectIds(uuids),
+                HttpStatus.OK
         );
     }
 

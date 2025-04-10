@@ -1,5 +1,6 @@
 package com.yuranium.taskservice.mapper;
 
+import com.yuranium.taskservice.dto.TaskChartDto;
 import com.yuranium.taskservice.dto.TaskDto;
 import com.yuranium.taskservice.dto.TaskInputDto;
 import com.yuranium.taskservice.dto.TaskUpdateDto;
@@ -26,4 +27,8 @@ public interface TaskMapper
 
     @Mapping(target = "images", ignore = true)
     TaskEntity toEntity(TaskInputDto taskInputDto);
+
+    TaskChartDto toChartDto(TaskEntity taskEntity);
+
+    List<TaskChartDto> toChartDto(List<TaskEntity> taskEntities);
 }

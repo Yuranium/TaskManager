@@ -8,6 +8,7 @@ import Http404 from "../info/http-error/404";
 import ProjectPage from "../project-page/project-page";
 import ProjectShow from "../project-show/project-show";
 import TaskCard from "../task-card/task-card";
+import Infograf from "../charts/infograf";
 
 export default function Navbar()
 {
@@ -44,10 +45,10 @@ export default function Navbar()
                 <Route path="/createProject" element={<NewProjectForm/>}/>
                 <Route path="/updateProject/:projectId" element={<NewProjectForm/>}/>
                 <Route path="/projects" element={<ProjectShow/>}/>
-                <Route path="/info" element={<Main/>}/>
-                <Route path="*" element={<Http404/>}/>
+                <Route path="/info" element={<Infograf/>}/>
                 <Route path="/projects/:projectId" element={<ProjectPage/>}/>
                 <Route path="/projects/:projectId/tasks/:taskId" element={<TaskCard/>}/>
+                <Route path="*" element={<Http404/>}/>
             </Routes>
         </>
     )

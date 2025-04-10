@@ -1,0 +1,27 @@
+.infograf-main {
+    padding: 2em 15%;
+}
+
+.charts {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 2em;
+    width: 100%;
+}
+
+canvas {
+    display: inline-block !important;
+}
+
+.chart-description {
+    color: dimgray;
+    font-weight: bold;
+    margin: 0;
+    padding: 1em 0;
+    text-align: center;
+}
+
+.chart {
+    width: 48%;
+}
