@@ -1,0 +1,32 @@
+.loading-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: large;
+}
+
+@keyframes dot-pulse {
+    0%, 100% {
+        opacity: 0.2;
+        transform: translateY(0);
+    }
+    50% {
+        opacity: 1;
+        transform: translateY(-2px);
+    }
+}
+
+.dot {
+    display: inline-block;
+    margin-left: 2px;
+    animation: dot-pulse 1.5s infinite ease-in-out;
+    animation-fill-mode: both;
+}
+
+.dot:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.dot:nth-child(3) {
+    animation-delay: 0.6s;
+}

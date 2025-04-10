@@ -4,6 +4,7 @@ import axios from "axios";
 import ProjectCard from "../project-card/project-card";
 import Button from "../button/button";
 import './project-show.css';
+import LoadingData from "../info/loading-data/loading-data";
 
 const PAGE_SIZE = 15;
 
@@ -55,20 +56,18 @@ export default function ProjectShow() {
         }
     };
 
-    if (loading && projects.length === 0) return <div style={
-        {display: "flex", justifyContent: "center"
-        }}><span>Загрузка проекта...</span></div>;
+    if (loading && projects.length === 0) return <LoadingData loadingName="проекта"/>;
     if (!projects || projects.length === 0) return <div>Проект не найден</div>;
 
     return (
         <>
-            {projects.map(element => (
+            {projects.map(element =>
                 <ProjectCard
                     key={element.id}
                     project={element}
                     avatars={element.avatars}
                 />
-            ))}
+            )}
             {hasMore && (
                 <div className="project-show-button">
                     <Button onClickFunction={handleLoadMore}>

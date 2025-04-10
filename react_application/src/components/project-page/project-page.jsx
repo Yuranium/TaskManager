@@ -3,7 +3,7 @@ import {CiCirclePlus} from "react-icons/ci";
 import axios from "axios";
 import './project-page.css'
 import TaskCard from "../task-card/task-card";
-import Http404 from "../http-error/404";
+import Http404 from "../info/http-error/404";
 import {useParams} from "react-router-dom";
 import ModalWindow from "../modal-window/modal-window";
 

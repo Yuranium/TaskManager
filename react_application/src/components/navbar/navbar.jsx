@@ -4,7 +4,7 @@ import {Link, Route, Routes} from "react-router-dom";
 import Main from "../main/main";
 import Account from "../account/account";
 import NewProjectForm from "../project-form/new-project-form";
-import Http404 from "../http-error/404";
+import Http404 from "../info/http-error/404";
 import ProjectPage from "../project-page/project-page";
 import ProjectShow from "../project-show/project-show";
 import TaskCard from "../task-card/task-card";
