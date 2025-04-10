@@ -4,7 +4,7 @@ import axios from "axios";
 import './task-form.css'
 import Button from "../button/button";
 
-export default function TaskForm({isNewTask, projectId}) {
+export default function TaskForm({isNewTask, projectId, closeWindowFunc}) {
     const [data, setData] = useState({
         allImportance: [],
         allStatus: [],
@@ -90,6 +90,7 @@ export default function TaskForm({isNewTask, projectId}) {
                 newTask,
                 {headers: {'Content-Type': 'multipart/form-data'}}
             )
+            closeWindowFunc()
         }
     };
 

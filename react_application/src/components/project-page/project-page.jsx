@@ -133,6 +133,7 @@ export default function ProjectPage() {
                             id="task-is-finish"/>
                     </span>
                 </nav>
+                <div className="project-page-container">
                 {
                     tasks.map(task => {
                         return <TaskCard
@@ -141,6 +142,7 @@ export default function ProjectPage() {
                             avatars={task.images}/>
                     })
                 }
+                </div>
             </div>
         </div>
     );

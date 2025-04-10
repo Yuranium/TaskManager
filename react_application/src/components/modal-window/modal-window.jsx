@@ -56,7 +56,10 @@ export default function ModalWindow({isNewTask, projectId, children}) {
                             />
                         </svg>
                     </button>
-                    <TaskForm projectId={projectId} isNewTask={true}/>
+                    <TaskForm
+                        projectId={projectId}
+                        isNewTask={true}
+                        closeWindowFunc={() => setIsOpen(false)}/>
                 </div>
             </div>
         </>
