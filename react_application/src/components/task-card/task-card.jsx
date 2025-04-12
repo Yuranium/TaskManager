@@ -27,7 +27,7 @@ export default function TaskCard({task, avatars})
         {
             const backHost = process.env.REACT_APP_BACKEND_PROJECT_SERVICE_HOST;
             const backPort = process.env.REACT_APP_BACKEND_PORT;
-            axios.delete(`http://${backHost}:${backPort}/tasks/delete/${task.id}`)
+            axios.delete(`http://${backHost}:${backPort}/api/tasks/delete/${task.id}`)
                 .then(res => {
                     if (res.status === 204)
                         navigate('/projects')
