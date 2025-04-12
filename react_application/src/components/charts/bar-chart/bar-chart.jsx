@@ -1,4 +1,3 @@
-import './bar-chart.css';
 import { Bar } from 'react-chartjs-2';
 import {
     BarElement,
@@ -19,55 +18,39 @@ ChartJS.register(
     Legend
 );
 
-export default function BarChart({ data, tasks }) {
-    // Подсчет задач по статусам для проекта
-    const groupTaskStatus = (tasks, projectId) => {
-        const statusCount = {
-            planing: 0,
-            in_progress: 0,
-            completed: 0,
-            canceled: 0,
-            expired: 0,
-        };
+export default function BarChart({ label, data, labels })
+{
+    const generateRandomHues = (count) =>
+        Array.from({ length: count }, () => Math.floor(Math.random() * 360));
 
-        tasks
-            .filter(task => task.projectId === projectId)
-            .forEach(task => {
-                const statusKey = task.taskStatus.toLowerCase();
-                if (statusCount.hasOwnProperty(statusKey)) {
-                    statusCount[statusKey] += 1;
-                }
-            });
+    const hues = generateRandomHues(labels.length);
+    const backgroundColors = hues.map(hue => `hsla(${hue}, 70%, 50%, 0.7)`);
+    const borderColors = hues.map(hue => `hsla(${hue}, 70%, 50%, 1)`);
 
-        return statusCount;
+    const options = {
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1,
+                },
+            },
+        },
     };
-
-    // Добавляем данные о статусах в проекты
-    const processedData = data.map((project) => ({
-        ...project,
-        taskStatusCount: groupTaskStatus(tasks, project.id),
-    }));
-
-    const generateStatusColors = (count) => {
-        return Array.from({ length: count }, (_, i) => {
-            const hue = (i * 360) / count;
-            return `hsla(${hue}, 70%, 50%, 0.7)`;
-        });
-    };
-
-    const statusKeys = ['planing', 'in_progress', 'completed', 'canceled', 'expired'];
-    const statusColors = generateStatusColors(statusKeys.length);
 
     const chartData = {
-        labels: statusKeys.map(status => status.toUpperCase()),
-        datasets: statusKeys.map((statusKey, idx) => ({
-            label: statusKey.toUpperCase().replace(/_/g, ' '),
-            data: processedData.map((project) => project.taskStatusCount[statusKey]),
-            backgroundColor: statusColors[idx],
-            borderColor: statusColors[idx].replace('0.7)', '1)'),
-            borderWidth: 1,
-        })),
+        labels: labels,
+        datasets: [
+            {
+                label: label,
+                data: data,
+                backgroundColor: backgroundColors,
+                borderWidth: 1,
+                borderColor: borderColors,
+                hoverOffset: 4
+            }
+        ],
     };
 
-    return <Bar data={chartData} />;
+    return <Bar options={options} data={chartData} />;
 }

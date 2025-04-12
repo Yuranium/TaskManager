@@ -3,7 +3,7 @@ import {ArcElement, Chart, Legend, Tooltip} from "chart.js";
 
 Chart.register(Tooltip, Legend, ArcElement)
 
-export default function PieChart({data})
+export default function PieChart({label, data, labels})
 {
     const generateRandomColor = (count, transparency = 0.7) => {
         const colors = [];
@@ -15,11 +15,11 @@ export default function PieChart({data})
     }
 
     const dataChart = {
-        labels: data.map(project => project.name),
+        labels: labels,
         datasets: [
             {
-                label: 'Количество задач в проекте',
-                data: data.map(project => project.taskCount),
+                label: label,
+                data: data,
                 backgroundColor: generateRandomColor(data.length),
                 borderWidth: 1,
                 borderColor: generateRandomColor(data.length, 1),

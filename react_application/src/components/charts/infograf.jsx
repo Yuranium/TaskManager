@@ -5,11 +5,14 @@ import {useEffect, useRef, useState} from "react";
 import axios from "axios";
 import LoadingData from "../info/loading-data/loading-data";
 import BarChart from "./bar-chart/bar-chart";
+import LineChart from "./line-chart/line-chart";
 
 export default function Infograf()
 {
-    const [data, setData] = useState([]);
-    const [tasks, setTasks] = useState();
+    const [projects, setProjects] = useState([]);
+    const [tasks, setTasks] = useState([]);
+    const [statuses, setStatuses] = useState([]);
+    const [importance, setImportance] = useState([]);
     const [loading, setLoading] = useState(true);
     const didFetch = useRef(false);
 
@@ -18,43 +21,35 @@ export default function Infograf()
 
     const fetchData = async () => {
         try {
+            const projectResponse = await axios.get(
+                `http://${backHost}:${backPort}/api/projects/allProjects`,
+                { params: { size: 100 } }
+            );
 
-            const projectResponse= await axios.get(
-                `http://${backHost}:${backPort}/api/projects/allProjects`, {
-                    params: {
-                        size: 100
-                    }
-                })
-
-            console.log(projectResponse.data.map(project => project.id))
             const taskResponse = await axios.get(
-                `http://${backHost}:${backPort}/api/tasks/allTasks-ProjectIds`, {
+                `http://${backHost}:${backPort}/api/tasks/allTasks-ProjectIds`,
+                {
                     params: {
                         uuids: projectResponse.data.map(project => project.id).join(',')
-                    }
+                    },
                 }
-            )
+            );
 
-            if (projectResponse.status === 200 && taskResponse.status === 200)
-            {
-                const projects = projectResponse.data;
-                const tasks = taskResponse.data;
+            const statusResponse = await axios.get(
+                `http://${backHost}:${backPort}/api/tasks/allTaskStatus`);
 
-                const projectStats = projects.map(project => ({
-                    id: project.id,
-                    name: project.name,
-                    taskCount: tasks.filter(task => task.projectId === project.id).length
-                }));
+            const importanceResponse = await axios.get(
+                `http://${backHost}:${backPort}/api/tasks/allTaskImportance`);
 
-                console.log(projectStats)
-                setTasks(tasks)
-                setData(projectStats)
-
-            }
-        } finally {
-            setLoading(false)
+            setProjects(projectResponse.data);
+            setTasks(taskResponse.data);
+            setStatuses(statusResponse.data);
+            setImportance(importanceResponse.data)
+        } catch (err) {}
+        finally {
+            setLoading(false);
         }
-    }
+    };
 
     useEffect(() => {
         if (!didFetch.current) {
@@ -63,23 +58,65 @@ export default function Infograf()
         }
     }, []);
 
-    if (loading)
-        return <LoadingData/>
+    if (loading) return <LoadingData />;
+
+    const pieData = projects.map(project =>
+        tasks.filter(task => task.projectId === project.id).length);
+
+    const pieLabels = projects.map(project => project.name);
+
+    const barStatusData = statuses.map(status =>
+        tasks.filter(task => task.taskStatus === status).length);
+
+    const barImportanceData = importance.map(importance =>
+        tasks.filter(task => task.taskImportance === importance).length);
+
+    const dates = {}
+    tasks.forEach(task => dates[task.dateAdded] = 0)
+
+    tasks.forEach(task => {
+        const date = task.dateAdded;
+        dates[date] = (dates[date] || 0) + 1;
+    });
+
 
     return (
         <div className="infograf-main">
             <Background/>
             <div className="charts">
-                <div className="chart">
-                    <PieChart data={data}/>
+                <div className="chart pie">
+                    <PieChart label="Количество задач в проекте"
+                              data={pieData}
+                              labels={pieLabels}/>
                     <p className="chart-description">
                         Инфографика отображения задач в каждом проекте
                     </p>
                 </div>
-                <div className="chart">
-                    <BarChart data={data} tasks={tasks}/>
+                <div className="chart bar">
+                    <BarChart label="Количество задач"
+                              data={barStatusData}
+                              labels={statuses}
+                    />
                     <p className="chart-description">
-                        Инфографика отображения задач в каждом проекте
+                        Инфографика отображения задач с конкретным статусом выполнения
+                    </p>
+                </div>
+                <div className="chart bar importance">
+                    <BarChart label="Количество задач"
+                              data={barImportanceData}
+                              labels={importance}
+                    />
+                    <p className="chart-description">
+                        Инфографика отображения задач с конкретной важностью
+                    </p>
+                </div>
+                <div className="chart line">
+                    <LineChart label="Количество созданных задач"
+                              data={Object.values(dates)}
+                              labels={Object.keys(dates).map(date => date.split('T')[0])}
+                    />
+                    <p className="chart-description">
+                        Инфографика отображения даты создания задач
                     </p>
                 </div>
             </div>

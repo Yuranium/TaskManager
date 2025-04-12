@@ -42,7 +42,7 @@ public class TaskEntity
     private TaskStatus taskStatus;
 
     @Column(name = "date_added", columnDefinition = "TIMESTAMP")
-    private LocalDateTime dateAdded;
+    private LocalDate dateAdded;
 
     @Column(name = "date_updated", columnDefinition = "TIMESTAMP")
     private LocalDateTime dateUpdated;
@@ -67,7 +67,7 @@ public class TaskEntity
         this.dateUpdated = LocalDateTime.now();
 
         if (this.dateAdded == null)
-            this.dateAdded = LocalDateTime.now();
+            this.dateAdded = LocalDate.now();
 
         if (this.isFinished == null)
             this.isFinished = false;
