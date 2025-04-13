@@ -8,6 +8,11 @@
           <package value="com.yuranium.projectservice" />
         </packages>
       </persistence-unit>
+      <persistence-unit moduleName="AuthService" name="Default">
+        <packages>
+          <package value="com.example.authservice" />
+        </packages>
+      </persistence-unit>
     </persistence-units>
   </component>
 </project>
