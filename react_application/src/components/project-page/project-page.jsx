@@ -1,20 +1,97 @@
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
 import {CiCirclePlus} from "react-icons/ci";
 import axios from "axios";
-import './project-page.css'
+import './project-page.css';
 import TaskCard from "../task-card/task-card";
 import Http404 from "../info/http-error/404";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import ModalWindow from "../modal-window/modal-window";
+import Autosuggest from "react-autosuggest";
 
 export default function ProjectPage() {
-    const {projectId} = useParams();
+    const { projectId } = useParams();
+    const navigate = useNavigate();
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [projectEmpty, setProjectEmpty] = useState(false);
     const [projectExists, setProjectExists] = useState(true);
+    const [projectList, setProjects] = useState([]);
     const didFetch = useRef(false);
-    const [projectList, setProjects] = useState(null);
+
+    const [projSearch, setProjSearch] = useState("");
+    const [projSuggestions, setProjSuggestions] = useState([]);
+
+    const [taskSearch, setTaskSearch] = useState("");
+    const [taskSuggestions, setTaskSuggestions] = useState([]);
+
+    const [statusFilter, setStatusFilter] = useState("");
+    const [importanceFilter, setImportanceFilter] = useState("");
+    const [isFinished, setFinished] = useState(null);
+
+    const filteredTasks = useMemo(() => {
+        return tasks.filter((t) => {
+            const searchMatch =
+                taskSearch.trim() === "" ||
+                t.name.toLowerCase().includes(taskSearch.trim().toLowerCase()) ||
+                t.description.toLowerCase().includes(taskSearch.trim().toLowerCase()) ||
+                t.taskStatus.toLowerCase().includes(taskSearch.trim().toLowerCase()) ||
+                t.taskImportance.toLowerCase().includes(taskSearch.trim().toLowerCase());
+            const statusMatch = statusFilter ? t.taskStatus === statusFilter : true;
+            const importanceMatch = importanceFilter ? t.taskImportance === importanceFilter : true;
+            const finishedMatch = isFinished === null ? true : t.isFinished === isFinished;
+            return searchMatch && statusMatch && importanceMatch && finishedMatch;
+        });
+    }, [taskSearch, statusFilter, importanceFilter, isFinished, tasks]);
+
+    const getProjSuggestions = value => {
+        const v = value.trim().toLowerCase();
+        return v.length === 0
+            ? []
+            : projectList.filter(p =>
+                p.name.toLowerCase().includes(v) ||
+                p.description.toLowerCase().includes(v)
+            );
+    };
+
+    const onProjFetch = ({ value }) => {
+        setProjSuggestions(getProjSuggestions(value));
+    };
+    const onProjClear = () => setProjSuggestions([]);
+
+    const getProjValue = suggestion => suggestion.name;
+    const renderProj = suggestion => <div>{suggestion.name}</div>;
+
+    const projInputProps = {
+        placeholder: "Найти проект...",
+        value: projSearch,
+        onChange: (e, { newValue }) => setProjSearch(newValue),
+        id: "project-search",
+    };
+
+    const getTaskSuggestions = value => {
+        const v = value.trim().toLowerCase();
+        return v.length === 0
+            ? []
+            : tasks.filter(t =>
+                t.name.toLowerCase().includes(v) ||
+                t.description.toLowerCase().includes(v) ||
+                t.taskStatus.toLowerCase().includes(v) ||
+                t.taskImportance.toLowerCase().includes(v)
+            );
+    };
+
+    const onTaskFetch = ({ value }) => setTaskSuggestions(getTaskSuggestions(value));
+    const onTaskClear = () => setTaskSuggestions([]);
+
+    const getTaskValue = suggestion => suggestion.name;
+    const renderTask = suggestion => <div>{suggestion.name}</div>;
+
+    const taskInputProps = {
+        placeholder: "Найти задачу...",
+        value: taskSearch,
+        onChange: (e, { newValue }) => setTaskSearch(newValue),
+        id: "task-search",
+    };
 
     const backHost = process.env.REACT_APP_BACKEND_PROJECT_SERVICE_HOST;
     const backPort = process.env.REACT_APP_BACKEND_PORT;
@@ -23,24 +100,24 @@ export default function ProjectPage() {
         try {
             const [tasksRes, projectRes] = await Promise.all([
                 axios.get(`http://${backHost}:${backPort}/api/tasks/allTasks`, {
-                    params: {projectId}
+                    params: { projectId },
                 }),
-                axios.get(`http://${backHost}:${backPort}/api/projects/${projectId}`)
+                axios.get(`http://${backHost}:${backPort}/api/projects/${projectId}`),
             ]);
 
-            if (projectRes.status === 200)
-                setProjectExists(true);
+            if (projectRes.status === 200) setProjectExists(true);
 
-            const tasksData = tasksRes.data;
-            if (Array.isArray(tasksData) && tasksData.length > 0)
-            {
-                setTasks(tasksData);
-                const response= await
-                    axios.get(`http://${backHost}:${backPort}/api/projects/allProjects`)
-                if (response.status === 200)
-                    setProjects(response.data)
+            const t = tasksRes.data;
+            if (Array.isArray(t) && t.length > 0) {
+                setTasks(t);
+                const resp = await axios.get(
+                    `http://${backHost}:${backPort}/api/projects/allProjects`,
+                    { params: { size: 50 } }
+                );
+                if (resp.status === 200) setProjects(resp.data);
+            } else {
+                setProjectEmpty(true);
             }
-            else setProjectEmpty(true);
         } catch (err) {
             console.error("Ошибка получения данных:", err);
             setProjectExists(false);
@@ -56,37 +133,47 @@ export default function ProjectPage() {
         }
     }, []);
 
+    const handleStatusChange = (e) => setStatusFilter(e.target.value);
+
+    const handleImportanceChange = (e) => setImportanceFilter(e.target.value);
+
+    const handleFinishedChange = (e) => setFinished(e.target.checked ? true : null);
+
     if (loading) return <div>Загрузка проекта...</div>;
-    if (!projectExists) return <Http404/>;
+    if (!projectExists) return <Http404 />;
     if (projectEmpty)
         return (
             <div className="project-empty">
                 <div className="project-page-wrapper-empty">
                     <p>Данный проект на данный момент пустой</p>
-                    <ModalWindow projectId={projectId} isNewTask={true}/>
+                    <ModalWindow projectId={projectId} isNewTask={true} />
                 </div>
-            </div>);
+            </div>
+        );
 
     return (
         <div className="project-page-main">
             <aside className="project-sidebar">
                 <h3>Проекты</h3>
-                <label htmlFor="project-search" className="project-page-label"></label>
-                <input
-                    type="text"
-                    placeholder="Найти проект"
-                    name="projectSearch"
-                    id="project-search"/>
+                <Autosuggest
+                    suggestions={projSuggestions}
+                    onSuggestionsFetchRequested={onProjFetch}
+                    onSuggestionsClearRequested={onProjClear}
+                    getSuggestionValue={getProjValue}
+                    renderSuggestion={renderProj}
+                    inputProps={projInputProps}
+                    onSuggestionSelected={(e, { suggestion }) => {
+                        navigate(`/projects/${suggestion.id}`);
+                    }}
+                />
                 <ul>
-
-                    {projectList?.map(project =>
-                    {
-                        if (project.id !== projectId)
-                            return (
-                                <li key={project.id}>
-                                    <a href={`/projects/${project.id}`}>{project.name}</a>
-                                </li>)
-                    })}
+                    {projectList
+                        .filter(p => p.id !== projectId)
+                        .map(p => (
+                            <li key={p.id}>
+                                <a href={`/projects/${p.id}`}>{p.name}</a>
+                            </li>
+                        ))}
                 </ul>
             </aside>
 
@@ -94,17 +181,21 @@ export default function ProjectPage() {
                 <nav className="task-navbar">
                     <ModalWindow projectId={projectId}><CiCirclePlus/></ModalWindow>
 
-                    <label htmlFor="task-search" className="project-page-label"></label>
-                    <input
-                        type="text"
-                        placeholder="Найти задачу"
-                        name="projectSearch"
-                        id="task-search"/>
+                    <Autosuggest
+                        suggestions={taskSuggestions}
+                        onSuggestionsFetchRequested={onTaskFetch}
+                        onSuggestionsClearRequested={onTaskClear}
+                        getSuggestionValue={getTaskValue}
+                        renderSuggestion={renderTask}
+                        inputProps={taskInputProps}
+                    />
 
                     <span className="task-status-filter">
                         <label htmlFor="task-status-sort" className="project-page-label">
                             Сортировка по статусу:</label>
-                        <select id="task-status-sort">
+                        <select id="task-status-sort"
+                                onChange={handleStatusChange}
+                                value={statusFilter}>
                             <option value=""></option>
                             <option value="PLANING">В планах</option>
                             <option value="IN_PROGRESS">В процессе</option>
@@ -117,7 +208,9 @@ export default function ProjectPage() {
                     <span className="task-importance-filter">
                         <label htmlFor="task-importance-sort" className="project-page-label">
                             Сортировка по важности:</label>
-                        <select id="task-importance-sort">
+                        <select id="task-importance-sort"
+                                onChange={handleImportanceChange}
+                                value={importanceFilter}>
                             <option value=""></option>
                             <option value="LOW">Низкая</option>
                             <option value="INTERMEDIATE">Средняя</option>
@@ -130,18 +223,19 @@ export default function ProjectPage() {
                             Задача завершена?</label>
                         <input
                             type="checkbox"
-                            id="task-is-finish"/>
+                            id="task-is-finish"
+                            onChange={handleFinishedChange}/>
                     </span>
                 </nav>
+
                 <div className="project-page-container">
-                {
-                    tasks.map(task => {
-                        return <TaskCard
+                    {filteredTasks.map(task => (
+                        <TaskCard
                             key={task.id}
                             task={task}
-                            avatars={task.images}/>
-                    })
-                }
+                            avatars={task.images}
+                        />
+                    ))}
                 </div>
             </div>
         </div>

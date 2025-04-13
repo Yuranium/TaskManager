@@ -97,10 +97,10 @@ export default function TaskForm({isNewTask, projectId, closeWindowFunc}) {
     const acceptedTime = new Date().toISOString().split("T")[0];
 
     return (
-        <div className="parent">
+        <div className="task-form parent">
             <form method="POST" onSubmit={handleNewTask} encType="multipart/form-data" className="newTaskForm">
                 <h3>Создание новой задачи</h3>
-                <div>
+                <div className="task-form">
                     <label htmlFor="taskName">Название задачи:</label>
                     <input
                         placeholder="Введите название задачи"
@@ -111,7 +111,7 @@ export default function TaskForm({isNewTask, projectId, closeWindowFunc}) {
                     />
                     {messageError.taskName && <span style={{color: "red"}}>{messageError.taskName}</span>}
                 </div>
-                <div>
+                <div className="task-form">
                     <fieldset>
                         <legend>Важность задачи</legend>
                         {data.loading && <div>Загрузка...</div>}
@@ -127,7 +127,7 @@ export default function TaskForm({isNewTask, projectId, closeWindowFunc}) {
                         ))}
                     </fieldset>
                 </div>
-                <div>
+                <div className="task-form">
                     <fieldset>
                         <legend>Статус задачи</legend>
                         {data.loading && <div>Загрузка...</div>}
@@ -143,11 +143,11 @@ export default function TaskForm({isNewTask, projectId, closeWindowFunc}) {
                         ))}
                     </fieldset>
                 </div>
-                <div>
+                <div className="task-form">
                     <label htmlFor="dateFinish">Дедлайн:</label>
                     <input type="date" id="dateFinish" name="dateFinish" min={acceptedTime} required/>
                 </div>
-                <div>
+                <div className="task-form">
                     <label htmlFor="taskDescription" className="taskDescriptionLabel">
                         Описание задачи:
                     </label>
@@ -158,7 +158,7 @@ export default function TaskForm({isNewTask, projectId, closeWindowFunc}) {
                         rows="12"
                     ></textarea>
                 </div>
-                <div>
+                <div className="task-form">
                     <label htmlFor="taskPhoto">Выберите фото для задачи</label>
                     <input
                         id="taskPhoto"

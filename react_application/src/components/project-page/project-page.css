@@ -35,7 +35,7 @@
     color: inherit;
 }
 
-.project-sidebar ul li:hover {
+.project-sidebar ul li:hover, .react-autosuggest__suggestion:hover {
     background-color: #80d0b2;
     cursor: pointer;
 }
@@ -106,4 +106,36 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+}
+
+/*React autosuggest*/
+.react-autosuggest__suggestions-list {
+    list-style: none;
+    padding: .3em;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    z-index: 100;
+    background-color: #e8e8e8;
+    gap: 0.5em;
+    border-radius: 0.5em;
+    margin: 0;
+    box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
+}
+
+.react-autosuggest__container {
+    /*width: 100%;*/
+    position: relative;
+}
+
+.react-autosuggest__suggestion {
+    border-radius: 5px;
+    padding: .5em 0;
+    transition: background-color 0.5s ease;
+    cursor: pointer;
+}
+
+.react-autosuggest__suggestion > div {
+    padding-left: 0.5em;
 }
