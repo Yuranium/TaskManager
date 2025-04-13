@@ -36,3 +36,17 @@
 .navbar li a:hover {
     color: #4b9b7e;
 }
+
+.svg-main-avatar {
+    display: flex;
+    color: rgba(66, 66, 66, 0.99);
+    float: left;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 7px
+}
+
+.h2-main-page {
+    margin: 0;
+}

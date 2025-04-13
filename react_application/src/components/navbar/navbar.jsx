@@ -15,6 +15,15 @@ export default function Navbar()
     return (
         <>
             <nav className="navigation-menu">
+                <div className="svg-main-avatar">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 13H10V19H4V13Z" fill="currentColor" />
+                        <path d="M4 5H10V11H4V5Z" fill="currentColor" />
+                        <path d="M12 5H18V11H12V5Z" fill="currentColor" />
+                        <path d="M14 13H20V19H14V13Z" fill="currentColor" />
+                    </svg>
+                    <h2 className="h2-main-page">Task Manager</h2>
+                </div>
                 <ul className="navbar">
                     <li>
                         <span className="link-wrap">

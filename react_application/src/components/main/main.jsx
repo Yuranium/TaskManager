@@ -7,7 +7,7 @@ export default function Main()
 {
     const navigate = useNavigate()
     return (
-        <div>
+        <div className="main-page">
             <h1>Task-Manager</h1>
             <p>Инструмент для отслеживания поставленных задач</p>
             <h2>Создать новый проект</h2>
