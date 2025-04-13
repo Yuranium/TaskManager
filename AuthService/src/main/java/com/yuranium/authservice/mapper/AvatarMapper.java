@@ -1,7 +1,7 @@
 package com.yuranium.authservice.mapper;
 
-import com.yuranium.authservice.dto.AvatarDto;
-import com.yuranium.authservice.entity.AvatarEntity;
+import com.yuranium.authservice.models.dto.AvatarDto;
+import com.yuranium.authservice.models.entity.AvatarEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 

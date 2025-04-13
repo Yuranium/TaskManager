@@ -1,7 +1,7 @@
-package com.yuranium.authservice.dto;
+package com.yuranium.authservice.models.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.yuranium.authservice.entity.UserEntity;
+import com.yuranium.authservice.models.entity.UserEntity;
 
 import java.io.Serializable;
 

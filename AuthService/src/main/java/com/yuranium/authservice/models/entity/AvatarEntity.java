@@ -1,4 +1,4 @@
-package com.yuranium.authservice.entity;
+package com.yuranium.authservice.models.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

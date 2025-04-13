@@ -1,9 +1,9 @@
 package com.yuranium.authservice.controller;
 
-import com.yuranium.authservice.dto.UserDto;
-import com.yuranium.authservice.dto.UserInfoDto;
-import com.yuranium.authservice.dto.UserInputDto;
-import com.yuranium.authservice.dto.UserLoginDto;
+import com.yuranium.authservice.models.dto.UserDto;
+import com.yuranium.authservice.models.dto.UserInfoDto;
+import com.yuranium.authservice.models.dto.UserInputDto;
+import com.yuranium.authservice.models.dto.UserLoginDto;
 import com.yuranium.authservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,6 @@ public class AuthController
                 HttpStatus.OK
         );
     }
-
 
     @GetMapping("/registration")
     public ResponseEntity<UserDto> registerUser(@ModelAttribute UserInputDto userDto)

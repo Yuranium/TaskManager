@@ -1,4 +1,4 @@
-package com.yuranium.authservice.entity;
+package com.yuranium.authservice.models.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -52,7 +52,7 @@ public class UserEntity
     private List<AvatarEntity> avatars = new ArrayList<>();
 
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
             joinColumns = @JoinColumn(name = "id_user"),

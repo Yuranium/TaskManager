@@ -1,7 +1,7 @@
-package com.yuranium.authservice.dto;
+package com.yuranium.authservice.models.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.yuranium.authservice.entity.AvatarEntity;
+import com.yuranium.authservice.models.entity.AvatarEntity;
 
 import java.io.Serializable;
 import java.time.LocalDate;

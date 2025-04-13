@@ -1,6 +1,6 @@
 package com.yuranium.authservice.service;
 
-import com.yuranium.authservice.entity.RoleEntity;
+import com.yuranium.authservice.models.entity.RoleEntity;
 import com.yuranium.authservice.mapper.RoleMapper;
 import com.yuranium.authservice.repository.RoleRepository;
 import com.yuranium.authservice.util.RoleEntityNotFoundException;

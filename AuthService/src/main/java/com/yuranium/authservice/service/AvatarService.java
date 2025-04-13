@@ -1,6 +1,6 @@
 package com.yuranium.authservice.service;
 
-import com.yuranium.authservice.entity.AvatarEntity;
+import com.yuranium.authservice.models.entity.AvatarEntity;
 import com.yuranium.authservice.repository.AvatarRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

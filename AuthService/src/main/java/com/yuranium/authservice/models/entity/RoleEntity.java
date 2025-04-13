@@ -1,4 +1,4 @@
-package com.yuranium.authservice.entity;
+package com.yuranium.authservice.models.entity;
 
 import com.yuranium.authservice.enums.RoleType;
 import jakarta.persistence.*;
@@ -24,7 +24,7 @@ public class RoleEntity
 
     @Column(name = "roles")
     @Enumerated(value = EnumType.STRING)
-    private RoleType roles;
+    private RoleType role;
 
     @ManyToMany(mappedBy = "roles")
     private Set<UserEntity> users;

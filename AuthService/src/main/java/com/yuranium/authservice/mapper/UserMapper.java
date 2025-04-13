@@ -1,14 +1,12 @@
 package com.yuranium.authservice.mapper;
 
-import com.yuranium.authservice.dto.UserDto;
-import com.yuranium.authservice.dto.UserInfoDto;
-import com.yuranium.authservice.dto.UserInputDto;
-import com.yuranium.authservice.dto.UserUpdateDto;
-import com.yuranium.authservice.entity.UserEntity;
-import org.mapstruct.AfterMapping;
+import com.yuranium.authservice.models.dto.UserDto;
+import com.yuranium.authservice.models.dto.UserInfoDto;
+import com.yuranium.authservice.models.dto.UserInputDto;
+import com.yuranium.authservice.models.dto.UserUpdateDto;
+import com.yuranium.authservice.models.entity.UserEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
-import org.mapstruct.MappingTarget;
 
 import java.util.Set;
 

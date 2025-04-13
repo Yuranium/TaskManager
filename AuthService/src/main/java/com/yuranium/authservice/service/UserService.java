@@ -1,14 +1,19 @@
 package com.yuranium.authservice.service;
 
-import com.yuranium.authservice.dto.UserDto;
-import com.yuranium.authservice.dto.UserInfoDto;
-import com.yuranium.authservice.dto.UserInputDto;
-import com.yuranium.authservice.dto.UserUpdateDto;
-import com.yuranium.authservice.entity.UserEntity;
+import com.yuranium.authservice.models.MyUserDetails;
+import com.yuranium.authservice.models.dto.UserDto;
+import com.yuranium.authservice.models.dto.UserInfoDto;
+import com.yuranium.authservice.models.dto.UserInputDto;
+import com.yuranium.authservice.models.dto.UserUpdateDto;
+import com.yuranium.authservice.models.entity.UserEntity;
 import com.yuranium.authservice.mapper.UserMapper;
 import com.yuranium.authservice.repository.UserRepository;
 import com.yuranium.authservice.util.UserEntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +22,7 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class UserService
+public class UserService implements UserDetailsService
 {
     private final UserRepository userRepository;
 
@@ -71,6 +76,20 @@ public class UserService
                         "The user with id=%s cannot be removed because it does not exist",
                         id
                 )
+        );
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
+    {
+        return new MyUserDetails(
+                userRepository.findByEmail(username)
+                        .orElseThrow(
+                                () -> new UsernameNotFoundException(
+                                        String.format("The user with email=%s was not found!",
+                                                username)
+                                )
+                        )
         );
     }
 }

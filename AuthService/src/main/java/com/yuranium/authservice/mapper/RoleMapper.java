@@ -1,7 +1,7 @@
 package com.yuranium.authservice.mapper;
 
-import com.yuranium.authservice.dto.RoleDto;
-import com.yuranium.authservice.entity.RoleEntity;
+import com.yuranium.authservice.models.dto.RoleDto;
+import com.yuranium.authservice.models.entity.RoleEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 
