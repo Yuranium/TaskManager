@@ -1,19 +1,20 @@
 package com.yuranium.authservice.service;
 
+import com.yuranium.authservice.mapper.UserMapper;
 import com.yuranium.authservice.models.MyUserDetails;
 import com.yuranium.authservice.models.dto.UserDto;
 import com.yuranium.authservice.models.dto.UserInfoDto;
 import com.yuranium.authservice.models.dto.UserInputDto;
 import com.yuranium.authservice.models.dto.UserUpdateDto;
 import com.yuranium.authservice.models.entity.UserEntity;
-import com.yuranium.authservice.mapper.UserMapper;
 import com.yuranium.authservice.repository.UserRepository;
-import com.yuranium.authservice.util.UserEntityNotFoundException;
+import com.yuranium.authservice.util.exception.UserEntityAlreadyExistsException;
+import com.yuranium.authservice.util.exception.UserEntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,22 +33,29 @@ public class UserService implements UserDetailsService
 
     private final UserMapper userMapper;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Transactional(readOnly = true)
     public UserInfoDto getUser(Long id)
     {
         return userMapper.toInfoDto(
                 userRepository.findById(id)
                         .orElseThrow(() -> new UserEntityNotFoundException(
-                                String.format("The user with id=%s was not found!", id))
+                                String.format("The user with id=%d was not found!", id))
                         ));
     }
 
     @Transactional
     public UserDto createUser(UserInputDto userDto)
     {
+        if (userRepository.findByEmail(userDto.email()).isPresent())
+            throw new UserEntityAlreadyExistsException(
+                    String.format("The user with email=%s is already exists", userDto.email()
+                    ));
         UserEntity userEntity = userMapper.toEntity(userDto);
-        userEntity.setRoles(new HashSet<>(Set.of(roleService.getRole(0))));
+        userEntity.setRoles(new HashSet<>(Set.of(roleService.getRole(1))));
         userEntity.setAvatars(avatarService.multipartToEntity(userDto.avatars()));
+        userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
 
         avatarService.saveAll(userEntity.getAvatars());
         roleService.saveAll(userEntity.getRoles());
@@ -73,7 +81,7 @@ public class UserService implements UserDetailsService
         }
         else throw new UserEntityNotFoundException(
                 String.format(
-                        "The user with id=%s cannot be removed because it does not exist",
+                        "The user with id=%d cannot be removed because it does not exist",
                         id
                 )
         );

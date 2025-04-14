@@ -25,6 +25,8 @@ public class AvatarService
 
     public List<AvatarEntity> multipartToEntity(List<MultipartFile> file)
     {
+        if (file == null)
+            return null;
         return file.stream()
                 .map(image -> {
                     AvatarEntity avatar = new AvatarEntity();

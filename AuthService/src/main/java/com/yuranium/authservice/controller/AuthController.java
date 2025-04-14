@@ -14,6 +14,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
@@ -33,7 +35,8 @@ public class AuthController
         ));
 
         UserDetails user = userService.loadUserByUsername(userLogin.email());
-        return new ResponseEntity<>(jwtUtil.generateToken(user), HttpStatus.OK);
+        return new ResponseEntity<>(Map.of("token", jwtUtil.generateToken(user)),
+                HttpStatus.OK);
     }
 
     @GetMapping("/user/{id}")
@@ -46,11 +49,18 @@ public class AuthController
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<UserDto> registerUser(@ModelAttribute UserInputDto userDto)
+    public ResponseEntity<UserDto> registerUser(@RequestBody UserInputDto userDto)
     {
         return new ResponseEntity<>(
                 userService.createUser(userDto),
                 HttpStatus.CREATED
         );
+    }
+
+    @DeleteMapping("/user/delete/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id)
+    {
+        userService.deleteUser(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

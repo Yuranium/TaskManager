@@ -16,7 +16,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "user")
+@Table(name = "\"user\"")
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserEntity
@@ -71,6 +71,8 @@ public class UserEntity
 
     public void setAvatars(List<AvatarEntity> avatars)
     {
+        if (avatars == null)
+            return;
         for (AvatarEntity avatar : avatars)
             avatar.setUser(this);
         this.avatars = avatars;
@@ -78,7 +80,7 @@ public class UserEntity
 
     public void setRoles(Set<RoleEntity> roles)
     {
-        Set<UserEntity> users = new HashSet<>(List.of(this));
+        Set<UserEntity> users = new HashSet<>(Set.of(this));
         Set<RoleEntity> currentRoles = new HashSet<>();
         if (roles == null) return;
         for (RoleEntity role : roles)

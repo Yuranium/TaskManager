@@ -22,7 +22,7 @@ public class RoleEntity
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "roles")
+    @Column(name = "role_type")
     @Enumerated(value = EnumType.STRING)
     private RoleType role;
 

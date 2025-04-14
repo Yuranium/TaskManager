@@ -22,8 +22,6 @@ public record UserInfoDto(
 
         String lastName,
 
-        String password,
-
         String email,
 
         LocalDateTime dateRegistration,

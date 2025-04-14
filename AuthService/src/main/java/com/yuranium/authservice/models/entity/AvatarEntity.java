@@ -31,7 +31,7 @@ public class AvatarEntity
     private Long size;
 
     @Column(name = "binary_data", columnDefinition = "BYTEA")
-    private byte[] binaryData;
+    private byte[] binaryData = new byte[0];
 
     @Column(name = "date_added", columnDefinition = "DATE")
     private LocalDate dateAdded;

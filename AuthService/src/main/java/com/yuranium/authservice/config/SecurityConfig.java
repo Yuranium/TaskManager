@@ -1,7 +1,6 @@
 package com.yuranium.authservice.config;
 
-import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -15,15 +14,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
-
-import javax.crypto.SecretKey;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig
 {
-    @Value("${jwt.secret}")
-    private String jwtSecret;
+    private final JwtAuthFilter authFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder()
@@ -39,19 +37,14 @@ public class SecurityConfig
                         .requestMatchers("/auth/registration", "/auth/login")
                         .permitAll()
                         .requestMatchers("/auth/user/**")
-                        .hasRole("OWNER"))
+                        .authenticated())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(auth -> auth.authenticationEntryPoint(
                         new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
                 ))
+                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
-    }
-
-    @Bean
-    public SecretKey secretJwtKey()
-    {
-        return Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
 
     @Bean
