@@ -2,7 +2,6 @@ package com.yuranium.authservice.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,6 +12,7 @@ import javax.crypto.SecretKey;
 import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -40,6 +40,16 @@ public class JwtUtil
                 .expiration(expiredDate)
                 .signWith(secretKey)
                 .compact();
+    }
+
+    public String getUsername(String token)
+    {
+        return getAllClaims(token).getSubject();
+    }
+
+    public List<String> getRoles(String token)
+    {
+        return getAllClaims(token).get("roles", List.class);
     }
 
     public Claims getAllClaims(String token)

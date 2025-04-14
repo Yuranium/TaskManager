@@ -5,9 +5,13 @@ import com.yuranium.authservice.models.dto.UserInfoDto;
 import com.yuranium.authservice.models.dto.UserInputDto;
 import com.yuranium.authservice.models.dto.UserLoginDto;
 import com.yuranium.authservice.service.UserService;
+import com.yuranium.authservice.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,6 +20,21 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController
 {
     private final UserService userService;
+
+    private final AuthenticationManager authenticationManager;
+
+    private final JwtUtil jwtUtil;
+
+    @PostMapping("/login")
+    public ResponseEntity<?> createAuthToken(@RequestBody UserLoginDto userLogin)
+    {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                userLogin.email(), userLogin.password()
+        ));
+
+        UserDetails user = userService.loadUserByUsername(userLogin.email());
+        return new ResponseEntity<>(jwtUtil.generateToken(user), HttpStatus.OK);
+    }
 
     @GetMapping("/user/{id}")
     public ResponseEntity<UserInfoDto> getUser(@PathVariable Long id)
@@ -26,19 +45,12 @@ public class AuthController
         );
     }
 
-    @GetMapping("/registration")
+    @PostMapping("/registration")
     public ResponseEntity<UserDto> registerUser(@ModelAttribute UserInputDto userDto)
     {
         return new ResponseEntity<>(
+                userService.createUser(userDto),
                 HttpStatus.CREATED
-        );
-    }
-
-    @GetMapping("/login")
-    public ResponseEntity<UserDto> loginUser(@RequestBody UserLoginDto userDto)
-    {
-        return new ResponseEntity<>(
-                HttpStatus.OK
         );
     }
 }
