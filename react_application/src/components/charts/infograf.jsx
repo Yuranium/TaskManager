@@ -6,6 +6,7 @@ import axios from "axios";
 import LoadingData from "../info/loading-data/loading-data";
 import BarChart from "./bar-chart/bar-chart";
 import LineChart from "./line-chart/line-chart";
+import {useNavigate} from "react-router-dom";
 
 export default function Infograf()
 {
@@ -15,6 +16,7 @@ export default function Infograf()
     const [importance, setImportance] = useState([]);
     const [loading, setLoading] = useState(true);
     const didFetch = useRef(false);
+    const navigate = useNavigate();
 
     const backHost = process.env.REACT_APP_BACKEND_PROJECT_SERVICE_HOST;
     const backPort = process.env.REACT_APP_BACKEND_PORT;
@@ -45,7 +47,11 @@ export default function Infograf()
             setTasks(taskResponse.data);
             setStatuses(statusResponse.data);
             setImportance(importanceResponse.data)
-        } catch (err) {}
+        } catch (err) {
+            if (axios.isAxiosError(err))
+                navigate('/500')
+            else navigate('/404');
+        }
         finally {
             setLoading(false);
         }

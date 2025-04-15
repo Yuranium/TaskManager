@@ -4,13 +4,16 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from "react-router-dom";
 import Navbar from "./components/navbar/navbar";
+import {AuthProvider} from "./hooks/auth";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
-        <BrowserRouter>
-            <Navbar></Navbar>
-        </BrowserRouter>
+        <AuthProvider>
+            <BrowserRouter>
+                <Navbar></Navbar>
+            </BrowserRouter>
+        </AuthProvider>
     </React.StrictMode>
 );
 

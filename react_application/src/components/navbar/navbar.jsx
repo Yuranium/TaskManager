@@ -9,6 +9,9 @@ import ProjectPage from "../project-page/project-page";
 import ProjectShow from "../project-show/project-show";
 import TaskCard from "../task-card/task-card";
 import Infograf from "../charts/infograf";
+import LoginForm from "../login-form/login-form";
+import ProtectedRoute from "../protected-route";
+import Http500 from "../info/http-error/500";
 
 export default function Navbar()
 {
@@ -35,7 +38,7 @@ export default function Navbar()
                         </span></li>
                     <li>
                         <span className="link-wrap">
-                            <Link to='/createProject'>Создать проект</Link>
+                            <Link to='/create-project'>Создать проект</Link>
                         </span></li>
                     <li>
                         <span className="link-wrap">
@@ -50,13 +53,17 @@ export default function Navbar()
 
             <Routes>
                 <Route path="/" element={<Main/>}/>
-                <Route path="/account" element={<Account/>}/>
-                <Route path="/createProject" element={<NewProjectForm/>}/>
-                <Route path="/updateProject/:projectId" element={<NewProjectForm/>}/>
+                <Route path="/login" element={<LoginForm/>}/>
+                <Route path="/account" element={<ProtectedRoute><Account/></ProtectedRoute>}/>
+                <Route path="/create-project" element={<NewProjectForm/>}/>
+                <Route path="/update-project/:projectId" element={<NewProjectForm/>}/>
                 <Route path="/projects" element={<ProjectShow/>}/>
                 <Route path="/info" element={<Infograf/>}/>
                 <Route path="/projects/:projectId" element={<ProjectPage/>}/>
                 <Route path="/projects/:projectId/tasks/:taskId" element={<TaskCard/>}/>
+
+                <Route path="/500" element={<Http500/>}/>
+                <Route path="/404" element={<Http404/>}/>
                 <Route path="*" element={<Http404/>}/>
             </Routes>
         </>

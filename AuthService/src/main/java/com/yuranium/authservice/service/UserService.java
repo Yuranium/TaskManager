@@ -65,8 +65,16 @@ public class UserService implements UserDetailsService
         );
     }
 
-    public void updateUser(UserUpdateDto userDto) // todo корректно обновлять данные из dto в entity
+    public void updateUser(Long id, UserUpdateDto userDto) // todo корректно обновлять данные из dto в entity
     {
+        if (userRepository.findById(id).isEmpty())
+            throw new UserEntityNotFoundException(
+                    String.format(
+                            "The user with id=%d cannot be updated because it does not exist",
+                            id
+                    )
+            );
+
         userRepository.save(
                 userMapper.toEntity(userDto)
         );

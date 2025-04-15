@@ -1,9 +1,6 @@
 package com.yuranium.authservice.controller;
 
-import com.yuranium.authservice.models.dto.UserDto;
-import com.yuranium.authservice.models.dto.UserInfoDto;
-import com.yuranium.authservice.models.dto.UserInputDto;
-import com.yuranium.authservice.models.dto.UserLoginDto;
+import com.yuranium.authservice.models.dto.*;
 import com.yuranium.authservice.service.UserService;
 import com.yuranium.authservice.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -42,10 +39,10 @@ public class AuthController
     public ResponseEntity<?> createAuthToken(@RequestBody UserLoginDto userLogin)
     {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                userLogin.email(), userLogin.password()
+                userLogin.username(), userLogin.password()
         ));
 
-        UserDetails user = userService.loadUserByUsername(userLogin.email());
+        UserDetails user = userService.loadUserByUsername(userLogin.username());
         return new ResponseEntity<>(
                 Map.of("token", jwtUtil.generateToken(user)),
                 HttpStatus.OK);
@@ -67,6 +64,14 @@ public class AuthController
                 userService.getUser(id),
                 HttpStatus.OK
         );
+    }
+
+    @PatchMapping("/user/update/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable Long id,
+                                        @RequestBody UserUpdateDto userDto)
+    {
+        userService.updateUser(id, userDto);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/user/delete/{id}")

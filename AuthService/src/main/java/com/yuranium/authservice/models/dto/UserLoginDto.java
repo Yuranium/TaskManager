@@ -11,7 +11,7 @@ import java.io.Serializable;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record UserLoginDto(
 
-        String email,
+        String username,
 
         String password
 

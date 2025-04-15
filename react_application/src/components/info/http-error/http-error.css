@@ -5,7 +5,7 @@ body {
     background-color: #f8f9fa;
 }
 
-.container404 {
+.http-error-container {
     display: flex;
     justify-content: center;
     align-items: center;

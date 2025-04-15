@@ -36,7 +36,9 @@ export default function ProjectShow() {
             if (response.data.length < PAGE_SIZE - 1)
                 setHasMore(false);
         } catch (err) {
-            navigate('/404');
+            if (axios.isAxiosError(err))
+                navigate('/500')
+            else navigate('/404');
         } finally {
             setLoading(false);
         }

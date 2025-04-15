@@ -1,10 +1,10 @@
-import './404.css'
+import './http-error.css'
 import {Link} from "react-router-dom";
 
 export default function Http404()
 {
     return (
-    <div className="container404">
+    <div className="http-error-container">
         <div className="error-container">
             <div className="error-code">404</div>
             <div className="error-message">Страница не найдена</div>
