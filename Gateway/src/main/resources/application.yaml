@@ -13,6 +13,7 @@ spring:
             - Path=/api/tasks/**
           filters:
             - StripPrefix=1
+            - name: AuthFilter
 
         - id: project-service
           uri: http://${PROJECT_HOST:localhost}:${PROJECT_PORT:8082}
@@ -20,6 +21,7 @@ spring:
             - Path=/api/projects/**
           filters:
             - StripPrefix=1
+            - name: AuthFilter
 
         - id: chat-service
           uri: http://${CHAT_HOST:localhost}:${CHAT_PORT:8083}
@@ -27,6 +29,7 @@ spring:
             - Path=/api/chat/**
           filters:
             - StripPrefix=1
+            - name: AuthFilter
 
         - id: auth-service
           uri: http://${AUTH_HOST:localhost}:${AUTH_PORT:8084}
@@ -34,6 +37,7 @@ spring:
             - Path=/api/auth/**
           filters:
             - StripPrefix=1
+            - name: AuthFilter
 
 management:
   endpoints:

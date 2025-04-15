@@ -32,8 +32,12 @@ public class ProjectController
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProjectDto> getProject(@PathVariable UUID id)
+    public ResponseEntity<?> getProject(
+            @PathVariable UUID id,
+            @RequestHeader(value = "X-Roles", required = false) String roles)
     {
+        if (roles == null || !roles.contains("ROLE_OWNER"))
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         return new ResponseEntity<>(
                 projectService.getProject(id), HttpStatus.OK
         );
