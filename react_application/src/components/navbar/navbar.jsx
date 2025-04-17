@@ -1,6 +1,6 @@
 import React from 'react';
 import './navbar.css'
-import {Link, Route, Routes} from "react-router-dom";
+import {Link, Route, Routes, useNavigate} from "react-router-dom";
 import Main from "../main/main";
 import Account from "../account/account";
 import NewProjectForm from "../project-form/new-project-form";
@@ -12,18 +12,28 @@ import Infograf from "../charts/infograf";
 import LoginForm from "../login-form/login-form";
 import ProtectedRoute from "../protected-route";
 import Http500 from "../info/http-error/500";
+import {useAuth} from "../../hooks/auth";
 
-export default function Navbar()
-{
+export default function Navbar() {
+    const {isAuthenticated, logout} = useAuth();
+    const navigate = useNavigate();
+    const handleLogout = () => {
+        // eslint-disable-next-line no-restricted-globals
+        if (confirm('Точно выйти?'))
+        {
+            logout();
+            navigate('/');
+        }
+    };
     return (
         <>
             <nav className="navigation-menu">
                 <div className="svg-main-avatar">
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M4 13H10V19H4V13Z" fill="currentColor" />
-                        <path d="M4 5H10V11H4V5Z" fill="currentColor" />
-                        <path d="M12 5H18V11H12V5Z" fill="currentColor" />
-                        <path d="M14 13H20V19H14V13Z" fill="currentColor" />
+                        <path d="M4 13H10V19H4V13Z" fill="currentColor"/>
+                        <path d="M4 5H10V11H4V5Z" fill="currentColor"/>
+                        <path d="M12 5H18V11H12V5Z" fill="currentColor"/>
+                        <path d="M14 13H20V19H14V13Z" fill="currentColor"/>
                     </svg>
                     <h2 className="h2-main-page">Task Manager</h2>
                 </div>
@@ -34,20 +44,37 @@ export default function Navbar()
                         </span></li>
                     <li>
                         <span className="link-wrap">
-                            <Link to='/account'>Аккаунт</Link>
+                            {isAuthenticated ? (
+                                <Link to="/account">
+                                    Мой профиль
+                                </Link>
+                            ) : (
+                                <Link to="/login">
+                                    Войти
+                                </Link>
+                            )}
                         </span></li>
-                    <li>
+                    {isAuthenticated && <li>
                         <span className="link-wrap">
                             <Link to='/create-project'>Создать проект</Link>
-                        </span></li>
-                    <li>
+                        </span></li>}
+                    {isAuthenticated && <li>
                         <span className="link-wrap">
                             <Link to='/projects'>Просмотр проектов</Link>
-                        </span></li>
-                    <li>
+                        </span></li>}
+                    {isAuthenticated && <li>
                         <span className="link-wrap">
                             <Link to='/info'>Инфографика</Link>
-                        </span></li>
+                        </span></li>}
+                    {isAuthenticated && (
+                        <li>
+                            <span className="link-wrap">
+                                <div className="logout-button" onClick={handleLogout}>
+                                    Выйти
+                                </div>
+                            </span>
+                        </li>
+                    )}
                 </ul>
             </nav>
 

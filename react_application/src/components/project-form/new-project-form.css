@@ -17,7 +17,7 @@ form {
     box-shadow: 4px 4px 8px 0 rgba(34, 60, 80, 0.2);
 }
 
-input[type=text], .new-project-textarea {
+input[type=text], input[type=password], .new-project-textarea {
     border-radius: 10px;
     transition: border-top-color 0.5s ease, border-bottom-color 0.5s ease,
     border-left-color 0.5s ease, border-right-color 0.5s ease;
@@ -29,7 +29,7 @@ input:focus, .new-project-textarea:focus {
     border-color: #4b9b7e;
 }
 
-input[type=text]:hover, .new-project-textarea:hover {
+input[type=text]:hover, input[type=password]:hover, .new-project-textarea:hover {
     border-color: #4b9b7e;
 }
 

@@ -1,0 +1,26 @@
+.login-form-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+#username, #password {
+    padding: .8em;
+    font-size: medium;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-form h2 {
+    text-align: center;
+}
+
+.login-form > div {
+    padding: 0 1em 1em 1em;
+}
+
+.form-error {
+    color: red;
+}

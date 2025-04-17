@@ -1,11 +1,14 @@
 import React, {useState} from 'react';
-import {useNavigate} from 'react-router-dom';
+import {Navigate, useLocation, useNavigate} from 'react-router-dom';
 import './new-project-form.css'
 import '../button/button.css'
 import axios from "axios";
 import Button from "../button/button";
+import {useAuth} from "../../hooks/auth";
 
 const NewProjectForm = () => {
+    const {isAuthenticated} = useAuth();
+    const location = useLocation();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         uploadProjectImage: null,
@@ -18,6 +21,15 @@ const NewProjectForm = () => {
         projectName: '',
         projectDescription: '',
     });
+
+    if (!isAuthenticated)
+        return (
+            <Navigate
+                to="/login"
+                state={{from: location}}
+                replace
+            />
+        );
 
     const handleChange = (e) => {
         const {name, value, files} = e.target;
@@ -98,7 +110,7 @@ const NewProjectForm = () => {
                 if (response.data && response.data.id)
                     navigate(`/projects/${response.data.id}`);
                 else navigate('/');
-            } finally {}
+            } catch (err) {}
         } else {
             console.log('Форма содержит ошибки');
         }
@@ -137,11 +149,11 @@ const NewProjectForm = () => {
                 <div className="input-wrap">
                     <label htmlFor="projectDescription">Описание проекта:</label>
                     <textarea className="new-project-textarea"
-                        placeholder="Описание проекта (опционально)"
-                        id="projectDescription"
-                        name="projectDescription"
-                        rows="10"
-                        onChange={handleChange}
+                              placeholder="Описание проекта (опционально)"
+                              id="projectDescription"
+                              name="projectDescription"
+                              rows="10"
+                              onChange={handleChange}
                     />
                     {errors.projectDescription && (
                         <span style={{color: 'red'}}>{errors.projectDescription}</span>

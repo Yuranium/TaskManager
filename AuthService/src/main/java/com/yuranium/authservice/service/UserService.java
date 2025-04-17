@@ -36,12 +36,12 @@ public class UserService implements UserDetailsService
     private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
-    public UserInfoDto getUser(Long id)
+    public UserInfoDto getUser(String username)
     {
         return userMapper.toInfoDto(
-                userRepository.findById(id)
+                userRepository.findByEmail(username)
                         .orElseThrow(() -> new UserEntityNotFoundException(
-                                String.format("The user with id=%d was not found!", id))
+                                String.format("The user with email=%s was not found!", username))
                         ));
     }
 

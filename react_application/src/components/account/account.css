@@ -7,7 +7,7 @@
     grid-row-gap: 5%;
 }
 
-.main-info {
+.account-main-info {
     grid-row: 2;
     grid-column: 1;
 }
@@ -27,11 +27,12 @@
     grid-row: 2;
 }
 
-.main-info p, .tasks p {
+.account-main-info p, .tasks p {
     font-weight: 500;
     transition: color .5s ease;
+    font-size: large;
 }
 
-.main-info p:hover, .tasks p:hover {
+.account-main-info p:hover, .tasks p:hover {
     color: #4b9b7e;
 }

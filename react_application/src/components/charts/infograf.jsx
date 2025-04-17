@@ -77,13 +77,13 @@ export default function Infograf()
     const barImportanceData = importance.map(importance =>
         tasks.filter(task => task.taskImportance === importance).length);
 
+    const sortedDates = tasks
+        .map(task => task.dateAdded)
+        .sort((a, b) => new Date(a) - new Date(b));
     const dates = {}
-    tasks.forEach(task => dates[task.dateAdded] = 0)
+    sortedDates.forEach(date => dates[date] = 0)
 
-    tasks.forEach(task => {
-        const date = task.dateAdded;
-        dates[date] = (dates[date] || 0) + 1;
-    });
+    sortedDates.forEach(date => dates[date] = (dates[date] || 0) + 1);
 
 
     return (
