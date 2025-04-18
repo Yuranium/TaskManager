@@ -49,7 +49,7 @@ public class AuthController
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<UserDto> registerUser(@RequestBody UserInputDto userDto)
+    public ResponseEntity<UserDto> registerUser(@ModelAttribute UserInputDto userDto)
     {
         return new ResponseEntity<>(
                 userService.createUser(userDto),

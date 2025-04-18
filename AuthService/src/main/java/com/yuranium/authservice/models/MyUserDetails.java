@@ -39,4 +39,9 @@ public class MyUserDetails implements UserDetails
     {
         return user.getActivity();
     }
+
+    public Long getId()
+    {
+        return user.getId();
+    }
 }

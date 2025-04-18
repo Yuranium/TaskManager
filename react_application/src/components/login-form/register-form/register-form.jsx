@@ -1,12 +1,16 @@
 import './register-form.css'
 import '../login-form.css'
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import Button from "../../button/button";
 import {useRef, useState} from "react";
 import {FaTrashCan} from "react-icons/fa6";
 import {FaEyeSlash, FaRegEye} from "react-icons/fa";
+import axios, {HttpStatusCode} from "axios";
+import {useAuth} from "../../../hooks/auth";
 
 export default function RegisterForm() {
+    const { login } = useAuth();
+    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [formData, setFormData] = useState({
@@ -73,8 +77,18 @@ export default function RegisterForm() {
             payload.append('email', formData.email);
             payload.append('avatars', formData.avatars);
 
-            // const response = await axios.post(`http://${backHost}:${backPort}/api/auth/registration`, payload,
-            // { headers: {'Content-Type':'multipart/form-data'} });
+            const response =
+                await axios.post(`http://${backHost}:${backPort}/api/auth/registration`, payload,
+            { headers: {'Content-Type':'multipart/form-data'} });
+
+            if (response.status === HttpStatusCode.Created)
+            {
+                await login({
+                    username: formData.email,
+                    password: formData.password
+                });
+                navigate('/')
+            }
         } catch (err) {
             console.error(err);
             setErrors({submit: 'Ошибка при регистрации'});
@@ -98,7 +112,7 @@ export default function RegisterForm() {
                         type="text"
                         id="username"
                         name="username"
-                        placeholder="username"
+                        placeholder="Ваш юзернейм"
                         value={formData.username}
                         onChange={handleChange}
                         required
@@ -112,7 +126,7 @@ export default function RegisterForm() {
                         type="text"
                         id="name"
                         name="name"
-                        placeholder="name"
+                        placeholder="Ваше имя (опционально)"
                         value={formData.name}
                         onChange={handleChange}
                     />
@@ -125,7 +139,7 @@ export default function RegisterForm() {
                         type="text"
                         id="lastName"
                         name="lastName"
-                        placeholder="lastName"
+                        placeholder="Ваша фамилия (опционально)"
                         value={formData.lastName}
                         onChange={handleChange}
                     />
@@ -135,36 +149,40 @@ export default function RegisterForm() {
                 <div className="password-inputs">
                     <div className="password-inputs-1">
                         <label htmlFor="password">Пароль:</label>
-                        <input
-                            type={showPassword ? "text" : "password"}
-                            id="password"
-                            name="password"
-                            placeholder="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                        />
-                        <Button
-                            onClickFunction={() => setShowPassword(prev=> !prev)}>
-                            {showPassword ? <FaEyeSlash/> : <FaRegEye/>}
-                        </Button>
+                        <div className="password-inner-wrapper">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                id="password"
+                                name="password"
+                                placeholder="Ваш пароль"
+                                value={formData.password}
+                                onChange={handleChange}
+                                required
+                            />
+                            <Button
+                                onClickFunction={() => setShowPassword(prev=> !prev)}>
+                                {showPassword ? <FaEyeSlash/> : <FaRegEye/>}
+                            </Button>
+                        </div>
                         {errors.password && <div className="field-error">{errors.password}</div>}
                     </div>
                     <div className="password-inputs-1">
                         <label htmlFor="confirm-password">Повтор пароля:</label>
-                        <input
-                            type={showConfirmPassword ? "text" : "password"}
-                            id="confirm-password"
-                            name="confirmPassword"
-                            placeholder="confirm password"
-                            value={formData.confirmPassword}
-                            onChange={handleChange}
-                            required
-                        />
-                        <Button
-                            onClickFunction={() => setShowConfirmPassword(prev => !prev)}>
-                            {showConfirmPassword ? <FaEyeSlash/> : <FaRegEye/>}
-                        </Button>
+                        <div className="password-inner-wrapper">
+                            <input
+                                type={showConfirmPassword ? "text" : "password"}
+                                id="confirm-password"
+                                name="confirmPassword"
+                                placeholder="Повторный пароль"
+                                value={formData.confirmPassword}
+                                onChange={handleChange}
+                                required
+                            />
+                            <Button
+                                onClickFunction={() => setShowConfirmPassword(prev => !prev)}>
+                                {showConfirmPassword ? <FaEyeSlash/> : <FaRegEye/>}
+                            </Button>
+                        </div>
                         {errors.confirmPassword && <div className="field-error">{errors.confirmPassword}</div>}
                     </div>
                 </div>
@@ -175,7 +193,7 @@ export default function RegisterForm() {
                         type="text"
                         id="email"
                         name="email"
-                        placeholder="email"
+                        placeholder="Ваша почта"
                         value={formData.email}
                         onChange={handleChange}
                         required

@@ -61,3 +61,16 @@ input[type=text], input[type=password] {
 .field-error {
     color: red;
 }
+
+.password-inner-wrapper {
+    display: flex;
+}
+
+.password-inner-wrapper > button {
+    padding: 1px 3px;
+    margin: 13px 0 13px 1px;
+}
+
+#password, #confirm-password {
+    flex-grow: 1;
+}

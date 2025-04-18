@@ -58,11 +58,18 @@ export default function Navbar() {
                             </ul>
                         </li>
                     ) : (
-                        <li>
-                          <span className="link-wrap">
-                            <Link to="/login">Войти</Link>
-                          </span>
-                        </li>
+                        <>
+                            <li>
+                                <span className="link-wrap">
+                                    <Link to="/login">Войти</Link>
+                                </span>
+                            </li>
+                            <li>
+                                <span className="link-wrap">
+                                    <Link to="/register">Зарегистрироваться</Link>
+                                </span>
+                            </li>
+                        </>
                     )}
 
                     {isAuthenticated && (

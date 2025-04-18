@@ -63,7 +63,10 @@ export default function Account() {
     return (
         <div className="main">
             <div className="avatar">
-                {/*<img className="avatar-link" src={avatar.data} alt={avatar.name}/>*/}
+                <img className="avatar-link"
+                     src={userData.avatars.length !== 0 ? `data:${userData.avatars[0].contentType};base64,${userData.avatars[0].binaryData}`
+                         : "default-avatar.png"}
+                     alt="avatar image"/>
             </div>
             <div className="account-main-info">
                 <p><span><strong>Юзернейм:</strong> {userData.username}</span></p>
