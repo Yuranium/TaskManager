@@ -13,14 +13,14 @@ import LoginForm from "../login-form/login-form";
 import ProtectedRoute from "../protected-route";
 import Http500 from "../info/http-error/500";
 import {useAuth} from "../../hooks/auth";
+import RegisterForm from "../login-form/register-form/register-form";
 
 export default function Navbar() {
     const {isAuthenticated, logout} = useAuth();
     const navigate = useNavigate();
     const handleLogout = () => {
         // eslint-disable-next-line no-restricted-globals
-        if (confirm('Точно выйти?'))
-        {
+        if (confirm('Точно выйти?')) {
             logout();
             navigate('/');
         }
@@ -40,47 +40,58 @@ export default function Navbar() {
                 <ul className="navbar">
                     <li>
                         <span className="link-wrap">
-                            <Link to='/'>Главная</Link>
-                        </span></li>
-                    <li>
-                        <span className="link-wrap">
-                            {isAuthenticated ? (
-                                <Link to="/account">
-                                    Мой профиль
-                                </Link>
-                            ) : (
-                                <Link to="/login">
-                                    Войти
-                                </Link>
-                            )}
-                        </span></li>
-                    {isAuthenticated && <li>
-                        <span className="link-wrap">
-                            <Link to='/create-project'>Создать проект</Link>
-                        </span></li>}
-                    {isAuthenticated && <li>
-                        <span className="link-wrap">
-                            <Link to='/projects'>Просмотр проектов</Link>
-                        </span></li>}
-                    {isAuthenticated && <li>
-                        <span className="link-wrap">
-                            <Link to='/info'>Инфографика</Link>
-                        </span></li>}
-                    {isAuthenticated && (
+                          <Link to="/">Главная</Link>
+                        </span>
+                    </li>
+
+                    {isAuthenticated ? (
+                        <li className="dropdown">
+                          <span className="link-wrap">
+                            <Link to="/account">Аккаунт</Link>
+                          </span>
+                            <ul className="dropdown-menu">
+                                <li>
+                                    <div className="logout-button" onClick={handleLogout}>
+                                        Выйти
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    ) : (
                         <li>
-                            <span className="link-wrap">
-                                <div className="logout-button" onClick={handleLogout}>
-                                    Выйти
-                                </div>
-                            </span>
+                          <span className="link-wrap">
+                            <Link to="/login">Войти</Link>
+                          </span>
                         </li>
                     )}
+
+                    {isAuthenticated && (
+                        <>
+                            <li>
+                                <span className="link-wrap">
+                                  <Link to="/create-project">Создать проект</Link>
+                                </span>
+                            </li>
+                            <li>
+                                <span className="link-wrap">
+                                  <Link to="/projects">Просмотр проектов</Link>
+                                </span>
+                            </li>
+                            <li>
+                                <span className="link-wrap">
+                                  <Link to="/info">Инфографика</Link>
+                                </span>
+                            </li>
+                        </>
+                    )}
                 </ul>
+
             </nav>
 
             <Routes>
                 <Route path="/" element={<Main/>}/>
                 <Route path="/login" element={<LoginForm/>}/>
+                <Route path="/register" element={<RegisterForm/>}/>
                 <Route path="/account" element={<ProtectedRoute><Account/></ProtectedRoute>}/>
                 <Route path="/create-project" element={<NewProjectForm/>}/>
                 <Route path="/update-project/:projectId" element={<NewProjectForm/>}/>

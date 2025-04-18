@@ -1,4 +1,4 @@
-import {useLocation, useNavigate} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import {useState} from "react";
 import {useAuth} from "../../hooks/auth";
 import './login-form.css'
@@ -57,11 +57,16 @@ export default function LoginForm()
                         type="password"
                         id="password"
                         name="password"
-                        placeholder="password123"
+                        placeholder="password"
                         value={formData.password}
                         onChange={handleChange}
                         required
                     />
+                </div>
+
+                <div className="register-container">
+                    Нет аккаунта?
+                    <Link to="/register"> Зарегистрируйся!</Link>
                 </div>
                 {error && <div className="form-error">{error}</div>}
                 <Button type="submit" disabled={loading}>

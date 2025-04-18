@@ -24,3 +24,12 @@
 .form-error {
     color: red;
 }
+
+.register-container a {
+    text-decoration: none;
+    transition: color 0.5s ease;
+}
+
+.register-container a:hover {
+    color: #80d0b2;
+}
