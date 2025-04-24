@@ -14,6 +14,7 @@ import ProtectedRoute from "../protected-route";
 import Http500 from "../info/http-error/500";
 import {useAuth} from "../../hooks/auth";
 import RegisterForm from "../login-form/register-form/register-form";
+import OAuth2RedirectHandler from "../login-form/oauth2-redirect-handler";
 
 export default function Navbar() {
     const {isAuthenticated, logout} = useAuth();
@@ -106,6 +107,7 @@ export default function Navbar() {
                 <Route path="/info" element={<Infograf/>}/>
                 <Route path="/projects/:projectId" element={<ProjectPage/>}/>
                 <Route path="/projects/:projectId/tasks/:taskId" element={<TaskCard/>}/>
+                <Route path="/login/oauth2/code/yandex" element={<OAuth2RedirectHandler/>}/>
 
                 <Route path="/500" element={<Http500/>}/>
                 <Route path="/404" element={<Http404/>}/>

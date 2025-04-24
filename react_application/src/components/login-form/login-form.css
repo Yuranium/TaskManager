@@ -3,6 +3,29 @@
     justify-content: center;
 }
 
+.password-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+#password {
+    width: 100%;
+    padding-right: 2.5rem;
+    box-sizing: border-box;
+}
+
+.password-toggle-icon {
+    position: absolute;
+    display: flex;
+    top: 56%;
+    right: 2rem;
+    line-height: 1;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: rgba(0,0,0,0.6);
+    font-size: 1.2rem;
+}
+
 #username, #password {
     padding: .8em;
     font-size: medium;

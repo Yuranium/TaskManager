@@ -1,5 +1,6 @@
 package com.yuranium.authservice.config;
 
+import com.yuranium.authservice.service.Oauth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,8 @@ public class SecurityConfig
 {
     private final JwtAuthFilter authFilter;
 
+    private final Oauth2UserService oauth2UserService;
+
     @Bean
     public PasswordEncoder passwordEncoder()
     {
@@ -40,6 +43,7 @@ public class SecurityConfig
                 .oauth2Login(auth -> auth
                         .redirectionEndpoint(r -> r
                                 .baseUri("/login/oauth2/code/*"))
+                        .successHandler(oauth2UserService::oauth2SuccessHandler)
                         .failureHandler(new SimpleUrlAuthenticationFailureHandler()))
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -4,6 +4,7 @@ import {useAuth} from "../../hooks/auth";
 import './login-form.css'
 import Button from "../button/button";
 import Oauth2Icon from "./oauth2-icon";
+import {FaEyeSlash, FaRegEye} from "react-icons/fa";
 
 export default function LoginForm()
 {
@@ -13,6 +14,7 @@ export default function LoginForm()
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const location = useLocation();
+    const [showPassword, setShowPassword] = useState(false);
 
     const from = location.state?.from?.pathname || '/404';
 
@@ -52,10 +54,10 @@ export default function LoginForm()
                         required
                     />
                 </div>
-                <div className="form-group">
+                <div className="form-group password-wrapper">
                     <label htmlFor="password">Пароль:</label>
                     <input
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         id="password"
                         name="password"
                         placeholder="password"
@@ -63,6 +65,11 @@ export default function LoginForm()
                         onChange={handleChange}
                         required
                     />
+                    <span
+                        className="password-toggle-icon"
+                        onClick={() => setShowPassword(s => !s)}>
+                        {showPassword ? <FaEyeSlash/> : <FaRegEye/>}
+                    </span>
                 </div>
 
                 <Oauth2Icon/>
