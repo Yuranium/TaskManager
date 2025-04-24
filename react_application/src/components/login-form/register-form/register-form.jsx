@@ -7,6 +7,7 @@ import {FaTrashCan} from "react-icons/fa6";
 import {FaEyeSlash, FaRegEye} from "react-icons/fa";
 import axios, {HttpStatusCode} from "axios";
 import {useAuth} from "../../../hooks/auth";
+import Oauth2Icon from "../oauth2-icon";
 
 export default function RegisterForm() {
     const { login } = useAuth();
@@ -220,6 +221,7 @@ export default function RegisterForm() {
                     </div>
                 </div>
 
+                <Oauth2Icon/>
                 <div className="register-container">
                     Есть аккаунт?
                     <Link to="/login"> Войти</Link>

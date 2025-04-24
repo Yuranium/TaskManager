@@ -3,6 +3,7 @@ import {useState} from "react";
 import {useAuth} from "../../hooks/auth";
 import './login-form.css'
 import Button from "../button/button";
+import Oauth2Icon from "./oauth2-icon";
 
 export default function LoginForm()
 {
@@ -64,6 +65,7 @@ export default function LoginForm()
                     />
                 </div>
 
+                <Oauth2Icon/>
                 <div className="register-container">
                     Нет аккаунта?
                     <Link to="/register"> Зарегистрируйся!</Link>
