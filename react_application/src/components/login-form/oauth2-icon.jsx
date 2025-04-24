@@ -1,5 +1,4 @@
 import './oauth2-icon.css'
-import axios from "axios";
 
 export default function Oauth2Icon() {
     const serviceNames = process.env.REACT_APP_OAUTH2_SERVICES_NAME_LIST?.split(',') || [];
@@ -15,8 +14,8 @@ export default function Oauth2Icon() {
         uri: serviceUri[index] || ''
     }));
 
-    const handleClickOauth = (e) => {
-        axios.post(`http://${backHost}:${backPort}/auth/login/oauth2/code/`)
+    const handleClickOauth = (provider) => {
+        window.location.href = `http://${backHost}:${backPort}/api/oauth2/authorization/${provider}`;
     }
 
     return (
@@ -24,7 +23,11 @@ export default function Oauth2Icon() {
             <div className="sign-in-with">Войти с помощью:</div>
             <div className="oauth2-service-container">
                 {services.map(service => (
-                    <div key={service.name} className="oauth2-item" role="button" onClick={handleClickOauth}>
+                    <div
+                        key={service.name}
+                        className="oauth2-item"
+                        role="button"
+                        onClick={() => handleClickOauth(service.name.toLowerCase())}>
                         <img src={service.icon} alt={service.name} className="oauth2-service-image" />
                         <div className="service-name">{service.name}</div>
                     </div>

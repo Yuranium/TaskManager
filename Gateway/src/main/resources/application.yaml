@@ -1,6 +1,12 @@
 server:
   port: ${GATEWAY_PORT:8080}
 
+routes:
+  open-endpoints:
+    - /auth/login
+    - /auth/registration
+    - /oauth2/authorization
+
 spring:
   application:
     name: api-gateway
@@ -34,7 +40,7 @@ spring:
         - id: auth-service
           uri: http://${AUTH_HOST:localhost}:${AUTH_PORT:8084}
           predicates:
-            - Path=/api/auth/**
+            - Path=/api/auth/**, /api/oauth2/**
           filters:
             - StripPrefix=1
             - name: AuthFilter

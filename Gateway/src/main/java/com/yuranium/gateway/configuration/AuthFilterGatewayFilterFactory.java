@@ -15,21 +15,21 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 @Component
 public class AuthFilterGatewayFilterFactory extends AbstractGatewayFilterFactory<AuthFilterGatewayFilterFactory.Config>
 {
     private static final String BEARER = "Bearer ";
 
-    private static final List<String> openApiEndpoints = List.of("/auth/login", "/auth/registration");
+    private final RouteProperties routeProperties;
 
     private final WebClient authWebClient;
 
-    public AuthFilterGatewayFilterFactory(WebClient webClientBuilder)
+    public AuthFilterGatewayFilterFactory(WebClient webClientBuilder, RouteProperties routeProperties)
     {
         super(Config.class);
         this.authWebClient = webClientBuilder;
+        this.routeProperties = routeProperties;
     }
 
     @Override
@@ -38,7 +38,7 @@ public class AuthFilterGatewayFilterFactory extends AbstractGatewayFilterFactory
         return (exchange, chain) -> {
             String requestPath = exchange.getRequest().getPath().toString();
 
-            if (openApiEndpoints.stream().anyMatch(requestPath::startsWith))
+            if (routeProperties.getOpenEndpoints().stream().anyMatch(requestPath::startsWith))
                 return chain.filter(exchange);
 
             String authHeader = exchange.getRequest()
