@@ -13,7 +13,7 @@ export default function OAuth2RedirectHandler() {
 
         if (token) {
             localStorage.setItem("jwtToken", token);
-            navigate("/");
+            window.location.href = "/";
         } else if (error) {
             navigate("/login");
         }

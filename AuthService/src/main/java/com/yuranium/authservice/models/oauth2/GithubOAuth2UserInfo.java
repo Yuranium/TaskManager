@@ -1,7 +1,5 @@
 package com.yuranium.authservice.models.oauth2;
 
-import com.yuranium.authservice.models.entity.AvatarEntity;
-
 import java.util.Map;
 
 public class GithubOAuth2UserInfo extends OAuth2UserInfo
@@ -37,11 +35,5 @@ public class GithubOAuth2UserInfo extends OAuth2UserInfo
     public String getUsername()
     {
         return (String) attributes.get("login");
-    }
-
-    @Override
-    public AvatarEntity getAvatar()
-    {
-        return null;
     }
 }

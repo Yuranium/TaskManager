@@ -6,6 +6,7 @@ routes:
     - /auth/login
     - /auth/registration
     - /oauth2/authorization
+    - /login/oauth2/code
 
 spring:
   application:
@@ -40,7 +41,7 @@ spring:
         - id: auth-service
           uri: http://${AUTH_HOST:localhost}:${AUTH_PORT:8084}
           predicates:
-            - Path=/api/auth/**, /api/oauth2/**
+            - Path=/api/auth/**, /api/oauth2/**, /api/login/oauth2/code/**
           filters:
             - StripPrefix=1
             - name: AuthFilter

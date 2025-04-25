@@ -1,7 +1,5 @@
 package com.yuranium.authservice.models.oauth2;
 
-import com.yuranium.authservice.models.entity.AvatarEntity;
-
 import java.util.Map;
 
 public class YandexOAuth2UserInfo extends OAuth2UserInfo
@@ -33,11 +31,5 @@ public class YandexOAuth2UserInfo extends OAuth2UserInfo
     public String getEmail()
     {
         return (String) attributes.get("default_email");
-    }
-
-    @Override
-    public AvatarEntity getAvatar()
-    {
-        return null;
     }
 }

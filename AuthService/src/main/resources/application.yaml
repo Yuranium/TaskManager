@@ -9,6 +9,9 @@ jwt:
   secret: ${JWT_SECRET}
   lifetime: ${JWT_LIFETIME:7d}
 
+oauth2:
+  redirect-url: ${OAUTH2_REDIRECT_URL:http://localhost:3000/login/oauth2/code/}
+
 spring:
   application:
     name: auth-service
@@ -37,15 +40,17 @@ spring:
           github:
             client-id: ${GITHUB_CLIENT_ID}
             client-secret: ${GITHUB_CLIENT_SECRET}
+            redirect-uri: http://${GATEWAY_HOST:localhost}:${GATEWAY_PORT:8080}/api/login/oauth2/code/github
           google:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
+            redirect-uri: http://${GATEWAY_HOST:localhost}:${GATEWAY_PORT:8080}/api/login/oauth2/code/google
           yandex:
             client-id: ${YANDEX_CLIENT_ID}
             client-secret: ${YANDEX_CLIENT_SECRET}
-            client-authentication-method: post
+            client-authentication-method: client_secret_post
             authorization-grant-type: authorization_code
-            redirect-uri: http://${REACT_HOST:localhost}:${REACT_PORT:3000}/login/oauth2/code/yandex
+            redirect-uri: http://${GATEWAY_HOST:localhost}:${GATEWAY_PORT:8080}/api/login/oauth2/code/yandex
             scope: login:email, login:info
         provider:
           yandex:

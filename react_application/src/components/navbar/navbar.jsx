@@ -107,7 +107,7 @@ export default function Navbar() {
                 <Route path="/info" element={<Infograf/>}/>
                 <Route path="/projects/:projectId" element={<ProjectPage/>}/>
                 <Route path="/projects/:projectId/tasks/:taskId" element={<TaskCard/>}/>
-                <Route path="/login/oauth2/code/yandex" element={<OAuth2RedirectHandler/>}/>
+                <Route path="/login/oauth2/code/:provider" element={<OAuth2RedirectHandler/>}/>
 
                 <Route path="/500" element={<Http500/>}/>
                 <Route path="/404" element={<Http404/>}/>
