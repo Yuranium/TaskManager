@@ -40,6 +40,9 @@ public class ProjectEntity
     @OneToMany(mappedBy = "project")
     private List<AvatarEntity> avatars = new ArrayList<>();
 
+    @Column(name = "id_user")
+    private Long userId;
+
     @PrePersist
     private void prePersist()
     {

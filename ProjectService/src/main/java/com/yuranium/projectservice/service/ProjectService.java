@@ -88,4 +88,16 @@ public class ProjectService
                 )
         );
     }
+
+    @Transactional
+    public void deleteAllProject(Long userId)
+    {
+        projectRepository.deleteAllByUserId(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProjectEntity> getAllByUserId(Long id)
+    {
+        return projectRepository.findAllByUserId(id);
+    }
 }

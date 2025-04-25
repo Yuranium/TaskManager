@@ -1,6 +1,6 @@
-package com.yuranium.taskservice.repository;
+package com.yuranium.projectservice.repository;
 
-import com.yuranium.taskservice.entity.ProcessedEventEntity;
+import com.yuranium.projectservice.entity.ProcessedEventEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

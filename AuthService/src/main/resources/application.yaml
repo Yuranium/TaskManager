@@ -1,9 +1,9 @@
 server:
   port: ${AUTH_PORT:8084}
 
-#kafka:
-#  topic-names:
-#    project-delete: project-deleted-events-topic
+kafka:
+  topic-names:
+    user-delete: user-deleted-events-topic
 
 jwt:
   secret: ${JWT_SECRET}

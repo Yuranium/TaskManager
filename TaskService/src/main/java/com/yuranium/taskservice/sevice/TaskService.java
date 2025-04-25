@@ -121,6 +121,12 @@ public class TaskService
         taskRepository.deleteAllByProjectId(id);
     }
 
+    @Transactional
+    public void deleteAllTask(List<UUID> uuids)
+    {
+        taskRepository.deleteAllByProjectIds(uuids);
+    }
+
     @Transactional(readOnly = true)
     public List<TaskChartDto> getAllByProjectIds(List<UUID> uuids)
     {

@@ -1,4 +1,4 @@
-package com.yuranium.projectservice.config;
+package com.yuranium.authservice.config;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,16 +9,8 @@ import org.springframework.context.annotation.Configuration;
 public class KafkaConfig
 {
     @Bean
-    public NewTopic projectDeleteTopic(
-            @Value("${kafka.topic-names.project-delete}")
-            String topicName)
-    {
-        return new NewTopic(topicName, 2, (short) 2);
-    }
-
-    @Bean
-    public NewTopic projectsDeleteTopic(
-            @Value("${kafka.topic-names.projects-delete}")
+    public NewTopic newTopic(
+            @Value("${kafka.topic-names.user-delete}")
             String topicName)
     {
         return new NewTopic(topicName, 2, (short) 2);

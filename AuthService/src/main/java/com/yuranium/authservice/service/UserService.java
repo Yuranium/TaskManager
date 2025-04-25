@@ -8,6 +8,7 @@ import com.yuranium.authservice.models.dto.UserInputDto;
 import com.yuranium.authservice.models.dto.UserUpdateDto;
 import com.yuranium.authservice.models.entity.UserEntity;
 import com.yuranium.authservice.repository.UserRepository;
+import com.yuranium.authservice.service.kafka.KafkaProducer;
 import com.yuranium.authservice.util.exception.UserEntityAlreadyExistsException;
 import com.yuranium.authservice.util.exception.UserEntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,8 @@ public class UserService implements UserDetailsService
     private final UserMapper userMapper;
 
     private final PasswordEncoder passwordEncoder;
+
+    private final KafkaProducer kafkaProducer;
 
     @Transactional(readOnly = true)
     public UserInfoDto getUser(String username)
@@ -85,6 +88,7 @@ public class UserService implements UserDetailsService
     {
         if (userRepository.findById(id).isPresent())
         {
+            kafkaProducer.sendDeleteUserEvent(id);
             userRepository.deleteById(id);
         }
         else throw new UserEntityNotFoundException(

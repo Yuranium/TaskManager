@@ -11,6 +11,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -34,5 +35,20 @@ public class ProjectDeleteEventHandler
         processedRepository.save(
                 new ProcessedEventEntity(UUID.fromString(messageId),
                         (UUID) project));
+    }
+
+    @Transactional
+    @KafkaListener(topics = "projects-deleted-events-topic", groupId = "project-delete")
+    public void deleteProjects(@Payload ConsumerRecord<String, Object> projectsId,
+                              @Header("messageId") String messageId)
+    {
+        if (processedRepository.findByMessageId(UUID.fromString(messageId)).isPresent())
+            return;
+
+        final var project = projectsId.value();
+        taskService.deleteAllTask((List<UUID>) project);
+        processedRepository.save(
+                new ProcessedEventEntity(UUID.fromString(messageId),
+                        ((List<UUID>) project).get(0)));
     }
 }
