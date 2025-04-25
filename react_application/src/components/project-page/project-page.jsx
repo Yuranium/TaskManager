@@ -4,7 +4,7 @@ import axios from "axios";
 import './project-page.css';
 import TaskCard from "../task-card/task-card";
 import Http404 from "../info/http-error/404";
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import ModalWindow from "../modal-window/modal-window";
 import Autosuggest from "react-autosuggest";
 
@@ -131,7 +131,8 @@ export default function ProjectPage() {
             didFetch.current = true;
             fetchTasks();
         }
-    }, []);
+        didFetch.current = false;
+    }, [projectId]);
 
     const handleStatusChange = (e) => setStatusFilter(e.target.value);
 
@@ -171,7 +172,7 @@ export default function ProjectPage() {
                         .filter(p => p.id !== projectId)
                         .map(p => (
                             <li key={p.id}>
-                                <a href={`/projects/${p.id}`}>{p.name}</a>
+                                <Link to={`/projects/${p.id}`}>{p.name}</Link>
                             </li>
                         ))}
                 </ul>

@@ -36,7 +36,7 @@ public class ProjectController
             @PathVariable UUID id,
             @RequestHeader(value = "X-Roles", required = false) String roles)
     {
-        if (roles == null || !roles.contains("ROLE_OWNER"))
+        if (roles == null || !roles.contains("ROLE_USER"))
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         return new ResponseEntity<>(
                 projectService.getProject(id), HttpStatus.OK
