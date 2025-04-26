@@ -8,6 +8,7 @@ import {FaEyeSlash, FaRegEye} from "react-icons/fa";
 import axios, {HttpStatusCode} from "axios";
 import {useAuth} from "../../../hooks/auth";
 import Oauth2Icon from "../oauth2-icon";
+import LoadingData from "../../info/loading-data/loading-data";
 
 export default function RegisterForm() {
     const { login } = useAuth();
@@ -148,7 +149,7 @@ export default function RegisterForm() {
                 </div>
 
                 <div className="password-inputs">
-                    <div className="password-inputs-1">
+                    <div className="password-inputs-1 password-wrapper">
                         <label htmlFor="password">Пароль:</label>
                         <div className="password-inner-wrapper">
                             <input
@@ -160,14 +161,15 @@ export default function RegisterForm() {
                                 onChange={handleChange}
                                 required
                             />
-                            <Button
-                                onClickFunction={() => setShowPassword(prev=> !prev)}>
+                            <span
+                                className="registration-password-toggle-icon"
+                                onClick={() => setShowPassword(s => !s)}>
                                 {showPassword ? <FaEyeSlash/> : <FaRegEye/>}
-                            </Button>
+                            </span>
                         </div>
                         {errors.password && <div className="field-error">{errors.password}</div>}
                     </div>
-                    <div className="password-inputs-1">
+                    <div className="password-inputs-1 password-confirm-wrapper">
                         <label htmlFor="confirm-password">Повтор пароля:</label>
                         <div className="password-inner-wrapper">
                             <input
@@ -179,10 +181,11 @@ export default function RegisterForm() {
                                 onChange={handleChange}
                                 required
                             />
-                            <Button
-                                onClickFunction={() => setShowConfirmPassword(prev => !prev)}>
+                            <span
+                                className="registration-password-toggle-icon"
+                                onClick={() => setShowConfirmPassword(s => !s)}>
                                 {showConfirmPassword ? <FaEyeSlash/> : <FaRegEye/>}
-                            </Button>
+                            </span>
                         </div>
                         {errors.confirmPassword && <div className="field-error">{errors.confirmPassword}</div>}
                     </div>
@@ -230,7 +233,7 @@ export default function RegisterForm() {
                 {errors.submit && <div className="form-error">{errors.submit}</div>}
 
                 <Button type="submit" disabled={loading}>
-                    {loading ? 'Загрузка...' : 'Зарегистрироваться'}
+                    {loading ? <LoadingData defaultName="Загрузка" defaultFont/> : 'Зарегистрироваться'}
                 </Button>
             </form>
         </div>

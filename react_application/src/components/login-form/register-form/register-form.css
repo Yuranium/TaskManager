@@ -3,11 +3,6 @@
     justify-content: center;
 }
 
-input[type=text], input[type=password] {
-    padding: .8em;
-    font-size: medium;
-}
-
 .form-group {
     display: flex;
     flex-direction: column;
@@ -64,6 +59,8 @@ input[type=text], input[type=password] {
 
 .password-inner-wrapper {
     display: flex;
+    position: relative;
+    align-items: center;
 }
 
 .password-inner-wrapper > button {
@@ -71,6 +68,19 @@ input[type=text], input[type=password] {
     margin: 13px 0 13px 1px;
 }
 
-#password, #confirm-password {
-    flex-grow: 1;
+.password-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.registration-password-toggle-icon {
+    position: absolute;
+    display: flex;
+    line-height: 1;
+    cursor: pointer;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 1.2rem;
+    top: 50%;
+    right: 1rem;
+    transform: translateY(-50%);
 }

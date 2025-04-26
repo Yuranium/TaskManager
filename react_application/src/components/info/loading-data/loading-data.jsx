@@ -1,11 +1,12 @@
 import './loading-data.css'
 
-export default function LoadingData({loadingName})
+export default function LoadingData({loadingName, defaultName, defaultFont})
 {
     return (
-        <div className="loading-main">
+        <div className="loading-main"
+            style={defaultFont ? {fontSize: "unset"} : {fontSize: "large"}}>
             <span>
-            {`Загрузка ${loadingName || 'информации'}`}
+            {defaultName || `Загрузка ${loadingName || 'информации'}`}
                 <span className="dot">.</span>
                 <span className="dot">.</span>
                 <span className="dot">.</span>

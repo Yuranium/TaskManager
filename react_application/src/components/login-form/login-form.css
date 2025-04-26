@@ -8,10 +8,16 @@
     display: inline-block;
 }
 
-#password {
+input[type=text] {
+    padding: .8em;
+    font-size: medium;
+}
+
+input[type=password], #password, #confirm-password {
+    padding: .8em 40px .8em .8em;
     width: 100%;
-    padding-right: 2.5rem;
     box-sizing: border-box;
+    font-size: medium;
 }
 
 .password-toggle-icon {
@@ -24,11 +30,6 @@
     cursor: pointer;
     color: rgba(0,0,0,0.6);
     font-size: 1.2rem;
-}
-
-#username, #password {
-    padding: .8em;
-    font-size: medium;
 }
 
 .form-group {

@@ -103,7 +103,7 @@ export default function Navbar() {
                 <Route path="/account" element={<ProtectedRoute><Account/></ProtectedRoute>}/>
                 <Route path="/create-project" element={<NewProjectForm/>}/>
                 <Route path="/update-project/:projectId" element={<NewProjectForm/>}/>
-                <Route path="/projects" element={<ProjectShow/>}/>
+                <Route path="/projects" element={<ProtectedRoute><ProjectShow/></ProtectedRoute>}/>
                 <Route path="/info" element={<Infograf/>}/>
                 <Route path="/projects/:projectId" element={<ProjectPage/>}/>
                 <Route path="/projects/:projectId/tasks/:taskId" element={<TaskCard/>}/>

@@ -5,6 +5,7 @@ import './login-form.css'
 import Button from "../button/button";
 import Oauth2Icon from "./oauth2-icon";
 import {FaEyeSlash, FaRegEye} from "react-icons/fa";
+import LoadingData from "../info/loading-data/loading-data";
 
 export default function LoginForm()
 {
@@ -48,7 +49,7 @@ export default function LoginForm()
                         type="text"
                         id="username"
                         name="username"
-                        placeholder="username"
+                        placeholder="Ваша почта"
                         value={formData.username}
                         onChange={handleChange}
                         required
@@ -60,7 +61,7 @@ export default function LoginForm()
                         type={showPassword ? "text" : "password"}
                         id="password"
                         name="password"
-                        placeholder="password"
+                        placeholder="Ваш пароль"
                         value={formData.password}
                         onChange={handleChange}
                         required
@@ -71,15 +72,15 @@ export default function LoginForm()
                         {showPassword ? <FaEyeSlash/> : <FaRegEye/>}
                     </span>
                 </div>
+                {error && <div className="form-error">{error}</div>}
 
                 <Oauth2Icon/>
                 <div className="register-container">
                     Нет аккаунта?
                     <Link to="/register"> Зарегистрируйся!</Link>
                 </div>
-                {error && <div className="form-error">{error}</div>}
                 <Button type="submit" disabled={loading}>
-                    {loading ? 'Вход...' : 'Войти'}
+                    {loading ? <LoadingData defaultName="Вход" defaultFont/> : 'Войти'}
                 </Button>
             </form>
         </div>
