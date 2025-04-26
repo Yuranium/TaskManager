@@ -24,12 +24,12 @@
     display: block;
 }
 
-textarea {
+#taskDescription {
     width: 95%;
     font-size: larger;
 }
 
-textarea, #taskName {
+#taskDescription, #taskName {
     padding: 1em;
     width: 96%;
 }
