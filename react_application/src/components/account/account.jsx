@@ -1,6 +1,6 @@
 import './account.css'
 import {useAuth} from "../../hooks/auth";
-import {Navigate, useLocation, useNavigate} from "react-router-dom";
+import {Navigate, useLocation, useNavigate, useParams} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
 import axios from "axios";
 import LoadingData from "../info/loading-data/loading-data";
@@ -13,6 +13,7 @@ import {FaRegCircleUser} from "react-icons/fa6";
 import {FaAngleLeft, FaAngleRight} from "react-icons/fa";
 
 export default function Account() {
+    const {userId} = useParams();
     const {isAuthenticated, logout, user} = useAuth();
     const location = useLocation();
     const [userData, setUserData] = useState(null);
@@ -37,15 +38,16 @@ export default function Account() {
     const fetchData = async () => {
         if (!user) return;
         let mounted = true;
-        axios.get(`http://${backHost}:${backPort}/api/auth/user/${user.sub}`)
+        axios.get(`http://${backHost}:${backPort}/api/auth/user/${userId}`,
+            {headers: {'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`}})
             .then(res => {
                 if (mounted)
                     setUserData(res.data);
             })
             .catch(err => {
-                if (axios.isAxiosError(err))
-                    navigate('/500')
-                else navigate('/404');
+                if (err.status === 404)
+                    navigate('/404')
+                else navigate('/500');
             })
             .finally(() => {
                 if (mounted) setLoading(false);
@@ -53,7 +55,7 @@ export default function Account() {
 
         const projectResponse = await axios.get(
             `http://${backHost}:${backPort}/api/projects/allProjects`,
-            { params: { size: 100 } }
+            {params: {size: 100, userId}, headers: {'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`}}
         );
 
         await axios.get(
@@ -87,12 +89,12 @@ export default function Account() {
         return <LoadingData/>;
 
     if (!userData)
-        return <Navigate to="/500"/>;
+        return <Navigate to="/404"/>;
 
     const deleteAccount = () => {
         // eslint-disable-next-line no-restricted-globals
         if (confirm('Действительно удалить аккаунт?'))
-            axios.delete(`http://${backHost}:${backPort}/api/auth/user/delete/${user.sub}`)
+            axios.delete(`http://${backHost}:${backPort}/api/auth/user/delete/${userId}`)
     }
 
     return (
@@ -109,7 +111,7 @@ export default function Account() {
                             </div>}
                             <img className="avatar-link"
                                  src={userData.avatars.length !== 0 ? `data:${userData.avatars[0].contentType};base64,${userData.avatars[0].binaryData}`
-                                     : "default-avatar.png"}
+                                     : "/default-avatar.png"}
                                  alt="avatar image"/>
                             {userData.avatars.length !== 0 && <div className="account-next-image">
                                 <FaAngleRight/>
@@ -128,8 +130,8 @@ export default function Account() {
                             <span><TiClipboard/> <strong>Фамилия:</strong> {userData.lastName}</span></div>
                     </div>
                     <div className="account-data-group-2">
-                        <div className="account-data-group-inner">
-                            <span><MdAlternateEmail/> <strong>Почта:</strong> {userData.email}</span></div>
+                        {userId == user.id && <div className="account-data-group-inner">
+                            <span><MdAlternateEmail/> <strong>Почта:</strong> {userData.email}</span></div>}
                         <div className="account-data-group-inner">
                             <span><CiCalendarDate/> <strong>Дата регистрации:</strong> {userData.dateRegistration.split('T')?.[0]}</span>
                         </div>
@@ -144,18 +146,23 @@ export default function Account() {
                 </div>
                 <div className="account-buttons-container">
                     <div className="account-task-info">
-                        <div className="account-task-info-item account-task-planing">Задач на этапе планирования: {barStatusData[0]}</div>
-                        <div className="account-task-info-item account-task-in-progress">Задач в прогрессе: {barStatusData[1]}</div>
-                        <div className="account-task-info-item account-task-finished">Завершённых задач: {barStatusData[2]}</div>
-                        <div className="account-task-info-item account-task-canceled">Отменённых задач: {barStatusData[3]}</div>
-                        <div className="account-task-info-item account-task-expired">Просроченных задач: {barStatusData[4]}</div>
+                        <div className="account-task-info-item account-task-planing">Задач на этапе
+                            планирования: {barStatusData[0]}</div>
+                        <div className="account-task-info-item account-task-in-progress">Задач в
+                            прогрессе: {barStatusData[1]}</div>
+                        <div className="account-task-info-item account-task-finished">Завершённых
+                            задач: {barStatusData[2]}</div>
+                        <div className="account-task-info-item account-task-canceled">Отменённых
+                            задач: {barStatusData[3]}</div>
+                        <div className="account-task-info-item account-task-expired">Просроченных
+                            задач: {barStatusData[4]}</div>
                     </div>
-                    <div className="group-buttons">
+                    {userId == user.id && <div className="group-buttons">
                         <Button onClickFunction={logout}>Выйти</Button>
                         <Button>Изменить аккаунт</Button>
                         <Button onClickFunction={() => navigate('/projects')}>К проектам</Button>
                         <Button onClickFunction={deleteAccount} backgroundColor="#f47c7c">Удалить аккаунт</Button>
-                    </div>
+                    </div>}
                 </div>
 
                 {/*<div className="tasks">

@@ -17,7 +17,7 @@ import RegisterForm from "../login-form/register-form/register-form";
 import OAuth2RedirectHandler from "../login-form/oauth2-redirect-handler";
 
 export default function Navbar() {
-    const {isAuthenticated, logout} = useAuth();
+    const {isAuthenticated, logout, user} = useAuth();
     const navigate = useNavigate();
     const handleLogout = () => {
         // eslint-disable-next-line no-restricted-globals
@@ -48,7 +48,7 @@ export default function Navbar() {
                     {isAuthenticated ? (
                         <li className="dropdown">
                           <span className="link-wrap">
-                            <Link to="/account">Аккаунт</Link>
+                            <Link to={`/account/${user.id}`}>Аккаунт</Link>
                           </span>
                             <ul className="dropdown-menu">
                                 <li>
@@ -82,7 +82,7 @@ export default function Navbar() {
                             </li>
                             <li>
                                 <span className="link-wrap">
-                                  <Link to="/projects">Просмотр проектов</Link>
+                                  <Link to={`/projects`}>Просмотр проектов</Link>
                                 </span>
                             </li>
                             <li>
@@ -100,7 +100,7 @@ export default function Navbar() {
                 <Route path="/" element={<Main/>}/>
                 <Route path="/login" element={<LoginForm/>}/>
                 <Route path="/register" element={<RegisterForm/>}/>
-                <Route path="/account" element={<ProtectedRoute><Account/></ProtectedRoute>}/>
+                <Route path="/account/:userId" element={<ProtectedRoute><Account/></ProtectedRoute>}/>
                 <Route path="/create-project" element={<NewProjectForm/>}/>
                 <Route path="/update-project/:projectId" element={<NewProjectForm/>}/>
                 <Route path="/projects" element={<ProtectedRoute><ProjectShow/></ProtectedRoute>}/>

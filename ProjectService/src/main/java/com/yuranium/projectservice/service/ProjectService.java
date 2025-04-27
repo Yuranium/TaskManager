@@ -28,11 +28,11 @@ public class ProjectService
     private final KafkaProducer kafkaProducer;
 
     @Transactional(readOnly = true)
-    public List<ProjectDto> getAll(Pageable pageable)
+    public List<ProjectDto> getAll(Pageable pageable, Long userId)
     {
         return projectMapper.toDto(
                 projectRepository
-                        .findAll(pageable)
+                        .findAllByUserId(pageable, userId)
                         .getContent()
         );
     }

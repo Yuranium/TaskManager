@@ -7,8 +7,10 @@ import Http404 from "../info/http-error/404";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import ModalWindow from "../modal-window/modal-window";
 import Autosuggest from "react-autosuggest";
+import {useAuth} from "../../hooks/auth";
 
 export default function ProjectPage() {
+    const {user} = useAuth();
     const { projectId } = useParams();
     const navigate = useNavigate();
     const [tasks, setTasks] = useState([]);
@@ -112,7 +114,7 @@ export default function ProjectPage() {
                 setTasks(t);
                 const resp = await axios.get(
                     `http://${backHost}:${backPort}/api/projects/allProjects`,
-                    { params: { size: 50 } }
+                    { params: { size: 50, userId: user.id } }
                 );
                 if (resp.status === 200) setProjects(resp.data);
             } else {

@@ -23,10 +23,11 @@ public class ProjectController
     @GetMapping("/allProjects")
     public ResponseEntity<List<ProjectDto>> getAllProjects(
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
-            @RequestParam(required = false, defaultValue = "15") int size)
+            @RequestParam(required = false, defaultValue = "15") int size,
+            @RequestParam Long userId)
     {
         return new ResponseEntity<>(
-                projectService.getAll(PageRequest.of(pageNumber, size)),
+                projectService.getAll(PageRequest.of(pageNumber, size), userId),
                 HttpStatus.OK
         );
     }
@@ -66,12 +67,4 @@ public class ProjectController
         projectService.deleteProject(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-//    @GetMapping("/{projectId}/avatars")
-//    public ResponseEntity<List<AvatarDto>> getAvatars(@PathVariable UUID projectId)
-//    {
-//        return new ResponseEntity<>(
-//                avatarService
-//        )
-//    }
 }

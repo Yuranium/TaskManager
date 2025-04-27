@@ -1,6 +1,7 @@
 package com.yuranium.authservice.util;
 
 import com.yuranium.authservice.models.AuthValidationResponse;
+import com.yuranium.authservice.models.MyUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -34,6 +35,8 @@ public class JwtUtil
         claims.put("roles", user.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList());
+        if (user instanceof MyUserDetails)
+            claims.put("id", ((MyUserDetails) user).getId());
         Date issuedDate = new Date();
         Date expiredDate = new Date(issuedDate.getTime() + jwtLifetime.toMillis());
 

@@ -10,6 +10,8 @@ public record ProjectInputDto(
 
         String description,
 
-        List<MultipartFile> avatars
+        List<MultipartFile> avatars,
+
+        Long userId
 
 ) implements Serializable {}

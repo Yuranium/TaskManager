@@ -7,7 +7,7 @@ import Button from "../button/button";
 import {useAuth} from "../../hooks/auth";
 
 const NewProjectForm = () => {
-    const {isAuthenticated} = useAuth();
+    const {isAuthenticated, user} = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -95,6 +95,7 @@ const NewProjectForm = () => {
             formDataToSend.append('avatars', formData.uploadProjectImage);
             formDataToSend.append('name', formData.projectName);
             formDataToSend.append('description', formData.projectDescription);
+            formDataToSend.append('userId', user.id)
 
             try {
                 const backHost = process.env.REACT_APP_BACKEND_PROJECT_SERVICE_HOST

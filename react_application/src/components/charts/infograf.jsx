@@ -7,9 +7,11 @@ import LoadingData from "../info/loading-data/loading-data";
 import BarChart from "./bar-chart/bar-chart";
 import LineChart from "./line-chart/line-chart";
 import {useNavigate} from "react-router-dom";
+import {useAuth} from "../../hooks/auth";
 
 export default function Infograf()
 {
+    const {user} = useAuth();
     const [projects, setProjects] = useState([]);
     const [tasks, setTasks] = useState([]);
     const [statuses, setStatuses] = useState([]);
@@ -25,7 +27,7 @@ export default function Infograf()
         try {
             const projectResponse = await axios.get(
                 `http://${backHost}:${backPort}/api/projects/allProjects`,
-                { params: { size: 100 } }
+                { params: { size: 100, userId: user.id } }
             );
 
             const taskResponse = await axios.get(

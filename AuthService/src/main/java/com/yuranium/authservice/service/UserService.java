@@ -39,12 +39,12 @@ public class UserService implements UserDetailsService
     private final KafkaProducer kafkaProducer;
 
     @Transactional(readOnly = true)
-    public UserInfoDto getUser(String username)
+    public UserInfoDto getUser(Long id)
     {
         return userMapper.toInfoDto(
-                userRepository.findByEmail(username)
+                userRepository.findById(id)
                         .orElseThrow(() -> new UserEntityNotFoundException(
-                                String.format("The user with email=%s was not found!", username))
+                                String.format("The user with id=%d was not found!", id))
                         ));
     }
 

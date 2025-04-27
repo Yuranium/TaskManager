@@ -1,14 +1,17 @@
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
 import axios from "axios";
 import ProjectCard from "../project-card/project-card";
 import Button from "../button/button";
 import './project-show.css';
 import LoadingData from "../info/loading-data/loading-data";
+import {useAuth} from "../../hooks/auth";
+import Empty from "./empty/empty";
 
 const PAGE_SIZE = 15;
 
 export default function ProjectShow() {
+    const {user} = useAuth();
     const navigate = useNavigate();
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -24,7 +27,8 @@ export default function ProjectShow() {
                 `http://${backHost}:${backPort}/api/projects/allProjects`, {
                     params: {
                         pageNumber: pageToFetch,
-                        size: PAGE_SIZE
+                        size: PAGE_SIZE,
+                        userId: user.id
                     }
                 }
             );
@@ -59,7 +63,15 @@ export default function ProjectShow() {
     };
 
     if (loading && projects.length === 0) return <LoadingData loadingName="проекта"/>;
-    if (!projects || projects.length === 0) return <div>Проект не найден</div>;
+    if (!projects || projects.length === 0) return (
+        <div>
+            <Empty title={"Проекты не найдены"}>
+            <Button
+                onClickFunction={() => navigate('/create-project')}>
+                Создать проект</Button>
+            </Empty>
+        </div>
+    );
 
     return (
         <>
