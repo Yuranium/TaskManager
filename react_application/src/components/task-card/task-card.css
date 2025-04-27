@@ -48,7 +48,8 @@
 }
 
 .container-task-card-info p {
-    margin: 0.5em 0;
+    margin: 0;
+    padding: 5px 0;
 }
 
 .anchor-task-card {
@@ -61,4 +62,34 @@
 
 .container:hover {
     transform: translateY(-7px);
+}
+
+.task-finished {
+    background-color: #b1ffa5;
+    color: #468339;
+    border-radius: .5em;
+}
+
+.task-not-finished {
+    background-color: #ffa5a5;
+    color: #863939;
+    border-radius: .5em;
+}
+
+.task-importance-low {
+    background-color: #b1ffa5;
+    color: #468339;
+    border-radius: .5em;
+}
+
+.task-importance-intermediate {
+    background-color: #ffeaa5;
+    color: #b49e5d;
+    border-radius: .5em;
+}
+
+.task-importance-high {
+    background-color: #ffa5a5;
+    color: #863939;
+    border-radius: .5em;
 }

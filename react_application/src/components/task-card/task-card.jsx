@@ -3,6 +3,9 @@ import Button from "../button/button";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import ModalWindow1 from "../modal-window/modal-window-1";
+import {FiAlertOctagon} from "react-icons/fi";
+import {IoMdCheckmark} from "react-icons/io";
+import {RxCross2} from "react-icons/rx";
 
 export default function TaskCard({task, avatars}) {
     const navigate = useNavigate()
@@ -42,10 +45,14 @@ export default function TaskCard({task, avatars}) {
                     <h3 className="task-name">{task.name}</h3>
                 </div>
                 <div className="container-task-card-info">
-                    <p>{task.description}</p>
-                    <p>{`Важность: ${task.taskImportance}`}</p>
+                    {task.description && <p>{task.description}</p>}
+                    <p className={`task-importance-${task.taskImportance.toLowerCase()}`}>
+                        <FiAlertOctagon/> {`Важность: ${task.taskImportance}`}
+                    </p>
                     <p>{`Статус: ${task.taskStatus}`}</p>
-                    <p>{`Завершена? ${task.isFinished ? 'Да' : 'Нет'}`}</p>
+                    <p className={task.isFinished ? 'task-finished' : 'task-not-finished'}>
+                        Завершена? {task.isFinished ? <IoMdCheckmark/> : <RxCross2/>}
+                    </p>
                 </div>
                 <div className="task-card-buttons">
                     <Button onClickFunction={updateTask}>Изменить</Button>

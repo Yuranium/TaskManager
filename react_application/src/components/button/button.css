@@ -8,6 +8,7 @@
     border: none;
     font-weight: bolder;
     transition: opacity 0.4s ease;
+    z-index: 10;
 }
 
 .button:hover {
