@@ -2,9 +2,9 @@ import './task-card.css'
 import Button from "../button/button";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
+import ModalWindow1 from "../modal-window/modal-window-1";
 
-export default function TaskCard({task, avatars})
-{
+export default function TaskCard({task, avatars}) {
     const navigate = useNavigate()
 
     const openTask = (e) => {
@@ -19,27 +19,20 @@ export default function TaskCard({task, avatars})
         navigate(`updateTask/${task.id}`)
     }
 
-    const deleteTask = (e) => {
-        e.stopPropagation()
-        // eslint-disable-next-line no-restricted-globals
-        let confirmDelete = confirm("Действительно удалить задачу?")
-        if (confirmDelete)
-        {
-            const backHost = process.env.REACT_APP_BACKEND_PROJECT_SERVICE_HOST;
-            const backPort = process.env.REACT_APP_BACKEND_PORT;
-            axios.delete(`http://${backHost}:${backPort}/api/tasks/delete/${task.id}`)
-                .then(res => {
-                    if (res.status === 204)
-                        navigate('/projects')
-                })
-        }
+    const deleteTask = () => {
+        const backHost = process.env.REACT_APP_BACKEND_PROJECT_SERVICE_HOST;
+        const backPort = process.env.REACT_APP_BACKEND_PORT;
+        axios.delete(`http://${backHost}:${backPort}/api/tasks/delete/${task.id}`)
+            .then(res => {
+                if (res.status === 204)
+                    navigate('/projects')
+            })
     }
 
     return (
         <div className="container">
             <div
                 className="anchor-task-card"
-                /*onClick={() => navigate(`/${task.id}`)}*/
                 role="button">
                 <div className="main-info">
                     <img
@@ -56,7 +49,22 @@ export default function TaskCard({task, avatars})
                 </div>
                 <div className="task-card-buttons">
                     <Button onClickFunction={updateTask}>Изменить</Button>
-                    <Button onClickFunction={deleteTask}>Удалить</Button>
+                    <ModalWindow1 trigger={<Button>Удалить</Button>}>
+                        {({close}) => (
+                            <>
+                                <h3>Действительно удалить задачу?</h3>
+                                <p>{`Название задачи: ${task.name}`}</p>
+                                <div className="modal-actions">
+                                    <Button onClickFunction={close}>Нет</Button>
+                                    <Button onClickFunction={() => {
+                                        deleteTask();
+                                        close();
+                                    }}>Да
+                                    </Button>
+                                </div>
+                            </>
+                        )}
+                    </ModalWindow1>
                 </div>
             </div>
         </div>

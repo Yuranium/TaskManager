@@ -11,6 +11,7 @@ import {TbActivity} from "react-icons/tb";
 import {TiClipboard} from "react-icons/ti";
 import {FaRegCircleUser} from "react-icons/fa6";
 import {FaAngleLeft, FaAngleRight} from "react-icons/fa";
+import ModalWindow1 from "../modal-window/modal-window-1";
 
 export default function Account() {
     const {userId} = useParams();
@@ -91,11 +92,8 @@ export default function Account() {
     if (!userData)
         return <Navigate to="/404"/>;
 
-    const deleteAccount = () => {
-        // eslint-disable-next-line no-restricted-globals
-        if (confirm('Действительно удалить аккаунт?'))
-            axios.delete(`http://${backHost}:${backPort}/api/auth/user/delete/${userId}`)
-    }
+    const deleteAccount = () =>
+        axios.delete(`http://${backHost}:${backPort}/api/auth/user/delete/${userId}`)
 
     return (
         <div className="main">
@@ -158,20 +156,29 @@ export default function Account() {
                             задач: {barStatusData[4]}</div>
                     </div>
                     {userId == user.id && <div className="group-buttons">
-                        <Button onClickFunction={logout}>Выйти</Button>
-                        <Button>Изменить аккаунт</Button>
-                        <Button onClickFunction={() => navigate('/projects')}>К проектам</Button>
-                        <Button onClickFunction={deleteAccount} backgroundColor="#f47c7c">Удалить аккаунт</Button>
+                        <div className="group-buttons-main-func">
+                            <Button onClickFunction={logout}>Выйти</Button>
+                            <Button>Изменить аккаунт</Button>
+                            <Button onClickFunction={() => navigate('/projects')}>К проектам</Button>
+                        </div>
+                        <ModalWindow1 trigger={<Button backgroundColor="#f47c7c">Удалить аккаунт</Button>}>
+                            {({close}) => (
+                                <>
+                                    <h3>Действительно удалить аккаунт?</h3>
+                                    <div className="modal-actions">
+                                        <Button onClickFunction={close}>Нет</Button>
+                                        <Button onClickFunction={() => {
+                                            deleteAccount();
+                                            close();
+                                        }}>
+                                            Да
+                                        </Button>
+                                    </div>
+                                </>
+                            )}
+                        </ModalWindow1>
                     </div>}
                 </div>
-
-                {/*<div className="tasks">
-                <p>{task.allTasks}</p>
-                <p>{task.activeTasks}</p>
-                <p>{task.completedTasks}</p>
-                <p>{task.canceledTasks}</p>
-                <p>{task.expiredTasks}</p>
-            </div>*/}
 
                 <div className="svg-image">
                     <svg width="560" height="350" xmlns="http://www.w3.org/2000/svg">

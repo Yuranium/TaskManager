@@ -26,6 +26,7 @@
     transform: scale(0);
     transition: transform .8s;
     border-radius: 1em;
+    text-align: center;
 }
 
 .modal__close-btn {

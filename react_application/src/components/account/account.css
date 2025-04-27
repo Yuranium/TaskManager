@@ -188,13 +188,15 @@
 }
 
 .group-buttons {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
+    flex-direction: column;
+    justify-items: stretch;
     justify-content: center;
 }
 
-.group-buttons > *:last-child {
-    grid-column: span 3;
+.group-buttons-main-func {
+    display: flex;
+    flex-direction: row;
 }
 
 .svg-image {
