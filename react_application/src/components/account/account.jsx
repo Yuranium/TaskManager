@@ -10,6 +10,7 @@ import {MdAlternateEmail, MdOutlineAdminPanelSettings} from "react-icons/md";
 import {TbActivity} from "react-icons/tb";
 import {TiClipboard} from "react-icons/ti";
 import {FaRegCircleUser} from "react-icons/fa6";
+import {FaAngleLeft, FaAngleRight} from "react-icons/fa";
 
 export default function Account() {
     const {isAuthenticated, logout, user} = useAuth();
@@ -18,6 +19,8 @@ export default function Account() {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate()
     const didFetch = useRef(false);
+    const [tasks, setTasks] = useState([]);
+    const [statuses, setStatuses] = useState([]);
 
     const backHost = process.env.REACT_APP_BACKEND_PROJECT_SERVICE_HOST;
     const backPort = process.env.REACT_APP_BACKEND_PORT;
@@ -31,7 +34,7 @@ export default function Account() {
             />
         );
 
-    const fetchData = () => {
+    const fetchData = async () => {
         if (!user) return;
         let mounted = true;
         axios.get(`http://${backHost}:${backPort}/api/auth/user/${user.sub}`)
@@ -47,10 +50,31 @@ export default function Account() {
             .finally(() => {
                 if (mounted) setLoading(false);
             });
+
+        const projectResponse = await axios.get(
+            `http://${backHost}:${backPort}/api/projects/allProjects`,
+            { params: { size: 100 } }
+        );
+
+        await axios.get(
+            `http://${backHost}:${backPort}/api/tasks/allTasks-ProjectIds`,
+            {
+                params: {
+                    uuids: projectResponse.data.map(project => project.id).join(',')
+                },
+            }
+        ).then(res => setTasks(res.data));
+
+        await axios.get(`http://${backHost}:${backPort}/api/tasks/allTaskStatus`)
+            .then(res => setStatuses(res.data));
         return () => {
             mounted = false;
         };
     }
+
+    const barStatusData = statuses.map(status =>
+        tasks.filter(task => task.taskStatus === status).length);
+
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
         if (!didFetch.current && user) {
@@ -65,14 +89,33 @@ export default function Account() {
     if (!userData)
         return <Navigate to="/500"/>;
 
+    const deleteAccount = () => {
+        // eslint-disable-next-line no-restricted-globals
+        if (confirm('Действительно удалить аккаунт?'))
+            axios.delete(`http://${backHost}:${backPort}/api/auth/user/delete/${user.sub}`)
+    }
+
     return (
         <div className="main">
+            <div className="account-square"></div>
+            <div className="account-ellipsis"></div>
+            <div className="account-circle"></div>
             <div className="account-data">
                 <div className="avatar">
-                    <img className="avatar-link"
-                         src={userData.avatars.length !== 0 ? `data:${userData.avatars[0].contentType};base64,${userData.avatars[0].binaryData}`
-                             : "default-avatar.png"}
-                         alt="avatar image"/>
+                    <div className="avatar-wrapper">
+                        <div className="avatar-wrapper-1">
+                            {userData.avatars.length !== 0 && <div className="account-previous-image">
+                                <FaAngleLeft/>
+                            </div>}
+                            <img className="avatar-link"
+                                 src={userData.avatars.length !== 0 ? `data:${userData.avatars[0].contentType};base64,${userData.avatars[0].binaryData}`
+                                     : "default-avatar.png"}
+                                 alt="avatar image"/>
+                            {userData.avatars.length !== 0 && <div className="account-next-image">
+                                <FaAngleRight/>
+                            </div>}
+                        </div>
+                    </div>
                 </div>
                 <div className="account-main-info">
                     <div className="account-data-group-1">
@@ -88,10 +131,11 @@ export default function Account() {
                         <div className="account-data-group-inner">
                             <span><MdAlternateEmail/> <strong>Почта:</strong> {userData.email}</span></div>
                         <div className="account-data-group-inner">
-                            <span><CiCalendarDate/> <strong>Дата регистрации:</strong> {userData.dateRegistration}</span>
+                            <span><CiCalendarDate/> <strong>Дата регистрации:</strong> {userData.dateRegistration.split('T')?.[0]}</span>
                         </div>
                     </div>
-                    <div className="account-activity">
+                    <div className="account-activity"
+                         style={{backgroundColor: userData.activity ? "#acffc7" : "#ffbebe"}}>
                         <span><TbActivity/> <strong>Активность:</strong> {userData.activity.toString()}</span></div>
                     <div
                         className="account-roles"><span><MdOutlineAdminPanelSettings/> <strong>Роли:</strong> {userData.roles.map(role =>
@@ -99,11 +143,18 @@ export default function Account() {
                     )}</span></div>
                 </div>
                 <div className="account-buttons-container">
+                    <div className="account-task-info">
+                        <div className="account-task-info-item account-task-planing">Задач на этапе планирования: {barStatusData[0]}</div>
+                        <div className="account-task-info-item account-task-in-progress">Задач в прогрессе: {barStatusData[1]}</div>
+                        <div className="account-task-info-item account-task-finished">Завершённых задач: {barStatusData[2]}</div>
+                        <div className="account-task-info-item account-task-canceled">Отменённых задач: {barStatusData[3]}</div>
+                        <div className="account-task-info-item account-task-expired">Просроченных задач: {barStatusData[4]}</div>
+                    </div>
                     <div className="group-buttons">
                         <Button onClickFunction={logout}>Выйти</Button>
                         <Button>Изменить аккаунт</Button>
                         <Button onClickFunction={() => navigate('/projects')}>К проектам</Button>
-                        <Button backgroundColor="#f47c7c">Удалить аккаунт</Button>
+                        <Button onClickFunction={deleteAccount} backgroundColor="#f47c7c">Удалить аккаунт</Button>
                     </div>
                 </div>
 

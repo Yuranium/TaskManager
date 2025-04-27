@@ -89,7 +89,7 @@
     display: flex;
 }
 
-.bar {
+.main-bar {
     height: 8px;
     width: 30px;
     margin: 6px;
@@ -100,7 +100,7 @@
     transition: all .4s ease;
 }
 
-.bar:hover {
+.main-bar:hover {
     opacity: 1;
     transform: scale(1.1);
 }

@@ -144,10 +144,10 @@ export default function Main() {
                         </div>
                     </div>
                     <div className="navigation">
-                        <label htmlFor="r1" className="bar"></label>
-                        <label htmlFor="r2" className="bar"></label>
-                        <label htmlFor="r3" className="bar"></label>
-                        <label htmlFor="r4" className="bar"></label>
+                        <label htmlFor="r1" className="main-bar"></label>
+                        <label htmlFor="r2" className="main-bar"></label>
+                        <label htmlFor="r3" className="main-bar"></label>
+                        <label htmlFor="r4" className="main-bar"></label>
                     </div>
                 </div>
             </section>
