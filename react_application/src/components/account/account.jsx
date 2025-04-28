@@ -10,8 +10,8 @@ import {MdAlternateEmail, MdOutlineAdminPanelSettings} from "react-icons/md";
 import {TbActivity} from "react-icons/tb";
 import {TiClipboard} from "react-icons/ti";
 import {FaRegCircleUser} from "react-icons/fa6";
-import {FaAngleLeft, FaAngleRight} from "react-icons/fa";
 import ModalWindow1 from "../modal-window/modal-window-1";
+import AvatarSlider from "../avatar-slider/avatar-slider";
 
 export default function Account() {
     const {userId} = useParams();
@@ -114,41 +114,18 @@ export default function Account() {
     const deleteAccount = () =>
         axios.delete(`http://${backHost}:${backPort}/api/auth/user/delete/${userId}`)
 
-    const saveAvatar = (e) => {
-        const {files} = e.target
-        if (files[0].size !== 0 && files[0].size <= 5 * 1024 * 1024) {
-            const payload = new FormData();
-            payload.append('file', files[0])
-            axios.patch(`http://${backHost}:${backPort}/api/auth/user/${userId}/update-avatar`, payload,
-                {headers: {'Content-Type': 'multipart/form-data'}})
-        }
-    }
-    const avatarSize = userData.avatars.length
-
     return (
         <div className="main">
             <div className="account-square"></div>
             <div className="account-ellipsis"></div>
             <div className="account-circle"></div>
             <div className="account-data">
-                <div className="avatar">
-                    <div className="avatar-wrapper">
-                        <div className="avatar-wrapper-1">
-                            {(avatarSize !== 0 && avatarSize !== 1) && <div className="account-previous-image">
-                                <FaAngleLeft/>
-                            </div>}
-                            <img className="avatar-link"
-                                 src={avatarSize !== 0 ? `data:${userData.avatars[0].contentType};base64,${userData.avatars[0].binaryData}`
-                                     : "/default-avatar.png"}
-                                 alt="avatar image"/>
-                            {avatarSize === 0 && userId == user.id &&
-                                <input type="file" name="add-avatar" onChange={saveAvatar}/>}
-                            {(avatarSize !== 0 && avatarSize !== 1) && <div className="account-next-image">
-                                <FaAngleRight/>
-                            </div>}
-                        </div>
-                    </div>
-                </div>
+                {userData && (
+                    <AvatarSlider
+                        data={userData}
+                        baseUrl={`http://${backHost}:${backPort}/api/auth/user/${userId}/update-avatar`}
+                    />
+                )}
                 <div className="account-main-info">
                     <div className="account-data-group-1">
                         <div className="account-data-group-inner">

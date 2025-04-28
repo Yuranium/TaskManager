@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -107,14 +106,7 @@ public class UserService implements UserDetailsService
                             id
                     )
             );
-        else
-        {
-            UserEntity userEntity = optionalUser.get();
-            userEntity.getAvatars().addAll(
-                    avatarService.multipartToEntity(List.of(file)));
-            userEntity.setAvatars(userEntity.getAvatars());
-            avatarService.saveAvatar(userEntity.getAvatars().get(0));
-        }
+        else avatarService.updateAvatars(optionalUser.get(), file);
     }
 
     @Transactional

@@ -1,6 +1,7 @@
 package com.yuranium.authservice.service;
 
 import com.yuranium.authservice.models.entity.AvatarEntity;
+import com.yuranium.authservice.models.entity.UserEntity;
 import com.yuranium.authservice.repository.AvatarRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,9 +26,12 @@ public class AvatarService
     }
 
     @Transactional
-    public AvatarEntity saveAvatar(AvatarEntity avatar)
+    public void updateAvatars(UserEntity userEntity, MultipartFile file)
     {
-        return avatarRepository.save(avatar);
+        userEntity.getAvatars().addAll(
+                multipartToEntity(List.of(file)));
+        userEntity.setAvatars(userEntity.getAvatars());
+        saveAll(new ArrayList<>(userEntity.getAvatars()));
     }
 
     public List<AvatarEntity> multipartToEntity(List<MultipartFile> file)

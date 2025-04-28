@@ -1,0 +1,46 @@
+.avatar-slider-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 255px;
+}
+
+/*.avatar-link {*/
+/*    width: 100%;*/
+/*    height: auto;*/
+/*    border-radius: 50%;*/
+/*    object-fit: cover;*/
+/*}*/
+
+.slider-arrow {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #333;
+    padding: 0;
+}
+
+.slider-arrow:disabled {
+    opacity: 0.3;
+    cursor: pointer;
+}
+
+.avatar-upload {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    text-align: center;
+    opacity: .6;
+    font-weight: bolder;
+    z-index: 10;
+}
+
+.avatar-upload input {
+    display: none;
+}
+
+.avatar-upload label {
+    cursor: pointer;
+    font-weight: bold;
+}
