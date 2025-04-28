@@ -23,6 +23,7 @@ export default function Account() {
     const didFetch = useRef(false);
     const [tasks, setTasks] = useState([]);
     const [statuses, setStatuses] = useState([]);
+    const [errorFetchData, setErrorFetchData] = useState(false);
 
     const backHost = process.env.REACT_APP_BACKEND_PROJECT_SERVICE_HOST;
     const backPort = process.env.REACT_APP_BACKEND_PORT;
@@ -37,43 +38,61 @@ export default function Account() {
         );
 
     const fetchData = async () => {
-        if (!user) return;
         let mounted = true;
-        axios.get(`http://${backHost}:${backPort}/api/auth/user/${userId}`,
-            {headers: {'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`}})
-            .then(res => {
-                if (mounted)
-                    setUserData(res.data);
-            })
-            .catch(err => {
-                if (err.status === 404)
-                    navigate('/404')
-                else navigate('/500');
-            })
-            .finally(() => {
-                if (mounted) setLoading(false);
-            });
+        try {
+            const userRes = await axios.get(
+                `http://${backHost}:${backPort}/api/auth/user/${userId}`,
+                {headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}}
+            );
+            if (!mounted) return;
+            setUserData(userRes.data);
 
-        const projectResponse = await axios.get(
-            `http://${backHost}:${backPort}/api/projects/allProjects`,
-            {params: {size: 100, userId}, headers: {'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`}}
-        );
+            const projectsRes = await axios.get(
+                `http://${backHost}:${backPort}/api/projects/allProjects`,
+                {
+                    params: {size: 100, userId},
+                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
+                }
+            );
+            if (!mounted) return;
+            const uuids = projectsRes.data.map(p => p.id).join(',');
+            const tasksRes = await axios.get(
+                `http://${backHost}:${backPort}/api/tasks/allTasks-ProjectIds`,
+                {params: {uuids}}
+            );
+            if (!mounted) return;
+            setTasks(tasksRes.data);
 
-        await axios.get(
-            `http://${backHost}:${backPort}/api/tasks/allTasks-ProjectIds`,
-            {
-                params: {
-                    uuids: projectResponse.data.map(project => project.id).join(',')
-                },
+            const statusesRes = await axios.get(
+                `http://${backHost}:${backPort}/api/tasks/allTaskStatus`
+            );
+            if (!mounted) return;
+            setStatuses(statusesRes.data);
+
+        } catch (err) {
+            if (axios.isAxiosError(err) && err.response) {
+                const status = err.response.status;
+                if (status === 404) {
+                    navigate('/404');
+                    return;
+                }
+                if (status === 401) {
+                    setErrorFetchData(true);
+                    return;
+                }
+                navigate('/500');
+                return;
             }
-        ).then(res => setTasks(res.data));
+            setErrorFetchData(true);
 
-        await axios.get(`http://${backHost}:${backPort}/api/tasks/allTaskStatus`)
-            .then(res => setStatuses(res.data));
+        } finally {
+            if (mounted) setLoading(false);
+        }
+
         return () => {
             mounted = false;
         };
-    }
+    };
 
     const barStatusData = statuses.map(status =>
         tasks.filter(task => task.taskStatus === status).length);
@@ -95,6 +114,17 @@ export default function Account() {
     const deleteAccount = () =>
         axios.delete(`http://${backHost}:${backPort}/api/auth/user/delete/${userId}`)
 
+    const saveAvatar = (e) => {
+        const {files} = e.target
+        if (files[0].size !== 0 && files[0].size <= 5 * 1024 * 1024) {
+            const payload = new FormData();
+            payload.append('file', files[0])
+            axios.patch(`http://${backHost}:${backPort}/api/auth/user/${userId}/update-avatar`, payload,
+                {headers: {'Content-Type': 'multipart/form-data'}})
+        }
+    }
+    const avatarSize = userData.avatars.length
+
     return (
         <div className="main">
             <div className="account-square"></div>
@@ -104,14 +134,16 @@ export default function Account() {
                 <div className="avatar">
                     <div className="avatar-wrapper">
                         <div className="avatar-wrapper-1">
-                            {userData.avatars.length !== 0 && <div className="account-previous-image">
+                            {(avatarSize !== 0 && avatarSize !== 1) && <div className="account-previous-image">
                                 <FaAngleLeft/>
                             </div>}
                             <img className="avatar-link"
-                                 src={userData.avatars.length !== 0 ? `data:${userData.avatars[0].contentType};base64,${userData.avatars[0].binaryData}`
+                                 src={avatarSize !== 0 ? `data:${userData.avatars[0].contentType};base64,${userData.avatars[0].binaryData}`
                                      : "/default-avatar.png"}
                                  alt="avatar image"/>
-                            {userData.avatars.length !== 0 && <div className="account-next-image">
+                            {avatarSize === 0 && userId == user.id &&
+                                <input type="file" name="add-avatar" onChange={saveAvatar}/>}
+                            {(avatarSize !== 0 && avatarSize !== 1) && <div className="account-next-image">
                                 <FaAngleRight/>
                             </div>}
                         </div>
@@ -124,8 +156,8 @@ export default function Account() {
                         <div className="account-data-group-inner">
                             <span><TiClipboard/> <strong>Имя:</strong> {userData.name}</span>
                         </div>
-                        <div className="account-data-group-inner">
-                            <span><TiClipboard/> <strong>Фамилия:</strong> {userData.lastName}</span></div>
+                        {userId == user.id && <div className="account-data-group-inner">
+                            <span><TiClipboard/> <strong>Фамилия:</strong> {userData.lastName}</span></div>}
                     </div>
                     <div className="account-data-group-2">
                         {userId == user.id && <div className="account-data-group-inner">
@@ -143,7 +175,7 @@ export default function Account() {
                     )}</span></div>
                 </div>
                 <div className="account-buttons-container">
-                    <div className="account-task-info">
+                    {!errorFetchData && <div className="account-task-info">
                         <div className="account-task-info-item account-task-planing">Задач на этапе
                             планирования: {barStatusData[0]}</div>
                         <div className="account-task-info-item account-task-in-progress">Задач в
@@ -154,7 +186,9 @@ export default function Account() {
                             задач: {barStatusData[3]}</div>
                         <div className="account-task-info-item account-task-expired">Просроченных
                             задач: {barStatusData[4]}</div>
-                    </div>
+                    </div>}
+                    {errorFetchData &&
+                        <div className="account-error-fetch-tasks">Произошла ошибка загрузки данных</div>}
                     {userId == user.id && <div className="group-buttons">
                         <div className="group-buttons-main-func">
                             <Button onClickFunction={logout}>Выйти</Button>
@@ -170,8 +204,7 @@ export default function Account() {
                                         <Button onClickFunction={() => {
                                             deleteAccount();
                                             close();
-                                        }}>
-                                            Да
+                                        }}>Да
                                         </Button>
                                     </div>
                                 </>

@@ -18,8 +18,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -58,7 +61,7 @@ public class UserService implements UserDetailsService
         UserEntity userEntity = userMapper.toEntity(userDto);
         userEntity.setRoles(new HashSet<>(Set.of(roleService.getRole(1))));
         userEntity.setAvatars(avatarService.multipartToEntity(userDto.avatars()));
-        userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
+        userEntity.setPassword(passwordEncoder.encode(userDto.password()));
 
         avatarService.saveAll(userEntity.getAvatars());
         roleService.saveAll(userEntity.getRoles());
@@ -68,19 +71,50 @@ public class UserService implements UserDetailsService
         );
     }
 
-    public void updateUser(Long id, UserUpdateDto userDto) // todo корректно обновлять данные из dto в entity
+    @Transactional
+    public void updateUser(Long id, UserUpdateDto userDto)
     {
-        if (userRepository.findById(id).isEmpty())
+        Optional<UserEntity> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty())
             throw new UserEntityNotFoundException(
                     String.format(
                             "The user with id=%d cannot be updated because it does not exist",
                             id
                     )
             );
+        else
+        {
+            UserEntity userEntity = optionalUser.get();
+            UserEntity updateUser = userMapper.toEntity(userDto);
+            updateUser.setId(userEntity.getId());
+            updateUser.setPassword(userEntity.getPassword());
 
-        userRepository.save(
-                userMapper.toEntity(userDto)
-        );
+            userEntity.getAvatars().addAll(avatarService.multipartToEntity(userDto.avatars()));
+            updateUser.setAvatars(userEntity.getAvatars());
+            updateUser.setRoles(userEntity.getRoles());
+            userRepository.save(updateUser);
+        }
+    }
+
+    @Transactional
+    public void updateUserAvatar(Long id, MultipartFile file)
+    {
+        Optional<UserEntity> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty())
+            throw new UserEntityNotFoundException(
+                    String.format(
+                            "The user with id=%d cannot be updated because it does not exist",
+                            id
+                    )
+            );
+        else
+        {
+            UserEntity userEntity = optionalUser.get();
+            userEntity.getAvatars().addAll(
+                    avatarService.multipartToEntity(List.of(file)));
+            userEntity.setAvatars(userEntity.getAvatars());
+            avatarService.saveAvatar(userEntity.getAvatars().get(0));
+        }
     }
 
     @Transactional
@@ -100,6 +134,7 @@ public class UserService implements UserDetailsService
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
     {
         return new MyUserDetails(

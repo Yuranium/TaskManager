@@ -15,6 +15,10 @@ oauth2:
 spring:
   application:
     name: auth-service
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
   datasource:
     url: jdbc:postgresql://${PG_HOST}:5432/${PG_DATABASE}
     username: ${PG_USERNAME}

@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
@@ -68,9 +69,17 @@ public class AuthController
 
     @PatchMapping("/user/update/{id}")
     public ResponseEntity<?> updateUser(@PathVariable Long id,
-                                        @RequestBody UserUpdateDto userDto)
+                                        @ModelAttribute UserUpdateDto userDto)
     {
         userService.updateUser(id, userDto);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PatchMapping("/user/{id}/update-avatar")
+    public ResponseEntity<?> updateUserAvatar(@PathVariable Long id,
+                                              @RequestPart MultipartFile file)
+    {
+        userService.updateUserAvatar(id, file);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

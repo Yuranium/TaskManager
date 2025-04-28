@@ -23,6 +23,12 @@ public class AvatarService
         return avatarRepository.saveAll(avatars);
     }
 
+    @Transactional
+    public AvatarEntity saveAvatar(AvatarEntity avatar)
+    {
+        return avatarRepository.save(avatar);
+    }
+
     public List<AvatarEntity> multipartToEntity(List<MultipartFile> file)
     {
         if (file == null)

@@ -2,6 +2,7 @@ package com.yuranium.authservice.models.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.yuranium.authservice.models.entity.UserEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
 import java.util.List;
@@ -21,11 +22,9 @@ public record UserUpdateDto(
 
         String password,
 
-        String email,
-
         Boolean activity,
 
-        List<AvatarDto> avatars,
+        List<MultipartFile> avatars,
 
         Set<RoleDto> roles
 
