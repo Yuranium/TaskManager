@@ -83,10 +83,11 @@ public class UserService implements UserDetailsService
             );
         else
         {
-            UserEntity userEntity = optionalUser.get();
+            UserEntity userEntity = optionalUser.get(); // todo не сохраняется дата регистрации
             UserEntity updateUser = userMapper.toEntity(userDto);
             updateUser.setId(userEntity.getId());
             updateUser.setPassword(userEntity.getPassword());
+            updateUser.setEmail(userEntity.getEmail());
 
             userEntity.getAvatars().addAll(avatarService.multipartToEntity(userDto.avatars()));
             updateUser.setAvatars(userEntity.getAvatars());

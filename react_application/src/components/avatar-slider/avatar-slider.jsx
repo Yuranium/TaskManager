@@ -21,8 +21,6 @@ export default function AvatarSlider({ data, baseUrl }) {
 
     const isOwner = user && String(user.id) === userId;
 
-    console.log(avatars)
-
     const saveAvatar = async (e) => {
         const {files} = e.target
         if (files[0].size !== 0 && files[0].size <= 5 * 1024 * 1024) {

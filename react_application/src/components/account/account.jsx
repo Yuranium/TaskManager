@@ -12,6 +12,7 @@ import {TiClipboard} from "react-icons/ti";
 import {FaRegCircleUser} from "react-icons/fa6";
 import ModalWindow1 from "../modal-window/modal-window-1";
 import AvatarSlider from "../avatar-slider/avatar-slider";
+import RegisterForm from "../login-form/register-form/register-form";
 
 export default function Account() {
     const {userId} = useParams();
@@ -169,7 +170,23 @@ export default function Account() {
                     {userId == user.id && <div className="group-buttons">
                         <div className="group-buttons-main-func">
                             <Button onClickFunction={logout}>Выйти</Button>
-                            <Button>Изменить аккаунт</Button>
+                            <ModalWindow1
+                                trigger={<Button>Редактировать профиль</Button>}
+                            >
+                                {({ close }) => (
+                                    <RegisterForm
+                                        isEdit={true}
+                                        style={{width: "100%", justiceContent: "start"}}
+                                        initUserData={userData}
+                                        onSubmit={async formData => {
+                                            await axios.patch(
+                                                `http://${backHost}:${backPort}/api/auth/user/update/${userId}`, formData,
+                                                { headers: {'Content-Type':'multipart/form-data'} });
+                                            close();
+                                        }}
+                                    />
+                                )}
+                            </ModalWindow1>
                             <Button onClickFunction={() => navigate('/projects')}>К проектам</Button>
                         </div>
                         <ModalWindow1 trigger={<Button backgroundColor="#f47c7c">Удалить аккаунт</Button>}>

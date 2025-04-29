@@ -10,15 +10,16 @@ import {useAuth} from "../../../hooks/auth";
 import Oauth2Icon from "../oauth2-icon";
 import LoadingData from "../../info/loading-data/loading-data";
 
-export default function RegisterForm() {
-    const { login } = useAuth();
+export default function RegisterForm({isEdit = false, initUserData = {}, onSubmit, ...props})
+{
+    const {login} = useAuth();
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [formData, setFormData] = useState({
-        username: '',
-        name: '',
-        lastName: '',
+        username: initUserData.username ?? '',
+        name: initUserData.name ?? '',
+        lastName: initUserData.lastName ?? '',
         password: '',
         confirmPassword: '',
         email: '',
@@ -36,10 +37,16 @@ export default function RegisterForm() {
 
     const validate = () => {
         const errs = {};
-        ['username', 'password', 'confirmPassword', 'email'].forEach((field) => {
-            if (!formData[field]?.trim())
-                errs[field] = 'Нужно заполнить';
-        });
+        if (!formData.username.trim()) {
+            errs.username = 'Нужно заполнить';
+        }
+
+        if (!isEdit) {
+            ['password', 'confirmPassword', 'email'].forEach(field => {
+                if (!formData[field]?.trim())
+                    errs[field] = 'Нужно заполнить';
+            })
+        }
 
         if (formData.password && formData.password.length < 6)
             errs.password = 'Минимум 6 символов';
@@ -73,26 +80,27 @@ export default function RegisterForm() {
         try {
             const payload = new FormData();
             payload.append('username', formData.username);
-            payload.append('name', formData.name);
-            payload.append('lastName', formData.lastName);
-            payload.append('password', formData.password);
-            payload.append('email', formData.email);
+            payload.append('name', formData.name === null ? '' : formData.name);
+            payload.append('lastName', formData.lastName === null ? '' : formData.lastName);
             payload.append('avatars', formData.avatars);
 
-            const response =
-                await axios.post(`http://${backHost}:${backPort}/api/auth/registration`, payload,
-            { headers: {'Content-Type':'multipart/form-data'} });
+            if (!isEdit) {
+                payload.append('password', formData.password);
+                payload.append('email', formData.email);
+                const response =
+                    await axios.post(`http://${backHost}:${backPort}/api/auth/registration`, payload,
+                        {headers: {'Content-Type': 'multipart/form-data'}});
 
-            if (response.status === HttpStatusCode.Created)
-            {
-                await login({
-                    username: formData.email,
-                    password: formData.password
-                });
-                navigate('/')
+                if (!isEdit && response.status === HttpStatusCode.Created) {
+                    await login({
+                        username: formData.email,
+                        password: formData.password
+                    });
+                    navigate('/')
+                }
             }
+            else await onSubmit(payload);
         } catch (err) {
-            console.error(err);
             setErrors({submit: 'Ошибка при регистрации'});
         } finally {
             setLoading(false);
@@ -105,8 +113,8 @@ export default function RegisterForm() {
 
     return (
         <div className="register-form-wrapper">
-            <form onSubmit={handleSubmit} className="login-form">
-                <h2>Регистрация</h2>
+            <form onSubmit={handleSubmit} className="login-form" style={props.style}>
+                <h2>{isEdit ? 'Редактирование' : 'Регистрация'}</h2>
 
                 <div className="form-group">
                     <label htmlFor="username">Юзернейм:</label>
@@ -148,7 +156,7 @@ export default function RegisterForm() {
                     {errors.lastName && <div className="field-error">{errors.lastName}</div>}
                 </div>
 
-                <div className="password-inputs">
+                {!isEdit && <div className="password-inputs">
                     <div className="password-inputs-1 password-wrapper">
                         <label htmlFor="password">Пароль:</label>
                         <div className="password-inner-wrapper">
@@ -189,9 +197,9 @@ export default function RegisterForm() {
                         </div>
                         {errors.confirmPassword && <div className="field-error">{errors.confirmPassword}</div>}
                     </div>
-                </div>
+                </div>}
 
-                <div className="form-group">
+                {!isEdit && <div className="form-group">
                     <label htmlFor="email">Электронная почта:</label>
                     <input
                         type="text"
@@ -203,7 +211,7 @@ export default function RegisterForm() {
                         required
                     />
                     {errors.email && <div className="field-error">{errors.email}</div>}
-                </div>
+                </div>}
 
                 <div className="avatar-form-group">
                     <div className="avatar-wrapper">
@@ -219,21 +227,25 @@ export default function RegisterForm() {
                     </div>
                     <div className="avatar-drop-button">
                         <Button onClickFunction={dropFile}>
-                            <FaTrashCan /> Сбросить
+                            <FaTrashCan/> Сбросить
                         </Button>
                     </div>
                 </div>
 
-                <Oauth2Icon/>
-                <div className="register-container">
-                    Есть аккаунт?
-                    <Link to="/login"> Войти</Link>
-                </div>
+                {!isEdit &&
+                    <>
+                        <Oauth2Icon/>
+                        <div className="register-container">
+                            Есть аккаунт?
+                            <Link to="/login"> Войти</Link>
+                        </div>
+                    </>}
 
                 {errors.submit && <div className="form-error">{errors.submit}</div>}
 
                 <Button type="submit" disabled={loading}>
-                    {loading ? <LoadingData defaultName="Загрузка" defaultFont/> : 'Зарегистрироваться'}
+                    {loading ? <LoadingData defaultName="Загрузка"
+                                            defaultFont/> : isEdit ? 'Изменить данные' : 'Зарегистрироваться'}
                 </Button>
             </form>
         </div>
