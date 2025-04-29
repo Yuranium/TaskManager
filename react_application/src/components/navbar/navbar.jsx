@@ -16,7 +16,7 @@ import {useAuth} from "../../hooks/auth";
 import RegisterForm from "../login-form/register-form/register-form";
 import OAuth2RedirectHandler from "../login-form/oauth2-redirect-handler";
 import Button from "../button/button";
-import ModalWindow1 from "../modal-window/modal-window-1";
+import ModalWindow from "../modal-window/modal-window";
 
 export default function Navbar() {
     const {isAuthenticated, logout, user} = useAuth();
@@ -54,7 +54,7 @@ export default function Navbar() {
                             <ul className="dropdown-menu">
                                 <li>
                                     <div className="inner-list-item">
-                                        <ModalWindow1 trigger={<span role="button">Выйти</span>}>
+                                        <ModalWindow trigger={<span role="button">Выйти</span>}>
                                             {({close}) => (
                                                 <>
                                                     <h3>Действительно выйти из аккаунта?</h3>
@@ -68,7 +68,7 @@ export default function Navbar() {
                                                     </div>
                                                 </>
                                             )}
-                                        </ModalWindow1>
+                                        </ModalWindow>
                                     </div>
                                 </li>
                                 <li>

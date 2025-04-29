@@ -8,7 +8,7 @@ import {Link, useNavigate, useParams} from "react-router-dom";
 import Autosuggest from "react-autosuggest";
 import {useAuth} from "../../hooks/auth";
 import Button from "../button/button";
-import ModalWindow1 from "../modal-window/modal-window-1";
+import ModalWindow from "../modal-window/modal-window";
 import TaskForm from "../task-form/task-form";
 
 export default function ProjectPage() {
@@ -156,7 +156,7 @@ export default function ProjectPage() {
             <div className="project-empty">
                 <div className="project-page-wrapper-empty">
                     <p>Данный проект на данный момент пустой</p>
-                    <ModalWindow1
+                    <ModalWindow style={{padding: "0"}}
                         trigger={<Button>Создать новую задачу</Button>}>
                         {({close}) => (
                             <TaskForm
@@ -171,7 +171,7 @@ export default function ProjectPage() {
                                 }}
                             />
                         )}
-                    </ModalWindow1>
+                    </ModalWindow>
                 </div>
             </div>
         );
@@ -205,7 +205,7 @@ export default function ProjectPage() {
             <div className="project-page-main-1">
                 <nav className="task-navbar">
 
-                    <ModalWindow1
+                    <ModalWindow style={{padding: "0"}}
                         trigger={<Button style={{padding: "0", margin: "0", display: "flex"}}><CiCirclePlus/></Button>}>
                         {({close}) => (
                             <TaskForm
@@ -220,7 +220,7 @@ export default function ProjectPage() {
                                 }}
                             />
                         )}
-                    </ModalWindow1>
+                    </ModalWindow>
                     <Autosuggest
                         suggestions={taskSuggestions}
                         onSuggestionsFetchRequested={onTaskFetch}

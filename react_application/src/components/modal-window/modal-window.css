@@ -7,7 +7,7 @@
     z-index: 999;
     background-color: rgba(0, 0, 0, .3);
     display: grid;
-    grid-template-columns: 0.45fr;
+    grid-template-columns: 25%;
     align-items: center;
     justify-content: center;
     overflow-y: auto;
@@ -18,14 +18,14 @@
 
 .modal__box {
     position: relative;
-    padding: 1em 45px;
+    padding: 1em;
     z-index: 1;
     margin: 15px 0;
     background-color: white;
     box-shadow: 0 0 17px -7px rgba(34, 60, 80, 0.2);
     transform: scale(0);
     transition: transform .8s;
-    border-radius: 1em;
+    border-radius: 10px;
     text-align: center;
 }
 

@@ -10,7 +10,7 @@ import {MdAlternateEmail, MdOutlineAdminPanelSettings} from "react-icons/md";
 import {TbActivity} from "react-icons/tb";
 import {TiClipboard} from "react-icons/ti";
 import {FaRegCircleUser} from "react-icons/fa6";
-import ModalWindow1 from "../modal-window/modal-window-1";
+import ModalWindow from "../modal-window/modal-window";
 import AvatarSlider from "../avatar-slider/avatar-slider";
 import RegisterForm from "../login-form/register-form/register-form";
 
@@ -170,7 +170,7 @@ export default function Account() {
                     {userId == user.id && <div className="group-buttons">
                         <div className="group-buttons-main-func">
                             <Button onClickFunction={logout}>Выйти</Button>
-                            <ModalWindow1
+                            <ModalWindow style={{padding: "0"}}
                                 trigger={<Button>Редактировать профиль</Button>}>
                                 {({ close }) => (
                                     <RegisterForm
@@ -186,10 +186,10 @@ export default function Account() {
                                         }}
                                     />
                                 )}
-                            </ModalWindow1>
+                            </ModalWindow>
                             <Button onClickFunction={() => navigate('/projects')}>К проектам</Button>
                         </div>
-                        <ModalWindow1 trigger={<Button style={{backgroundColor: "#f47c7c"}}>Удалить аккаунт</Button>}>
+                        <ModalWindow trigger={<Button style={{backgroundColor: "#f47c7c"}}>Удалить аккаунт</Button>}>
                             {({close}) => (
                                 <>
                                     <h3>Действительно удалить аккаунт?</h3>
@@ -203,7 +203,7 @@ export default function Account() {
                                     </div>
                                 </>
                             )}
-                        </ModalWindow1>
+                        </ModalWindow>
                     </div>}
                 </div>
 

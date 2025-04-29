@@ -2,7 +2,7 @@ import Button from "../button/button";
 import './project-card.css';
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
-import ModalWindow1 from "../modal-window/modal-window-1";
+import ModalWindow from "../modal-window/modal-window";
 import NewProjectForm from "../project-form/new-project-form";
 
 export default function ProjectCard({project, avatars}) {
@@ -51,7 +51,7 @@ export default function ProjectCard({project, avatars}) {
 
                     <div className="project-card-buttons">
                         <div className="inner-buttons">
-                            <ModalWindow1
+                            <ModalWindow style={{padding: "0"}}
                                 trigger={<Button>Изменить</Button>}>
                                 {({ close }) => (
                                     <NewProjectForm
@@ -67,8 +67,8 @@ export default function ProjectCard({project, avatars}) {
                                         }}
                                     />
                                 )}
-                            </ModalWindow1>
-                            <ModalWindow1 trigger={<Button>Удалить</Button>}>
+                            </ModalWindow>
+                            <ModalWindow trigger={<Button>Удалить</Button>}>
                                 {({close}) => (
                                     <>
                                         <h3>Действительно удалить?</h3>
@@ -83,7 +83,7 @@ export default function ProjectCard({project, avatars}) {
                                         </div>
                                     </>
                                 )}
-                            </ModalWindow1>
+                            </ModalWindow>
                         </div>
                     </div>
                 </div>

@@ -2,7 +2,7 @@ import './task-card.css'
 import Button from "../button/button";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
-import ModalWindow1 from "../modal-window/modal-window-1";
+import ModalWindow from "../modal-window/modal-window";
 import {FiAlertOctagon} from "react-icons/fi";
 import {IoMdCheckmark} from "react-icons/io";
 import {RxCross2} from "react-icons/rx";
@@ -56,7 +56,7 @@ export default function TaskCard({task, avatars}) {
                 </div>
                 <div className="task-card-buttons">
                     <Button onClickFunction={updateTask}>Изменить</Button>
-                    <ModalWindow1 trigger={<Button>Удалить</Button>}>
+                    <ModalWindow trigger={<Button>Удалить</Button>}>
                         {({close}) => (
                             <>
                                 <h3>Действительно удалить задачу?</h3>
@@ -71,7 +71,7 @@ export default function TaskCard({task, avatars}) {
                                 </div>
                             </>
                         )}
-                    </ModalWindow1>
+                    </ModalWindow>
                 </div>
             </div>
         </div>
