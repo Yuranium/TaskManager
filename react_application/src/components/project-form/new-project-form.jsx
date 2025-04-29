@@ -6,14 +6,13 @@ import axios from "axios";
 import Button from "../button/button";
 import {useAuth} from "../../hooks/auth";
 
-const NewProjectForm = () => {
-    const {isAuthenticated, user} = useAuth();
+export default function NewProjectForm({isEdit = false, initProjectData = {}, onSubmit, ...props}) {
+    const {isAuthenticated} = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        uploadProjectImage: null,
-        projectName: '',
-        projectDescription: '',
+        projectName: initProjectData.name ?? '',
+        projectDescription: initProjectData.description ?? '',
     });
 
     const [errors, setErrors] = useState({
@@ -56,17 +55,19 @@ const NewProjectForm = () => {
             projectDescription: '',
         };
 
-        if (!formData.uploadProjectImage) {
-            newErrors.uploadProjectImage = 'Изображение обязательно для загрузки';
-            isValid = false;
-        } else {
-            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-            if (!allowedTypes.includes(formData.uploadProjectImage.type)) {
-                newErrors.uploadProjectImage = 'Недопустимый формат файла. Разрешены только JPEG, PNG и GIF.';
+        if (!isEdit) {
+            if (!formData.uploadProjectImage) {
+                newErrors.uploadProjectImage = 'Изображение обязательно для загрузки';
                 isValid = false;
-            } else if (formData.uploadProjectImage.size > (5 * 1024 * 1024)) {
-                newErrors.uploadProjectImage = 'Файл слишком большой. Максимальный размер — 5 МБ.';
-                isValid = false;
+            } else {
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                if (!allowedTypes.includes(formData.uploadProjectImage.type)) {
+                    newErrors.uploadProjectImage = 'Недопустимый формат файла. Разрешены только JPEG, PNG и GIF.';
+                    isValid = false;
+                } else if (formData.uploadProjectImage.size > (5 * 1024 * 1024)) {
+                    newErrors.uploadProjectImage = 'Файл слишком большой. Максимальный размер — 5 МБ.';
+                    isValid = false;
+                }
             }
         }
 
@@ -92,26 +93,32 @@ const NewProjectForm = () => {
 
         if (validateForm()) {
             const formDataToSend = new FormData();
-            formDataToSend.append('avatars', formData.uploadProjectImage);
-            formDataToSend.append('name', formData.projectName);
-            formDataToSend.append('description', formData.projectDescription);
-            formDataToSend.append('userId', user.id)
+            formDataToSend.append('name',
+                formData.projectName === null ? '' : formData.projectName);
+            formDataToSend.append('description',
+                formData.projectDescription === null ? '' : formData.projectDescription);
+            if (formData.uploadProjectImage)
+                formDataToSend.append('avatars', formData.uploadProjectImage);
 
+            console.log(formDataToSend)
             try {
                 const backHost = process.env.REACT_APP_BACKEND_PROJECT_SERVICE_HOST
                 const backPort = process.env.REACT_APP_BACKEND_PORT
 
-                const response = await axios.post(
-                    `http://${backHost}:${backPort}/api/projects/createProject`,
-                    formDataToSend, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
-                        },
-                    });
-                if (response.data && response.data.id)
-                    navigate(`/projects/${response.data.id}`);
-                else navigate('/');
-            } catch (err) {}
+                if (!isEdit) {
+                    const response = await axios.post(
+                        `http://${backHost}:${backPort}/api/projects/createProject`,
+                        formDataToSend, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                            },
+                        });
+                    if (response.data && response.data.id)
+                        navigate(`/projects/${response.data.id}`);
+                    else navigate('/');
+                } else await onSubmit(formDataToSend);
+            } catch (err) {
+            }
         } else {
             console.log('Форма содержит ошибки');
         }
@@ -119,8 +126,8 @@ const NewProjectForm = () => {
 
     return (
         <div className="project-form-main">
-            <form method="POST" onSubmit={handleSubmit} encType="multipart/form-data">
-                <h3>Создание нового проекта</h3>
+            <form method="POST" onSubmit={handleSubmit} encType="multipart/form-data" style={props.style}>
+                <h3>{isEdit ? 'Изменить проект' : 'Создание нового проекта'}</h3>
                 <div className="input-wrap">
                     <label htmlFor="uploadProjectImage">Выберите фото для проекта</label>
                     <input
@@ -141,6 +148,7 @@ const NewProjectForm = () => {
                         id="projectName"
                         type="text"
                         name="projectName"
+                        value={formData.projectName}
                         onChange={handleChange}
                     />
                     {errors.projectName && (
@@ -154,16 +162,15 @@ const NewProjectForm = () => {
                               id="projectDescription"
                               name="projectDescription"
                               rows="10"
+                              value={formData.projectDescription}
                               onChange={handleChange}
                     />
                     {errors.projectDescription && (
                         <span style={{color: 'red'}}>{errors.projectDescription}</span>
                     )}
                 </div>
-                <Button>Создать</Button>
+                <Button type="submit">{isEdit ? 'Изменить' : 'Создать'}</Button>
             </form>
         </div>
     );
 };
-
-export default NewProjectForm;

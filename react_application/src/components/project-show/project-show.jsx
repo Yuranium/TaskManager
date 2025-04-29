@@ -29,7 +29,8 @@ export default function ProjectShow() {
                         pageNumber: pageToFetch,
                         size: PAGE_SIZE,
                         userId: user.id
-                    }
+                    },
+                    headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
                 }
             );
 

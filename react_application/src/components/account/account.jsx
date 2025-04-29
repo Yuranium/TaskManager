@@ -171,18 +171,18 @@ export default function Account() {
                         <div className="group-buttons-main-func">
                             <Button onClickFunction={logout}>Выйти</Button>
                             <ModalWindow1
-                                trigger={<Button>Редактировать профиль</Button>}
-                            >
+                                trigger={<Button>Редактировать профиль</Button>}>
                                 {({ close }) => (
                                     <RegisterForm
                                         isEdit={true}
-                                        style={{width: "100%", justiceContent: "start"}}
+                                        style={{width: "100%"}}
                                         initUserData={userData}
                                         onSubmit={async formData => {
                                             await axios.patch(
                                                 `http://${backHost}:${backPort}/api/auth/user/update/${userId}`, formData,
                                                 { headers: {'Content-Type':'multipart/form-data'} });
                                             close();
+                                            window.location.reload();
                                         }}
                                     />
                                 )}

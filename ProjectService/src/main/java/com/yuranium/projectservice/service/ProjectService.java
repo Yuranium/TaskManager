@@ -59,7 +59,7 @@ public class ProjectService
     }
 
     @Transactional
-    public void updateProject(UUID id, ProjectUpdateDto updatedProject) // todo изменить логику связывания новых аватарок
+    public void updateProject(UUID id, ProjectUpdateDto updatedProject) // ? todo изменить логику связывания новых аватарок
     {
         ProjectEntity project = projectRepository.findById(id)
                 .orElseThrow(
@@ -68,7 +68,8 @@ public class ProjectService
                 );
         project.setName(updatedProject.name());
         project.setDescription(updatedProject.description());
-        project.setAvatars(avatarService.multipartToEntity(updatedProject.avatars()));
+        if (updatedProject.avatars() != null)
+            project.setAvatars(avatarService.multipartToEntity(updatedProject.avatars()));
         avatarService.saveAll(project.getAvatars());
         projectRepository.save(project);
     }

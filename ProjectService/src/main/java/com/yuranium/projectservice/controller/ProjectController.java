@@ -53,9 +53,9 @@ public class ProjectController
         );
     }
 
-    @PutMapping("/update/{id}")
+    @PatchMapping("/update/{id}")
     public ResponseEntity<?> updateProject(@PathVariable UUID id,
-                                        @RequestBody ProjectUpdateDto updatedDto)
+                                        @ModelAttribute ProjectUpdateDto updatedDto)
     {
         projectService.updateProject(id, updatedDto);
         return new ResponseEntity<>(HttpStatus.OK);

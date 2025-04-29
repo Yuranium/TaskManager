@@ -21,10 +21,6 @@ export default function ModalWindow1({trigger, children, onClose})
         return () => window.removeEventListener("keydown", onKeyDown);
     }, [isOpen, onKeyDown]);
 
-    const onOverlayClick = e => {
-        if (e.target.classList.contains("modal")) close();
-    };
-
     const triggerWithHandler = React.cloneElement(trigger, {
         onClick: open,
         onClickFunction: open,
@@ -35,8 +31,15 @@ export default function ModalWindow1({trigger, children, onClose})
             {triggerWithHandler}
             {isOpen &&
                 createPortal(
-                    <div className="modal open" onClick={e => e.target.classList.contains("modal") && close()}>
-                        <div className="modal__box" onClick={e => e.stopPropagation()}>
+                    <div className="modal open" onClick={e => {
+                        e.stopPropagation()
+                        if (e.target.classList.contains("modal")) close()
+                    }}
+                         onKeyDown={e => e.stopPropagation()}>
+                        <div className="modal__box"
+                             onClick={e => e.stopPropagation()}
+                             onKeyDown={e => e.stopPropagation()}
+                             tabIndex={-1}>
                             <button className="modal__close-btn" onClick={close}>&#10005;</button>
                             {typeof children === "function" ? children({close}) : children}
                         </div>
