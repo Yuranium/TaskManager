@@ -6,6 +6,7 @@ import com.yuranium.projectservice.dto.ProjectUpdateDto;
 import com.yuranium.projectservice.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,8 @@ public class ProjectController
             @RequestParam Long userId)
     {
         return new ResponseEntity<>(
-                projectService.getAll(PageRequest.of(pageNumber, size), userId),
+                projectService.getAll(PageRequest.of(
+                        pageNumber, size, Sort.by("dateAdded")), userId),
                 HttpStatus.OK
         );
     }

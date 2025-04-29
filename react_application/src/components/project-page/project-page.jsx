@@ -5,13 +5,15 @@ import './project-page.css';
 import TaskCard from "../task-card/task-card";
 import Http404 from "../info/http-error/404";
 import {Link, useNavigate, useParams} from "react-router-dom";
-import ModalWindow from "../modal-window/modal-window";
 import Autosuggest from "react-autosuggest";
 import {useAuth} from "../../hooks/auth";
+import Button from "../button/button";
+import ModalWindow1 from "../modal-window/modal-window-1";
+import TaskForm from "../task-form/task-form";
 
 export default function ProjectPage() {
     const {user} = useAuth();
-    const { projectId } = useParams();
+    const {projectId} = useParams();
     const navigate = useNavigate();
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -55,9 +57,10 @@ export default function ProjectPage() {
             );
     };
 
-    const onProjFetch = ({ value }) => {
+    const onProjFetch = ({value}) => {
         setProjSuggestions(getProjSuggestions(value));
     };
+
     const onProjClear = () => setProjSuggestions([]);
 
     const getProjValue = suggestion => suggestion.name;
@@ -66,7 +69,7 @@ export default function ProjectPage() {
     const projInputProps = {
         placeholder: "Найти проект...",
         value: projSearch,
-        onChange: (e, { newValue }) => setProjSearch(newValue),
+        onChange: (e, {newValue}) => setProjSearch(newValue),
         id: "project-search",
     };
 
@@ -82,7 +85,7 @@ export default function ProjectPage() {
             );
     };
 
-    const onTaskFetch = ({ value }) => setTaskSuggestions(getTaskSuggestions(value));
+    const onTaskFetch = ({value}) => setTaskSuggestions(getTaskSuggestions(value));
     const onTaskClear = () => setTaskSuggestions([]);
 
     const getTaskValue = suggestion => suggestion.name;
@@ -91,7 +94,7 @@ export default function ProjectPage() {
     const taskInputProps = {
         placeholder: "Найти задачу...",
         value: taskSearch,
-        onChange: (e, { newValue }) => setTaskSearch(newValue),
+        onChange: (e, {newValue}) => setTaskSearch(newValue),
         id: "task-search",
     };
 
@@ -102,9 +105,10 @@ export default function ProjectPage() {
         try {
             const [tasksRes, projectRes] = await Promise.all([
                 axios.get(`http://${backHost}:${backPort}/api/tasks/allTasks`, {
-                    params: { projectId },
+                    params: {projectId}, headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
                 }),
-                axios.get(`http://${backHost}:${backPort}/api/projects/${projectId}`),
+                axios.get(`http://${backHost}:${backPort}/api/projects/${projectId}`,
+                    {headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}}),
             ]);
 
             if (projectRes.status === 200) setProjectExists(true);
@@ -114,7 +118,10 @@ export default function ProjectPage() {
                 setTasks(t);
                 const resp = await axios.get(
                     `http://${backHost}:${backPort}/api/projects/allProjects`,
-                    { params: { size: 50, userId: user.id } }
+                    {
+                        params: {size: 50, userId: user.id},
+                        headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
+                    }
                 );
                 if (resp.status === 200) setProjects(resp.data);
             } else {
@@ -143,13 +150,28 @@ export default function ProjectPage() {
     const handleFinishedChange = (e) => setFinished(e.target.checked ? true : null);
 
     if (loading) return <div>Загрузка проекта...</div>;
-    if (!projectExists) return <Http404 />;
+    if (!projectExists) return <Http404/>;
     if (projectEmpty)
         return (
             <div className="project-empty">
                 <div className="project-page-wrapper-empty">
                     <p>Данный проект на данный момент пустой</p>
-                    <ModalWindow projectId={projectId} isNewTask={true} />
+                    <ModalWindow1
+                        trigger={<Button>Создать новую задачу</Button>}>
+                        {({close}) => (
+                            <TaskForm
+                                style={{width: "100%"}}
+                                projectId={projectId}
+                                onSubmit={async formData => {
+                                    await axios.post(
+                                        `http://${backHost}:${backPort}/api/tasks/createTask`, formData,
+                                        {headers: {'Content-Type': 'multipart/form-data'}});
+                                    close();
+                                    window.location.reload();
+                                }}
+                            />
+                        )}
+                    </ModalWindow1>
                 </div>
             </div>
         );
@@ -165,7 +187,7 @@ export default function ProjectPage() {
                     getSuggestionValue={getProjValue}
                     renderSuggestion={renderProj}
                     inputProps={projInputProps}
-                    onSuggestionSelected={(e, { suggestion }) => {
+                    onSuggestionSelected={(e, {suggestion}) => {
                         navigate(`/projects/${suggestion.id}`);
                     }}
                 />
@@ -182,8 +204,23 @@ export default function ProjectPage() {
 
             <div className="project-page-main-1">
                 <nav className="task-navbar">
-                    <ModalWindow projectId={projectId}><CiCirclePlus/></ModalWindow>
 
+                    <ModalWindow1
+                        trigger={<Button style={{padding: "0", margin: "0", display: "flex"}}><CiCirclePlus/></Button>}>
+                        {({close}) => (
+                            <TaskForm
+                                style={{width: "100%"}}
+                                projectId={projectId}
+                                onSubmit={async formData => {
+                                    await axios.post(
+                                        `http://${backHost}:${backPort}/api/tasks/createTask`, formData,
+                                        {headers: {'Content-Type': 'multipart/form-data'}});
+                                    close();
+                                    window.location.reload();
+                                }}
+                            />
+                        )}
+                    </ModalWindow1>
                     <Autosuggest
                         suggestions={taskSuggestions}
                         onSuggestionsFetchRequested={onTaskFetch}

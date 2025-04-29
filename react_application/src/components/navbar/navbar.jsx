@@ -15,17 +15,18 @@ import Http500 from "../info/http-error/500";
 import {useAuth} from "../../hooks/auth";
 import RegisterForm from "../login-form/register-form/register-form";
 import OAuth2RedirectHandler from "../login-form/oauth2-redirect-handler";
+import Button from "../button/button";
+import ModalWindow1 from "../modal-window/modal-window-1";
 
 export default function Navbar() {
     const {isAuthenticated, logout, user} = useAuth();
     const navigate = useNavigate();
+
     const handleLogout = () => {
-        // eslint-disable-next-line no-restricted-globals
-        if (confirm('Точно выйти?')) {
-            logout();
-            navigate('/');
-        }
+        logout();
+        navigate('/');
     };
+
     return (
         <>
             <nav className="navigation-menu">
@@ -52,8 +53,27 @@ export default function Navbar() {
                           </span>
                             <ul className="dropdown-menu">
                                 <li>
-                                    <div className="logout-button" onClick={handleLogout}>
-                                        Выйти
+                                    <div className="inner-list-item">
+                                        <ModalWindow1 trigger={<span role="button">Выйти</span>}>
+                                            {({close}) => (
+                                                <>
+                                                    <h3>Действительно выйти из аккаунта?</h3>
+                                                    <div className="modal-actions">
+                                                        <Button onClickFunction={close}>Нет</Button>
+                                                        <Button onClickFunction={() => {
+                                                            handleLogout();
+                                                            close();
+                                                        }}>Да
+                                                        </Button>
+                                                    </div>
+                                                </>
+                                            )}
+                                        </ModalWindow1>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div className="my-team inner-list-item">
+                                        <Link to='/account/my-team'>Моя команда</Link>
                                     </div>
                                 </li>
                             </ul>

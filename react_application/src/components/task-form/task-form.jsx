@@ -4,7 +4,8 @@ import axios from "axios";
 import './task-form.css'
 import Button from "../button/button";
 
-export default function TaskForm({isNewTask, projectId, closeWindowFunc}) {
+export default function TaskForm({isEdit = false, initUserData = {}, onSubmit, projectId, ...props})
+{
     const [data, setData] = useState({
         allImportance: [],
         allStatus: [],
@@ -49,7 +50,7 @@ export default function TaskForm({isNewTask, projectId, closeWindowFunc}) {
     }, []);
 
 
-    const handleNewTask = (e) => {
+    const handleNewTask = async (e) => {
         e.preventDefault();
 
         const errors = {
@@ -84,13 +85,13 @@ export default function TaskForm({isNewTask, projectId, closeWindowFunc}) {
             newTask.append("images", taskPhotoInput.files[0]);
             newTask.append("projectId", projectId)
 
-            console.log(newTask)
-            axios.post(
-                `http://${backHost}:${backPort}/api/tasks/createTask`,
-                newTask,
-                {headers: {'Content-Type': 'multipart/form-data'}}
-            )
-            closeWindowFunc()
+            /*if (!isEdit)
+                axios.post(
+                    `http://${backHost}:${backPort}/api/tasks/createTask`,
+                    newTask,
+                    {headers: {'Content-Type': 'multipart/form-data'}}
+                )
+            else*/ await onSubmit(newTask);
         }
     };
 
@@ -180,7 +181,7 @@ export default function TaskForm({isNewTask, projectId, closeWindowFunc}) {
                         ))}
                     <p className="fileFormat">Формат файлов: PNG, JPEG, GIF</p>
                 </div>
-                <Button>Создать</Button>
+                <Button type="submit">Создать</Button>
             </form>
         </div>
     )

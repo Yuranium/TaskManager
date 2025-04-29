@@ -189,7 +189,7 @@ export default function Account() {
                             </ModalWindow1>
                             <Button onClickFunction={() => navigate('/projects')}>К проектам</Button>
                         </div>
-                        <ModalWindow1 trigger={<Button backgroundColor="#f47c7c">Удалить аккаунт</Button>}>
+                        <ModalWindow1 trigger={<Button style={{backgroundColor: "#f47c7c"}}>Удалить аккаунт</Button>}>
                             {({close}) => (
                                 <>
                                     <h3>Действительно удалить аккаунт?</h3>
