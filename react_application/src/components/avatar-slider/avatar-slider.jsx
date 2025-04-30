@@ -8,6 +8,7 @@ import 'swiper/css/navigation';
 import './avatar-slider.css';
 import {PiUploadSimpleBold} from "react-icons/pi";
 import axios from "axios";
+import ModalWindow from "../modal-window/modal-window";
 
 export default function AvatarSlider({ data, baseUrl }) {
     const { userId } = useParams();
@@ -47,17 +48,34 @@ export default function AvatarSlider({ data, baseUrl }) {
                 onSlideChange={({ activeIndex }) => setCurrent(activeIndex)}>
                 {avatars.map((av, idx) => (
                     <SwiperSlide key={idx}>
-                        {av.binaryData
-                            ? <img
-                                className="avatar-link"
-                                src={`data:${av.contentType};base64,${av.binaryData}`}
-                                alt={`avatar-${idx}`}
-                            />
-                            : <img
-                                className="avatar-link"
-                                src="/default-avatar.png"
-                                alt="default avatar"
-                            />
+                        {
+                            <ModalWindow
+                                style={{padding: "0", display: "flex"}}
+                                trigger={av.binaryData
+                                    ? <img
+                                        className="avatar-link"
+                                        src={`data:${av.contentType};base64,${av.binaryData}`}
+                                        alt={`avatar-${idx}`}
+                                    />
+                                    : <img
+                                        className="avatar-link"
+                                        src="/default-avatar.png"
+                                        alt="default avatar"
+                                    />}>
+                                {({close}) => (
+                                    av.binaryData
+                                        ? <img
+                                            className="image-user-avatar"
+                                            src={`data:${av.contentType};base64,${av.binaryData}`}
+                                            alt={`avatar-${idx}`}
+                                        />
+                                        : <img
+                                            className="avatar-link"
+                                            src="/default-avatar.png"
+                                            alt="default avatar"
+                                        />
+                                )}
+                            </ModalWindow>
                         }
                     </SwiperSlide>
                 ))}

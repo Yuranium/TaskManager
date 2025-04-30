@@ -3,18 +3,12 @@ import Button from "../button/button";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import ModalWindow from "../modal-window/modal-window";
-import {FiAlertOctagon} from "react-icons/fi";
-import {IoMdCheckmark} from "react-icons/io";
-import {RxCross2} from "react-icons/rx";
+import {ImCross} from "react-icons/im";
+import {GiCheckMark} from "react-icons/gi";
+import {FcCancel} from "react-icons/fc";
 
 export default function TaskCard({task, avatars}) {
     const navigate = useNavigate()
-
-    const openTask = (e) => {
-        if (e.target.closest(".task-card-buttons"))
-            return;
-        navigate(`/projects/${task.id}`);
-    }
 
     const updateTask = (e) => {
         e.stopPropagation()
@@ -33,46 +27,69 @@ export default function TaskCard({task, avatars}) {
     }
 
     return (
-        <div className="container">
-            <div
-                className="anchor-task-card"
-                role="button">
-                <div className="main-info">
-                    <img
+        <div
+            className="anchor-task-card"
+            role="button">
+            <div className="task-card-container-item">
+                <ModalWindow
+                    style={{padding: "0", width: "230%", right: "65%", display: "flex"}}
+                    trigger={<img
                         className="image-task-card"
                         src={`data:${avatars[0].contentType};base64,${avatars[0].binaryData}`}
-                        alt={`Аватар: ${avatars[0].name}`}/>
-                    <h3 className="task-name">{task.name}</h3>
+                        alt={`Аватар: ${avatars[0].name}`}/>}>
+                    {({close}) => (
+                        <img
+                            className="image-task-card-open"
+                            src={`data:${avatars[0].contentType};base64,${avatars[0].binaryData}`}
+                            alt={`Аватар задачи: ${avatars[0].name}`}/>
+                    )}
+                </ModalWindow>
+            </div>
+            <div className="task-card-container-item">
+                <h3 className="task-name">{task.name}</h3>
+            </div>
+            <div className="task-card-container-item">
+                {<div className="task-description">{task.description || <FcCancel/>}</div>}
+            </div>
+            <div className="task-card-container-item">
+                <div className="task-date-added">{task.dateAdded}</div>
+            </div>
+            <div className="task-card-container-item">
+                <div className="task-date-finished">{task.dateFinished}</div>
+            </div>
+            <div className="task-card-container-item">
+                <div className={`task-importance ti-${task.taskImportance.toLowerCase()}`}>
+                    {task.taskImportance}
                 </div>
-                <div className="container-task-card-info">
-                    {task.description && <p>{task.description}</p>}
-                    <p className={`task-importance-${task.taskImportance.toLowerCase()}`}>
-                        <FiAlertOctagon/> {`Важность: ${task.taskImportance}`}
-                    </p>
-                    <p>{`Статус: ${task.taskStatus}`}</p>
-                    <p className={task.isFinished ? 'task-finished' : 'task-not-finished'}>
-                        Завершена? {task.isFinished ? <IoMdCheckmark/> : <RxCross2/>}
-                    </p>
+            </div>
+            <div className="task-card-container-item">
+                <div className={`task-status ts-${task.taskStatus.toLowerCase()}`}>
+                    {task.taskStatus}
                 </div>
-                <div className="task-card-buttons">
-                    <Button onClickFunction={updateTask}>Изменить</Button>
-                    <ModalWindow trigger={<Button>Удалить</Button>}>
-                        {({close}) => (
-                            <>
-                                <h3>Действительно удалить задачу?</h3>
-                                <p>{`Название задачи: ${task.name}`}</p>
-                                <div className="modal-actions">
-                                    <Button onClickFunction={close}>Нет</Button>
-                                    <Button onClickFunction={() => {
-                                        deleteTask();
-                                        close();
-                                    }}>Да
-                                    </Button>
-                                </div>
-                            </>
-                        )}
-                    </ModalWindow>
+            </div>
+            <div className="task-card-container-item">
+                <div className={`task-finish ${task.isFinished ? 'task-finished' : 'task-not-finished'}`}>
+                    {task.isFinished ? <GiCheckMark/> : <ImCross/>}
                 </div>
+            </div>
+            <div className="task-card-container-item task-card-buttons">
+                <Button style={{padding: "15px 10px", width: "100px"}} onClickFunction={updateTask}>Изменить</Button>
+                <ModalWindow trigger={<Button style={{padding: "15px 10px", width: "100px"}}>Удалить</Button>}>
+                    {({close}) => (
+                        <>
+                            <h3>Действительно удалить задачу?</h3>
+                            <p>{`Название задачи: ${task.name}`}</p>
+                            <div className="modal-actions">
+                                <Button onClickFunction={close}>Нет</Button>
+                                <Button onClickFunction={() => {
+                                    deleteTask();
+                                    close();
+                                }}>Да
+                                </Button>
+                            </div>
+                        </>
+                    )}
+                </ModalWindow>
             </div>
         </div>
     )

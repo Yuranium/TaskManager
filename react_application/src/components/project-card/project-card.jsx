@@ -32,17 +32,30 @@ export default function ProjectCard({project, avatars}) {
             <div className="project-card-main">
                 <div className="project-card-container"
                      onClick={e => {
-                         if (e.target.closest('.project-card-buttons')) return;
+                         if (e.target.closest('.project-card-buttons') || e.target.closest('.image-project-card')) return;
                          navigate(`/projects/${project.id}`);
                      }}
                      role="button"
                      tabIndex={0}
                      aria-label={`Перейти к проекту ${project.name}`}
-                     onKeyDown={openProject}>
-                    <img
-                        src={`data:${avatars[0].contentType};base64,${avatars[0].binaryData}`}
-                        alt={`Аватар: ${avatars[0].name}`}
-                    />
+                     onKeyDown={e => {
+                         if (e.key === 'Escape')
+                             return;
+                         if (e.key === 'Enter')
+                            openProject(e);
+                     }}>
+                    <ModalWindow
+                        style={{padding: "0", width: "230%", right: "65%", display: "flex"}}
+                        trigger={<img className="image-project-card"
+                            src={`data:${avatars[0].contentType};base64,${avatars[0].binaryData}`}
+                            alt={`Аватар проекта: ${avatars[0].name}`}/>}>
+                        {({close}) => (
+                            <img
+                                className="image-task-card-open"
+                                src={`data:${avatars[0].contentType};base64,${avatars[0].binaryData}`}
+                                alt={`Аватар: ${avatars[0].name}`}/>
+                        )}
+                    </ModalWindow>
                     <div className="text-info">
                         <h2>{project.name}</h2>
                         <p>{`Описание: ${project.description}`}</p>
