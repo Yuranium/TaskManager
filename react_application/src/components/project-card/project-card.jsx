@@ -4,6 +4,7 @@ import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import ModalWindow from "../modal-window/modal-window";
 import NewProjectForm from "../project-form/new-project-form";
+import {FaCalendarAlt} from "react-icons/fa";
 
 export default function ProjectCard({project, avatars}) {
     const navigate = useNavigate();
@@ -58,8 +59,8 @@ export default function ProjectCard({project, avatars}) {
                     </ModalWindow>
                     <div className="text-info">
                         <h2>{project.name}</h2>
-                        <p>{`Описание: ${project.description}`}</p>
-                        <div>{`Дата добавления: ${project.dateAdded}`}</div>
+                        <div className="project-description">{project.description}</div>
+                        <div className="date-added"><FaCalendarAlt /> {`Дата добавления: ${project.dateAdded}`}</div>
                     </div>
 
                     <div className="project-card-buttons">

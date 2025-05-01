@@ -6,19 +6,16 @@ import ModalWindow from "../modal-window/modal-window";
 import {ImCross} from "react-icons/im";
 import {GiCheckMark} from "react-icons/gi";
 import {FcCancel} from "react-icons/fc";
+import TaskForm from "../task-form/task-form";
 
-export default function TaskCard({task, avatars}) {
+export default function TaskCard({task, avatars})
+{
     const navigate = useNavigate()
 
-    const updateTask = (e) => {
-        e.stopPropagation()
-        //return <ModalWindow task={task} isNewTask={false}/>
-        navigate(`updateTask/${task.id}`)
-    }
+    const backHost = process.env.REACT_APP_BACKEND_PROJECT_SERVICE_HOST;
+    const backPort = process.env.REACT_APP_BACKEND_PORT;
 
     const deleteTask = () => {
-        const backHost = process.env.REACT_APP_BACKEND_PROJECT_SERVICE_HOST;
-        const backPort = process.env.REACT_APP_BACKEND_PORT;
         axios.delete(`http://${backHost}:${backPort}/api/tasks/delete/${task.id}`)
             .then(res => {
                 if (res.status === 204)
@@ -73,7 +70,21 @@ export default function TaskCard({task, avatars}) {
                 </div>
             </div>
             <div className="task-card-container-item task-card-buttons">
-                <Button style={{padding: "15px 10px", width: "100px"}} onClickFunction={updateTask}>Изменить</Button>
+                <ModalWindow style={{padding: "0", width: "150%", right: "20%"}}
+                             trigger={<Button style={{padding: "15px 10px", width: "100px"}}>Изменить</Button>}>
+                    {({close}) => (
+                        <TaskForm
+                            style={{width: "100%"}}
+                            onSubmit={async formData => {
+                                await axios.patch(
+                                    `http://${backHost}:${backPort}/api/tasks/update/${task.id}`, formData,
+                                    {headers: {'Content-Type': 'multipart/form-data'}});
+                                close();
+                                window.location.reload();
+                            }}
+                        />
+                    )}
+                </ModalWindow>
                 <ModalWindow trigger={<Button style={{padding: "15px 10px", width: "100px"}}>Удалить</Button>}>
                     {({close}) => (
                         <>

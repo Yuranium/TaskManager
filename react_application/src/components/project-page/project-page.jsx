@@ -166,7 +166,7 @@ export default function ProjectPage() {
                 <div className="project-page-wrapper-empty">
                     <p>Данный проект на данный момент пустой</p>
                     <ModalWindow style={{padding: "0"}}
-                        trigger={<Button>Создать новую задачу</Button>}>
+                                 trigger={<Button>Создать новую задачу</Button>}>
                         {({close}) => (
                             <TaskForm
                                 style={{width: "100%"}}
@@ -214,8 +214,9 @@ export default function ProjectPage() {
             <div className="project-page-main-1">
                 <nav className="task-navbar">
 
-                    <ModalWindow style={{padding: "0"}}
-                        trigger={<Button style={{padding: "0", margin: "0", display: "flex"}}><CiCirclePlus/></Button>}>
+                    <ModalWindow style={{padding: "0", width: "150%", right: "20%"}}
+                                 trigger={<Button
+                                     style={{padding: "0", margin: "0", display: "flex"}}><CiCirclePlus/></Button>}>
                         {({close}) => (
                             <TaskForm
                                 style={{width: "100%"}}
@@ -241,33 +242,38 @@ export default function ProjectPage() {
 
                     <span className="task-status-filter">
                         <label htmlFor="task-status-sort" className="project-page-label">
-                            Сортировка по статусу:</label>
+                            </label>
                         <select id="task-status-sort"
                                 onChange={handleStatusChange}
                                 value={statusFilter}>
-                            <option value=""></option>
+                            <option value="">Сортировка по статусу</option>
                             {taskStatusImportance.status.map(status => <option key={status}>{status}</option>)}
                         </select>
                     </span>
 
                     <span className="task-importance-filter">
-                        <label htmlFor="task-importance-sort" className="project-page-label">
-                            Сортировка по важности:</label>
+                        <label htmlFor="task-importance-sort" className="project-page-label"></label>
                         <select id="task-importance-sort"
                                 onChange={handleImportanceChange}
                                 value={importanceFilter}>
-                            <option value=""></option>
-                            {taskStatusImportance.importance.map(importance => <option key={importance}>{importance}</option>)}
+                            <option value="">Сортировка по важности</option>
+                            {taskStatusImportance.importance.map(importance => <option
+                                key={importance}>{importance}</option>)}
                         </select>
                     </span>
 
                     <span className="task-finish-filter">
+                        <div className="toggle-wrapper">
                         <label htmlFor="task-is-finish" className="project-page-label">
                             Задача завершена?</label>
-                        <input
-                            type="checkbox"
-                            id="task-is-finish"
-                            onChange={handleFinishedChange}/>
+                          <input
+                              className="toggle-checkbox"
+                              type="checkbox"
+                              onChange={handleFinishedChange}/>
+                          <div className="toggle-container">
+                            <div className="toggle-button"></div>
+                          </div>
+                        </div>
                     </span>
                 </nav>
 
