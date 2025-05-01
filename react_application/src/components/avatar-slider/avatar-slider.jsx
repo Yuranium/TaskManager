@@ -9,6 +9,7 @@ import './avatar-slider.css';
 import {PiUploadSimpleBold} from "react-icons/pi";
 import axios from "axios";
 import ModalWindow from "../modal-window/modal-window";
+import AvatarImage from "../avatar-image/avatar-image";
 
 export default function AvatarSlider({ data, baseUrl }) {
     const { userId } = useParams();
@@ -48,35 +49,11 @@ export default function AvatarSlider({ data, baseUrl }) {
                 onSlideChange={({ activeIndex }) => setCurrent(activeIndex)}>
                 {avatars.map((av, idx) => (
                     <SwiperSlide key={idx}>
-                        {
-                            <ModalWindow
-                                style={{padding: "0", display: "flex"}}
-                                trigger={av.binaryData
-                                    ? <img
-                                        className="avatar-link"
-                                        src={`data:${av.contentType};base64,${av.binaryData}`}
-                                        alt={`avatar-${idx}`}
-                                    />
-                                    : <img
-                                        className="avatar-link"
-                                        src="/default-avatar.png"
-                                        alt="default avatar"
-                                    />}>
-                                {({close}) => (
-                                    av.binaryData
-                                        ? <img
-                                            className="image-user-avatar"
-                                            src={`data:${av.contentType};base64,${av.binaryData}`}
-                                            alt={`avatar-${idx}`}
-                                        />
-                                        : <img
-                                            className="avatar-link"
-                                            src="/default-avatar.png"
-                                            alt="default avatar"
-                                        />
-                                )}
-                            </ModalWindow>
-                        }
+                        <ModalWindow
+                            style={{ padding: "0", display: "flex" }}
+                            trigger={<AvatarImage av={av} idx={idx} className="avatar-link" />}>
+                            {({ close }) => <AvatarImage av={av} idx={idx} className="image-user-avatar" />}
+                        </ModalWindow>
                     </SwiperSlide>
                 ))}
                 {data.length !== 0 && isOwner && (
@@ -91,7 +68,7 @@ export default function AvatarSlider({ data, baseUrl }) {
                 )}
             </Swiper>
 
-            {avatars.length !== 0 && avatars.length !== 1 && <button
+            {avatars.length > 1 && <button
                 className="slider-arrow next-arrow"
                 onClick={() => swiperRef.current?.slideNext()}
                 disabled={current === avatars.length - 1}
