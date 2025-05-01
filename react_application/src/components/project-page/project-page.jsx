@@ -165,7 +165,7 @@ export default function ProjectPage() {
             <div className="project-empty">
                 <div className="project-page-wrapper-empty">
                     <p>Данный проект на данный момент пустой</p>
-                    <ModalWindow style={{padding: "0"}}
+                    <ModalWindow style={{padding: "0", width: "150%", right: "20%"}}
                                  trigger={<Button>Создать новую задачу</Button>}>
                         {({close}) => (
                             <TaskForm

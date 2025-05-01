@@ -123,7 +123,7 @@ export default function Account() {
             <div className="account-data">
                 {userData && (
                     <AvatarSlider
-                        data={userData}
+                        data={userData.avatars}
                         baseUrl={`http://${backHost}:${backPort}/api/auth/user/${userId}/update-avatar`}
                     />
                 )}

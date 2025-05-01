@@ -13,6 +13,7 @@ import com.yuranium.taskservice.util.exception.TaskEntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +34,7 @@ public class TaskService
     public List<TaskDto> getAll(UUID projectId)
     {
         List<TaskEntity> taskEntities = taskRepository.findAllByProjectId(projectId,
-                PageRequest.of(0, 15));
+                PageRequest.of(0, 15, Sort.by("dateAdded")));
         taskEntities.forEach(task -> task.getImages().size());
         return taskMapper.toDto(taskEntities);
     }
@@ -91,12 +92,12 @@ public class TaskService
     }
 
     @Transactional
-    public void updateTask(UUID id, TaskUpdateDto updatedTask)
+    public TaskDto updateTask(UUID id, TaskUpdateDto updatedTask)
     {
         if (taskRepository.findById(id).isPresent())
-            taskRepository.save(
+            return taskMapper.toDto(taskRepository.save(
                     taskMapper.toEntity(updatedTask)
-            );
+            ));
         else throw new TaskEntityNotFoundException(
                 String.format("The task with id=%s does not exist", id)
         );

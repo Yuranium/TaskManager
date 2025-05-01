@@ -75,6 +75,8 @@ export default function TaskCard({task, avatars})
                     {({close}) => (
                         <TaskForm
                             style={{width: "100%"}}
+                            initTaskData={task}
+                            avatars={avatars}
                             onSubmit={async formData => {
                                 await axios.patch(
                                     `http://${backHost}:${backPort}/api/tasks/update/${task.id}`, formData,

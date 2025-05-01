@@ -37,6 +37,11 @@
     scrollbar-color: #a0a0a0 #f0f0f0;
 }
 
+.task-date-added, .task-date-finished {
+    font-weight: bold;
+    color: #676767;
+}
+
 .image-task-card {
     border-radius: .5em;
     height: 120px;

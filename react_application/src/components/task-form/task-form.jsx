@@ -4,7 +4,7 @@ import axios from "axios";
 import './task-form.css'
 import Button from "../button/button";
 
-export default function TaskForm({isEdit = false, initUserData = {}, onSubmit, projectId, ...props})
+export default function TaskForm({isEdit = false, initTaskData = {}, onSubmit, projectId, ...props})
 {
     const [data, setData] = useState({
         allImportance: [],

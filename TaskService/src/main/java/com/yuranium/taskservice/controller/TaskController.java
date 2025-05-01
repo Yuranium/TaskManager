@@ -90,20 +90,23 @@ public class TaskController
     @PostMapping("/createTask")
     public ResponseEntity<?> createTask(@ModelAttribute TaskInputDto newTask)
     {
-        taskService.createTask(newTask);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                taskService.createTask(newTask),
+                HttpStatus.CREATED
+        );
     }
 
-    @PutMapping("/update/{id}")
+    @PatchMapping("/update/{id}")
     public ResponseEntity<?> updateTask(@PathVariable UUID id,
                                         @RequestBody TaskUpdateDto updatedDto)
     {
-        taskService.updateTask(id, updatedDto);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(
+                taskService.updateTask(id, updatedDto),
+                HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> updateTask(@PathVariable UUID id)
+    public ResponseEntity<?> deleteTask(@PathVariable UUID id)
     {
         taskService.deleteTask(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

@@ -11,14 +11,15 @@ import axios from "axios";
 import ModalWindow from "../modal-window/modal-window";
 import AvatarImage from "../avatar-image/avatar-image";
 
-export default function AvatarSlider({ data, baseUrl }) {
+export default function AvatarSlider({ data, baseUrl })
+{
     const { userId } = useParams();
     const { user } = useAuth();
     const swiperRef = useRef(null);
     const [current, setCurrent] = useState(0);
 
-    const avatars = Array.isArray(data?.avatars) && data.avatars.length
-        ? [...data.avatars].sort((a, b) => b.dateAdded.localeCompare(a.dateAdded))
+    const avatars = Array.isArray(data) && data.length
+        ? [...data].sort((a, b) => b.dateAdded.localeCompare(a.dateAdded))
         : [{ contentType: 'image/png', binaryData: null }];
 
     const isOwner = user && String(user.id) === userId;
@@ -35,7 +36,7 @@ export default function AvatarSlider({ data, baseUrl }) {
 
     return (
         <div className="avatar-slider-container">
-            {avatars.length !== 0 && avatars.length !== 1 && <button
+            {avatars.length > 1 && <button
                 className="slider-arrow prev-arrow"
                 onClick={() => swiperRef.current?.slidePrev()}
                 disabled={current === 0}

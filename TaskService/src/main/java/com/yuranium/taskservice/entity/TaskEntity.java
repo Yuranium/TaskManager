@@ -41,7 +41,7 @@ public class TaskEntity
     @Column(name = "status")
     private TaskStatus taskStatus;
 
-    @Column(name = "date_added", columnDefinition = "TIMESTAMP")
+    @Column(name = "date_added", columnDefinition = "DATE")
     private LocalDate dateAdded;
 
     @Column(name = "date_updated", columnDefinition = "TIMESTAMP")
