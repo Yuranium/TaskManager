@@ -3,7 +3,7 @@ package com.yuranium.projectservice.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,11 +16,11 @@ public record ProjectDto(
 
         @JsonFormat(shape = JsonFormat.Shape.STRING,
                 pattern = "yyyy-MM-dd", timezone = "UTC")
-        LocalDateTime dateAdded,
+        LocalDate dateAdded,
 
         @JsonFormat(shape = JsonFormat.Shape.STRING,
                 pattern = "yyyy-MM-dd", timezone = "UTC")
-        LocalDateTime dateUpdated,
+        LocalDate dateUpdated,
 
         List<AvatarDto> avatars
 

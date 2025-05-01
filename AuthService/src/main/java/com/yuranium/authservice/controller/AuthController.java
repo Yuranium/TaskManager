@@ -71,8 +71,10 @@ public class AuthController
     public ResponseEntity<?> updateUser(@PathVariable Long id,
                                         @ModelAttribute UserUpdateDto userDto)
     {
-        userService.updateUser(id, userDto);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(
+                userService.updateUser(id, userDto),
+                HttpStatus.OK
+        );
     }
 
     @PatchMapping("/user/{id}/update-avatar")

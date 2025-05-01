@@ -70,7 +70,7 @@ public class UserService implements UserDetailsService
     }
 
     @Transactional
-    public void updateUser(Long id, UserUpdateDto userDto)
+    public UserDto updateUser(Long id, UserUpdateDto userDto)
     {
         UserEntity userEntity = userRepository.findById(id)
                 .orElseThrow(() -> new UserEntityNotFoundException(
@@ -88,7 +88,9 @@ public class UserService implements UserDetailsService
         userEntity.getAvatars().addAll(avatarService.multipartToEntity(userDto.avatars()));
         updateUser.setAvatars(userEntity.getAvatars());
         updateUser.setRoles(userEntity.getRoles());
-        userRepository.save(updateUser);
+        return userMapper.toUserDto(
+                userRepository.save(updateUser)
+        );
     }
 
     @Transactional

@@ -59,7 +59,7 @@ public class ProjectService
     }
 
     @Transactional
-    public void updateProject(UUID id, ProjectUpdateDto updatedProject) // ? todo изменить логику связывания новых аватарок
+    public ProjectDto updateProject(UUID id, ProjectUpdateDto updatedProject) // ? todo изменить логику связывания новых аватарок
     {
         ProjectEntity project = projectRepository.findById(id)
                 .orElseThrow(
@@ -71,7 +71,9 @@ public class ProjectService
         if (updatedProject.avatars() != null)
             project.setAvatars(avatarService.multipartToEntity(updatedProject.avatars()));
         avatarService.saveAll(project.getAvatars());
-        projectRepository.save(project);
+        return projectMapper.toDto(
+                        projectRepository.save(project)
+        );
     }
 
     @Transactional

@@ -1,6 +1,6 @@
 import {useEffect, useMemo, useRef, useState} from "react";
 import {CiCirclePlus} from "react-icons/ci";
-import axios from "axios";
+import axios, {HttpStatusCode} from "axios";
 import './project-page.css';
 import TaskCard from "../task-card/task-card";
 import Http404 from "../info/http-error/404";
@@ -31,6 +31,7 @@ export default function ProjectPage() {
     const [statusFilter, setStatusFilter] = useState("");
     const [importanceFilter, setImportanceFilter] = useState("");
     const [isFinished, setFinished] = useState(null);
+    const [taskStatusImportance, setTaskStatusImportance] = useState({});
 
     const filteredTasks = useMemo(() => {
         return tasks.filter((t) => {
@@ -111,7 +112,15 @@ export default function ProjectPage() {
                     {headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}}),
             ]);
 
-            if (projectRes.status === 200) setProjectExists(true);
+            const [importanceRes, statusRes] = await Promise.all([
+                axios.get(`http://${backHost}:${backPort}/api/tasks/allTaskImportance`),
+                axios.get(`http://${backHost}:${backPort}/api/tasks/allTaskStatus`)
+            ]);
+
+            if (importanceRes.status === HttpStatusCode.Ok && statusRes.status === HttpStatusCode.Ok)
+                setTaskStatusImportance({importance: importanceRes.data, status: statusRes.data})
+
+            if (projectRes.status === HttpStatusCode.Ok) setProjectExists(true);
 
             const t = tasksRes.data;
             if (Array.isArray(t) && t.length > 0) {
@@ -123,7 +132,7 @@ export default function ProjectPage() {
                         headers: {Authorization: `Bearer ${localStorage.getItem('jwtToken')}`}
                     }
                 );
-                if (resp.status === 200) setProjects(resp.data);
+                if (resp.status === HttpStatusCode.Ok) setProjects(resp.data);
             } else {
                 setProjectEmpty(true);
             }
@@ -237,11 +246,7 @@ export default function ProjectPage() {
                                 onChange={handleStatusChange}
                                 value={statusFilter}>
                             <option value=""></option>
-                            <option value="PLANING">В планах</option>
-                            <option value="IN_PROGRESS">В процессе</option>
-                            <option value="COMPLETED">Завершена</option>
-                            <option value="CANCELED">Отменена</option>
-                            <option value="EXPIRED">Просрочена</option>
+                            {taskStatusImportance.status.map(status => <option key={status}>{status}</option>)}
                         </select>
                     </span>
 
@@ -252,9 +257,7 @@ export default function ProjectPage() {
                                 onChange={handleImportanceChange}
                                 value={importanceFilter}>
                             <option value=""></option>
-                            <option value="LOW">Низкая</option>
-                            <option value="INTERMEDIATE">Средняя</option>
-                            <option value="HIGH">Высокая</option>
+                            {taskStatusImportance.importance.map(importance => <option key={importance}>{importance}</option>)}
                         </select>
                     </span>
 

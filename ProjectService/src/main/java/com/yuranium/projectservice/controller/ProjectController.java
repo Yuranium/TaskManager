@@ -59,8 +59,10 @@ public class ProjectController
     public ResponseEntity<?> updateProject(@PathVariable UUID id,
                                         @ModelAttribute ProjectUpdateDto updatedDto)
     {
-        projectService.updateProject(id, updatedDto);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(
+                projectService.updateProject(id, updatedDto),
+                HttpStatus.OK
+        );
     }
 
     @DeleteMapping("/delete/{id}")

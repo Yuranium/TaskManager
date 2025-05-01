@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -30,11 +30,11 @@ public class ProjectEntity
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "date_added", columnDefinition = "TIMESTAMP")
-    private LocalDateTime dateAdded;
+    @Column(name = "date_added", columnDefinition = "DATE")
+    private LocalDate dateAdded;
 
-    @Column(name = "date_updated", columnDefinition = "TIMESTAMP")
-    private LocalDateTime dateUpdated;
+    @Column(name = "date_updated", columnDefinition = "DATE")
+    private LocalDate dateUpdated;
 
     @BatchSize(size = 15)
     @OneToMany(mappedBy = "project")
@@ -47,10 +47,10 @@ public class ProjectEntity
     private void prePersist()
     {
         this.id = UUID.randomUUID();
-        this.dateUpdated = LocalDateTime.now();
+        this.dateUpdated = LocalDate.now();
 
         if (this.dateAdded == null)
-            this.dateAdded = LocalDateTime.now();
+            this.dateAdded = LocalDate.now();
     }
 
     public void setAvatars(List<AvatarEntity> avatars)
