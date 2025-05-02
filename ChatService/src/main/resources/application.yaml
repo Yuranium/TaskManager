@@ -1,0 +1,6 @@
+server:
+  port: ${CHAT_PORT:8083}
+
+spring:
+  application:
+    name: chat-service
