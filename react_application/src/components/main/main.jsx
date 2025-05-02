@@ -155,10 +155,12 @@ export default function Main() {
             <div className="main-page">
                 <h2>Проекты</h2>
                 <div className="main-buttons-container">
-                    <Button onClickFunction={() => navigate('/create-project')}>
+                    <Button onClickFunction={() => navigate('/create-project')}
+                            style={{width: "10%"}}>
                         Создать проект
                     </Button>
-                    <Button onClickFunction={() => navigate('/projects')}>
+                    <Button onClickFunction={() => navigate('/projects')}
+                            style={{width: "10%"}}>
                         К проектам
                     </Button>
                 </div>

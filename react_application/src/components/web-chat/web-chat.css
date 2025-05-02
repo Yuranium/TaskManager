@@ -1,0 +1,118 @@
+.web-chat-container {
+    position: absolute;
+    right: 5em;
+    bottom: 5em;
+    z-index: 100;
+    background-color: #80d0b2;
+    border-radius: 50%;
+    padding: 1em;
+    box-shadow: 0 0 8px 5px rgba(34, 60, 80, 0.2);
+    cursor: pointer;
+}
+
+.web-chat-image {
+    width: 50px;
+}
+.web-chat-container-open {
+    position: absolute;
+    right: 5em;
+    bottom: 5em;
+    width: 30%;
+    height: 65%;
+    z-index: 100;
+    background-color: #f5f5f5;
+    border-radius: 1rem;
+    box-shadow: 0 0 8px 5px rgba(34, 60, 80, 0.2);
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 12fr;
+}
+
+.input-group-wrapper {
+    justify-self: end;
+    align-self: end;
+    overflow-y: scroll;
+    max-height: 100%;
+    scrollbar-width: thin;
+}
+
+.web-chat-header {
+    padding: .5em;
+    background-color: #80d0b2;
+    margin: 0;
+    border-radius: 1rem 1rem 5px 5px;
+    color: #3a3a3a;
+}
+
+.input-group {
+    display: grid;
+    grid-template-columns: 4fr 1fr;
+    grid-template-rows: 1fr;
+}
+
+.chat-messages {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+}
+
+.my-chat-message {
+    max-width: 55%;
+    display: flex;
+    flex-direction: row;
+    list-style: none;
+    align-items: end;
+    align-self: end;
+    margin-bottom: 1em;
+    max-height: 5%;
+}
+
+.my-chat-message-content {
+    list-style: none;
+    padding: .5em 1em 1.3em .5em;
+    background-color: #80d0b2;
+    border-radius: 10px 10px 0 10px;
+    position: relative;
+    transition: box-shadow .3s linear;
+}
+
+.chat-messages .chat-message {
+    max-width: 55%;
+    display: flex;
+    flex-direction: row;
+    list-style: none;
+    align-items: end;
+    border-radius: 10px 10px 10px 0;
+    margin-bottom: 1em;
+    max-height: 5%;
+}
+
+.chat-messages .chat-message-content:hover, .my-chat-message-content:hover {
+    box-shadow: 0 0 2px 1px rgba(34, 60, 80, 0.2);
+}
+
+.timestamp-sended {
+    position: absolute;
+    bottom: 0;
+    right: 5px;
+    font-size: small;
+    color: #4e6888;
+    padding-top: 5%;
+}
+
+.chat-user-avatar {
+    width: 55px;
+    height: 55px;
+    margin-bottom: -10px;
+    border-radius: 50%;
+}
+
+.chat-message-content {
+    list-style: none;
+    padding: .5em 1em 1.3em .5em;
+    background-color: #ececec;
+    border-radius: 10px 10px 10px 0;
+    position: relative;
+    transition: box-shadow .3s linear;
+}

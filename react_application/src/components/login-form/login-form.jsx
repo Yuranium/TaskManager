@@ -80,7 +80,7 @@ export default function LoginForm()
                     <Link to="/register"> Зарегистрируйся!</Link>
                 </div>
                 <Button type="submit" disabled={loading}>
-                    {loading ? <LoadingData defaultName="Вход" defaultFont/> : 'Войти'}
+                    {loading ? 'Вход...' : 'Войти'}
                 </Button>
             </form>
         </div>
