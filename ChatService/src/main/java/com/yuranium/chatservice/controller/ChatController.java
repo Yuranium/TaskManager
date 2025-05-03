@@ -30,7 +30,7 @@ public class ChatController
     {
         return messageService.getAllMessages(chatId,
                 PageRequest.of(pageNumber, size,
-                        Sort.by("dateCreated")));
+                        Sort.by(Sort.Direction.DESC, "dateCreated")));
     }
 
     @SendTo("/topic/messages")

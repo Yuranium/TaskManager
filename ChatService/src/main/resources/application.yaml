@@ -4,9 +4,9 @@ server:
 websocket:
   endpoints: /ws
   allow-origins: ${ALLOW_ORIGIN:http://localhost:3000}
-  destination-prefix: /topic
-  user-destination-prefix: /app
-  application-destination-prefix: /web-chat
+  application-destination-prefix: ${WEBSOCKET_APP_PREFIX:/app}
+  broker-destination-prefix: ${WEBSOCKET_BROKER_PREFIX:/topic}
+  user-destination-prefix: ${WEBSOCKET_USER_PREFIX:/user}
 
 spring:
   application:
@@ -15,3 +15,11 @@ spring:
   data:
     mongodb:
       uri: mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_DATABASE:web-chat}
+
+logging:
+  level:
+    org:
+      springframework:
+        web:
+          socket: DEBUG
+        messaging: DEBUG
