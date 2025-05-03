@@ -1,5 +1,6 @@
 package com.yuranium.chatservice.service;
 
+import com.yuranium.chatservice.enums.MessageType;
 import com.yuranium.chatservice.models.document.MessageDocument;
 import com.yuranium.chatservice.util.exception.MessageNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,6 +26,18 @@ public class MessageService
                 .with(pageable);
 
         return mongoTemplate.find(query, MessageDocument.class);
+    }
+
+    public MessageDocument insertMessage(MessageDocument message)
+    {
+        return mongoTemplate.insert(MessageDocument.builder()
+                .id(UUID.randomUUID())
+                .type(MessageType.TEXT_MESSAGE)
+                .dateCreated(LocalDateTime.now())
+                .ownerId(message.getOwnerId())
+                .content(message.getContent())
+                .chatId(message.getChatId())
+                .build());
     }
 
     public void deleteMessage(UUID messageId, UUID chatId)

@@ -1,10 +1,8 @@
 package com.yuranium.chatservice.models.document;
 
 import com.yuranium.chatservice.enums.MessageType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,6 +14,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Document(collection = "messages")
@@ -27,11 +26,12 @@ public class MessageDocument
     @Field(name = "messageType")
     private MessageType type;
 
+    @CreatedDate
     @Field(name = "dateCreated", targetType = FieldType.TIMESTAMP)
     private LocalDateTime dateCreated;
 
     @Indexed
-    @Field(name = "owner")
+    @Field(name = "ownerId")
     private Long ownerId;
 
     @Field(name = "content", targetType = FieldType.STRING)

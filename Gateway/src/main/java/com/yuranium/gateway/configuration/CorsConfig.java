@@ -1,5 +1,6 @@
 package com.yuranium.gateway.configuration;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -9,12 +10,15 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 @Configuration
 public class CorsConfig
 {
+    @Value("${routes.allow-origin}")
+    private String allowOrigin;
+
     @Bean
     public CorsWebFilter corsWebFilter()
     {
         CorsConfiguration corsConfig = new CorsConfiguration();
         corsConfig.setAllowCredentials(true);
-        corsConfig.addAllowedOrigin("http://localhost:3000");
+        corsConfig.addAllowedOrigin(allowOrigin);
         corsConfig.addAllowedHeader("*");
         corsConfig.addAllowedMethod("*");
 

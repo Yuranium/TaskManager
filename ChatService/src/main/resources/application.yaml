@@ -1,6 +1,13 @@
 server:
   port: ${CHAT_PORT:8083}
 
+websocket:
+  endpoints: /ws
+  allow-origins: ${ALLOW_ORIGIN:http://localhost:3000}
+  destination-prefix: /topic
+  user-destination-prefix: /app
+  application-destination-prefix: /web-chat
+
 spring:
   application:
     name: chat-service
