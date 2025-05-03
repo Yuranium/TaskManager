@@ -1,4 +1,4 @@
-package com.yuranium.chatservice.models;
+package com.yuranium.chatservice.models.document;
 
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;

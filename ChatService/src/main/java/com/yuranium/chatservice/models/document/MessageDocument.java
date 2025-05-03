@@ -1,4 +1,4 @@
-package com.yuranium.chatservice.models;
+package com.yuranium.chatservice.models.document;
 
 import com.yuranium.chatservice.enums.MessageType;
 import lombok.AllArgsConstructor;

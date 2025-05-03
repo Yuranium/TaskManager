@@ -1,6 +1,6 @@
 package com.yuranium.chatservice.repository;
 
-import com.yuranium.chatservice.models.MessageDocument;
+import com.yuranium.chatservice.models.document.MessageDocument;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;

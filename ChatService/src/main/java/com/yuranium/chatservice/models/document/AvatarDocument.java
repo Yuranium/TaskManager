@@ -1,11 +1,10 @@
-package com.yuranium.chatservice.models;
+package com.yuranium.chatservice.models.document;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.FieldType;
@@ -14,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.FieldType;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "avatars")
+@Document
 public class AvatarDocument
 {
     @Id
@@ -22,8 +21,4 @@ public class AvatarDocument
 
     @Field(name = "binaryData", targetType = FieldType.BINARY)
     private byte[] binaryData;
-
-    @Indexed
-    @Field(name = "userId", targetType = FieldType.INT64)
-    private Long userId;
 }

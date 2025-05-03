@@ -1,6 +1,6 @@
 package com.yuranium.chatservice.service;
 
-import com.yuranium.chatservice.models.ChatDocument;
+import com.yuranium.chatservice.models.document.ChatDocument;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -38,5 +38,12 @@ public class ChatService
         Query query = Query.query(Criteria.where("_id").is(chatId));
         Update update = new Update().pull("userIds", userId);
         mongoTemplate.updateFirst(query, update, ChatDocument.class);
+    }
+
+    public void deleteChat(UUID chatId)
+    {
+        mongoTemplate.remove(Query.query(
+                Criteria.where("_id").is(chatId))
+        );
     }
 }
