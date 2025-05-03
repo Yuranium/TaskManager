@@ -3,10 +3,12 @@ package com.yuranium.chatservice.models;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,13 +23,17 @@ public class ChatDocument
     @Id
     private UUID id;
 
+    @Field(name = "title", targetType = FieldType.STRING)
+    private String title;
+
     @CreatedDate
-    @Field(name = "date-created")
-    private LocalDate dateCreated;
+    @Field(name = "dateCreated", targetType = FieldType.TIMESTAMP)
+    private LocalDateTime dateCreated;
 
-    @Field(name = "users")
-    private List<UserDocument> users;
+    @Field(name = "usersIds", targetType = FieldType.ARRAY)
+    private List<Long> userIds;
 
-    @Field(name = "messages")
-    private List<MessageDocument> messages;
+    @Indexed
+    @Field(name = "ownerId", targetType = FieldType.INT64)
+    private Long ownerId;
 }

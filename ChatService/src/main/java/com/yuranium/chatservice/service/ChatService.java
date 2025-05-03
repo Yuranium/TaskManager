@@ -1,37 +1,42 @@
 package com.yuranium.chatservice.service;
 
 import com.yuranium.chatservice.models.ChatDocument;
-import com.yuranium.chatservice.models.UserDocument;
-import com.yuranium.chatservice.repository.ChatRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
-import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class ChatService
 {
-    private final ChatRepository chatRepository;
+    private final MongoTemplate mongoTemplate;
 
-    public void createChat()
+    public void createChat(String title, Long ownerId)
     {
-        chatRepository.save(ChatDocument.builder()
+        mongoTemplate.insert(ChatDocument.builder()
                 .id(UUID.randomUUID())
-                .build());
+                .title(title)
+                .ownerId(ownerId)
+                .build()
+        );
     }
 
-    public void addUserToChat(UUID chatId, UserDocument userDocument)
+    public void addUserToChat(UUID chatId, Long userId)
     {
-        ChatDocument chat = chatRepository.findById(chatId)
-                .orElseThrow(NoSuchElementException::new);
-        chat.getUsers().add(userDocument);
-        chatRepository.save(chat);
+        Query query = Query.query(Criteria.where("_id").is(chatId));
+        Update update = new Update().addToSet("userIds", userId);
+        mongoTemplate.updateFirst(query, update, ChatDocument.class);
     }
 
-    public void deleteUserFromChat(UUID chatId, UserDocument userDocument)
+    public void deleteUserFromChat(UUID chatId, Long userId)
     {
-
+        Query query = Query.query(Criteria.where("_id").is(chatId));
+        Update update = new Update().pull("userIds", userId);
+        mongoTemplate.updateFirst(query, update, ChatDocument.class);
     }
 }

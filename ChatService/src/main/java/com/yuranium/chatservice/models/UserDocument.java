@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 
 @Getter
 @Setter
@@ -18,6 +19,6 @@ public class UserDocument
     @Id
     private Long id;
 
-    @Field(name = "avatar")
-    private AvatarDocument avatar;
+    @Field(name = "username", targetType = FieldType.STRING)
+    private String username;
 }
