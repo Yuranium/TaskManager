@@ -2,12 +2,14 @@ package com.yuranium.chatservice.service;
 
 import com.yuranium.chatservice.models.document.ChatDocument;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -16,9 +18,16 @@ public class ChatService
 {
     private final MongoTemplate mongoTemplate;
 
-    public void createChat(String title, Long ownerId)
+    public List<ChatDocument> getAllChats(Long userId, Pageable pageable)
     {
-        mongoTemplate.insert(ChatDocument.builder()
+       return mongoTemplate.find(
+               Query.query(Criteria.where("userIds").is(userId))
+                       .with(pageable), ChatDocument.class);
+    }
+
+    public ChatDocument createChat(String title, Long ownerId)
+    {
+        return mongoTemplate.insert(ChatDocument.builder()
                 .id(UUID.randomUUID())
                 .title(title)
                 .ownerId(ownerId)

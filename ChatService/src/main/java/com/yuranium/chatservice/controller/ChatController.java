@@ -1,48 +1,41 @@
 package com.yuranium.chatservice.controller;
 
-import com.yuranium.chatservice.models.document.MessageDocument;
-import com.yuranium.chatservice.service.MessageService;
+import com.yuranium.chatservice.models.document.ChatDocument;
+import com.yuranium.chatservice.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
+@RequestMapping("/chat")
 public class ChatController
 {
-    private final MessageService messageService;
+    private final ChatService chatService;
 
-    @SendTo("/topic/last-messages")
-    @MessageMapping("/chat/load-messages")
-    public List<MessageDocument> getAllMessages(
+    @GetMapping("/all-chats")
+    public ResponseEntity<List<ChatDocument>> getAllChats(
+            @RequestParam Long userId,
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
-            @RequestParam(required = false, defaultValue = "100") int size,
-            @RequestParam UUID chatId
-    )
+            @RequestParam(required = false, defaultValue = "50") int size)
     {
-        return messageService.getAllMessages(chatId,
-                PageRequest.of(pageNumber, size,
-                        Sort.by(Sort.Direction.DESC, "dateCreated")));
+        return new ResponseEntity<>(
+                chatService.getAllChats(userId,
+                PageRequest.of(pageNumber, size)), HttpStatus.OK
+        );
     }
 
-    @SendTo("/topic/messages")
-    @MessageMapping("/chat")
-    public MessageDocument processMessage(@Payload MessageDocument message)
+    @PostMapping("/create")
+    public ResponseEntity<ChatDocument> createChat(
+            @RequestParam String title, @RequestParam Long ownerId)
     {
-        return messageService.insertMessage(message);
-    }
-
-    @MessageMapping("/chat/delete-message")
-    public void deleteMessage(UUID messageId, UUID chatId)
-    {
-        messageService.deleteMessage(messageId, chatId);
+        return new ResponseEntity<>(
+                chatService.createChat(title, ownerId),
+                HttpStatus.OK
+        );
     }
 }
