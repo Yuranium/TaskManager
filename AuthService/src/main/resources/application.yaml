@@ -3,6 +3,8 @@ server:
 
 kafka:
   topic-names:
+    user-create: user-created-events-topic
+    user-update: user-updated-events-topic
     user-delete: user-deleted-events-topic
 
 jwt:

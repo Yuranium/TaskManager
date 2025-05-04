@@ -22,6 +22,6 @@ public class UserDocument
     @Field(name = "username", targetType = FieldType.STRING)
     private String username;
 
-    @Field(name = "avatar")
-    private AvatarDocument avatar;
+    @Field(name = "avatarData")
+    private byte[] binaryData;
 }

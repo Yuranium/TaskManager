@@ -64,9 +64,10 @@ public class UserService implements UserDetailsService
         avatarService.saveAll(userEntity.getAvatars());
         roleService.saveAll(userEntity.getRoles());
 
-        return userMapper.toUserDto(
-                userRepository.save(userEntity)
-        );
+        UserEntity user = userRepository.save(userEntity);
+        kafkaProducer.sendCreateUserEvent(user);
+
+        return userMapper.toUserDto(user);
     }
 
     @Transactional
@@ -88,6 +89,10 @@ public class UserService implements UserDetailsService
         userEntity.getAvatars().addAll(avatarService.multipartToEntity(userDto.avatars()));
         updateUser.setAvatars(userEntity.getAvatars());
         updateUser.setRoles(userEntity.getRoles());
+
+        if (!userEntity.getUsername().equals(updateUser.getUsername()) || userDto.avatars() != null) // todo возможно пересмотреть логику
+            kafkaProducer.sendUpdateUserEvent(userEntity);
+
         return userMapper.toUserDto(
                 userRepository.save(updateUser)
         );
@@ -104,6 +109,7 @@ public class UserService implements UserDetailsService
                         )
                 ));
         avatarService.updateAvatars(userEntity, file);
+        kafkaProducer.sendUpdateUserEvent(userEntity);
     }
 
     @Transactional

@@ -1,6 +1,6 @@
 package com.yuranium.chatservice.service;
 
-import com.yuranium.chatservice.models.auxiliary.UserFromKafka;
+import com.yuranium.chatservice.models.auxiliary.UserCreatedEvent;
 import com.yuranium.chatservice.models.document.UserDocument;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -17,14 +17,13 @@ public class UserService
 {
     private final MongoTemplate mongoTemplate;
 
-    public UserDocument createUser(UserFromKafka user)
+    public UserDocument createUser(UserCreatedEvent user)
     {
         return mongoTemplate.insert(UserDocument.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .avatar(user.getAvatar())
-                .build()
-        );
+                .id(user.id())
+                .username(user.username())
+                .binaryData(user.avatarData())
+                .build());
     }
 
     public List<UserDocument> searchByPrefix(String usernamePrefix)
