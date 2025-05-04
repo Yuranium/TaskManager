@@ -1,121 +1,143 @@
-import './web-chat.css'
+import './web-chat.css';
 import Button from "../button/button";
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useLayoutEffect, useRef, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import axios from "axios";
 import {useAuth} from "../../hooks/auth";
+import Stomp from 'stompjs';
+import SockJS from 'sockjs-client';
 
 export default function WebChat() {
-    const {userAuth} = useAuth();
+    const {user} = useAuth();
+    const dataFetched = useRef(false);
     const [messages, setMessages] = useState([]);
     const [draft, setDraft] = useState('');
-    const wsRef = useRef(null);
+    const stompRef = useRef(null);
     const listRef = useRef(null);
     const navigate = useNavigate();
-    const [user, setUserData] = useState({});
-
-    const webSocketUrl = process.env.REACT_APP_WEBSOCKET_URL;
-    const backHost = process.env.REACT_APP_BACKEND_HOST;
-    const backPort = process.env.REACT_APP_BACKEND_PORT;
+    const chatId = '00000000-0000-0000-0000-000000000001';
+    const webSocketUri = process.env.REACT_APP_WEBSOCKET_URL;
 
     useEffect(() => {
-        axios.get(`http://${backHost}:${backPort}/api/chat/all-chats`,
-            { params: {useId: userAuth.id} })
-            .then(res => {
-                setUserData(res.data)
+        const socket = new SockJS(webSocketUri);
+        const stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, () => {
+            stompRef.current = stompClient;
+
+            stompClient.subscribe('/topic/messages', frame => {
+                const msg = JSON.parse(frame.body);
+                setMessages(prev => {
+                    if (prev.some(m => m.id === msg.id)) return prev;
+                    return [...prev, msg];
+                });
+            });
+            stompClient.subscribe('/topic/history', frame => {
+                const hist = JSON.parse(frame.body);
+                setMessages(hist);
             });
 
+            if (!dataFetched.current) {
+                dataFetched.current = true;
+                stompClient.subscribe('/topic/history', frame => {
+                    const hist = JSON.parse(frame.body);
+                    setMessages(hist);
+                });
+                stompClient.send(
+                    '/app/chat.history',
+                    {},
+                    JSON.stringify({ chatId })
+                );
+            }
+        }, error => {
+            console.error('STOMP connect error', error);
+        });
 
-        const ws = new WebSocket(webSocketUrl);
-        wsRef.current = ws;
-
-        ws.onmessage = e => {
-            const msg = JSON.parse(e.data);
-            setMessages(msgs => [...msgs, msg]);
+        return () => {
+            if (stompClient && stompClient.connected) {
+                stompClient.disconnect();
+                console.log('STOMP disconnected');
+            }
         };
+    }, []);
 
-        return () => ws.close();
-    }, [webSocketUrl]);
-
-    useEffect(() => {
-        if (listRef.current) {
-            listRef.current.scrollTop = listRef.current.scrollHeight;
-        }
+    useLayoutEffect(() => {
+        const el = listRef.current;
+        if (el) el.scrollTop = el.scrollHeight;
     }, [messages]);
 
     const send = () => {
-        if (!draft.trim() || wsRef.current.readyState !== 1) return;
+        if (!draft.trim()) return;
+        const client = stompRef.current;
+        if (!client || !client.connected) {
+            console.warn('STOMP not connected yet');
+            return;
+        }
 
-        const msg = {
-            id: crypto.randomUUID(),
-            type: 'CHAT',
-            dateCreated: new Date().toISOString(),
+        const message = {
+            chatId,
             ownerId: user.id,
             content: draft.trim(),
-            chatId: 'default',
+            dateCreated: new Date().toISOString(),
         };
 
-        // 2.1 сразу положить своё сообщение в UI
-        setMessages(msgs => [...msgs, msg]);
-        // 2.2 отослать на сервер
-        wsRef.current.send(JSON.stringify(msg));
+        client.send(
+            '/app/chat.send',
+            {},
+            JSON.stringify(message)
+        );
+
         setDraft('');
     };
 
     return (
-        /*<div className="web-chat-container">
-            <img src="/web-chat/chat-vector-icon.png" className="web-chat-image" alt="chat-icon"/>
-        </div>*/
         <div className="web-chat-container-open">
             <h3 className="web-chat-header">Task-Manager</h3>
-            <div className="input-group-wrapper">
+            <div className="messages-wrapper" ref={listRef}>
+                <p></p>
                 <ul className="chat-messages">
-                    {messages.map((message) => (
-                        <li
-                            key={message.id}
-                            className={message.ownerId === user.id ? 'my-chat-message' : 'chat-message'}>
-                            {message.ownerId !== user.id && (
-                                <img
-                                    src={`data:image/jpeg;base64,${user.avatar.binaryData}`}
-                                    className="chat-user-avatar"
-                                    alt="user-avatar"
-                                />
+                    {messages.map(m => (
+                        <li key={m.id}
+                            className={m.ownerId === user.id ? 'my-chat-message' : 'chat-message'}>
+                            {m.ownerId !== user.id && (
+                                <img src="/default-avatar.png"
+                                     className="chat-user-avatar"
+                                     alt="avatar"
+                                     role="button"
+                                     onClick={() => navigate(`/account/${m.ownerId}`)}/>
                             )}
-                            <div
-                                className={
-                                    message.ownerId === user.id
-                                        ? 'my-chat-message-content'
-                                        : 'chat-message-content'}>
-                                <span>{message.content}</span>
+                            <div className={m.ownerId === user.id
+                                ? 'my-chat-message-content'
+                                : 'chat-message-content'}>
+                                <span>{m.content}</span>
                                 <span className="timestamp-sended">
-                                  {new Date(message.dateCreated).toLocaleTimeString([], {
-                                      hour: '2-digit',
-                                      minute: '2-digit',
+                                  {new Date(m.dateCreated).toLocaleTimeString([], {
+                                      hour: '2-digit', minute: '2-digit',
                                   })}
-                                    </span>
+                                </span>
                             </div>
-                            {message.ownerId === user.id && (
+                            {m.ownerId === user.id && (
                                 <img
-                                    src={`data:image/jpeg;base64,${user.avatar.binaryData}`}
+                                    src="/default-avatar.png"
                                     className="chat-user-avatar"
-                                    alt="user-avatar"
+                                    alt="avatar"
                                     role="button"
-                                    onClick={() => navigate(`/account/${user.id}`)}
+                                    onClick={() => navigate(`/account/${m.ownerId}`)}
                                 />
                             )}
                         </li>
                     ))}
-                    <div className="input-group">
-                        <input type="text"
-                               id="chat-send-message"
-                               placeholder="Сообщение..."
-                               value={draft}
-                               onChange={(e) => setDraft(e.target.value)}
-                               onKeyDown={(e) => e.key === 'Enter' && send()}/>
-                        <Button onClickFunction={send}>Отправить</Button>
-                    </div>
                 </ul>
             </div>
+            <div className="input-group">
+                <input
+                    type="text"
+                    placeholder="Сообщение..."
+                    value={draft}
+                    onChange={e => setDraft(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && send()}
+                />
+                <Button onClickFunction={send}>Отправить</Button>
+            </div>
         </div>
-    )
+    );
 }

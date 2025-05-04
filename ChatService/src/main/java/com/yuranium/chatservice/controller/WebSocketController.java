@@ -9,9 +9,9 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Controller
@@ -20,21 +20,21 @@ public class WebSocketController
 {
     private final MessageService messageService;
 
-    @SendTo("/topic/last-messages")
-    @MessageMapping("/chat/load-messages")
-    public List<MessageDocument> getAllMessages(
-            @RequestParam(required = false, defaultValue = "0") int pageNumber,
-            @RequestParam(required = false, defaultValue = "100") int size,
-            @RequestParam UUID chatId
-    )
+    @MessageMapping("/chat.history")
+    @SendTo("/topic/history")
+    public List<MessageDocument> getAllMessages(Map<String, String> params)
     {
-        return messageService.getAllMessages(chatId,
+        int pageNumber = Integer.parseInt(params.getOrDefault("pageNumber", "0"));
+        int size = Integer.parseInt(params.getOrDefault("size", "100"));
+
+        return messageService.getAllMessages(
+                UUID.fromString(params.get("chatId")),
                 PageRequest.of(pageNumber, size,
                         Sort.by("dateCreated")));
     }
 
+    @MessageMapping("/chat.send")
     @SendTo("/topic/messages")
-    @MessageMapping("/chat")
     public MessageDocument processMessage(@Payload MessageDocument message)
     {
         return messageService.insertMessage(message);

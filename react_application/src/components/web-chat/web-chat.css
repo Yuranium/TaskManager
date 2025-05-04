@@ -19,21 +19,17 @@
     bottom: 5em;
     width: 30%;
     height: 65%;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
     z-index: 100;
     background-color: #f5f5f5;
     border-radius: 1rem;
     box-shadow: 0 0 8px 5px rgba(34, 60, 80, 0.2);
-    display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 12fr;
 }
 
-.input-group-wrapper {
-    justify-self: end;
-    align-self: end;
-    overflow-y: scroll;
-    max-height: 100%;
-    scrollbar-width: thin;
+.messages-wrapper {
+    overflow-y: auto;
 }
 
 .web-chat-header {
@@ -45,16 +41,21 @@
 }
 
 .input-group {
+    border-radius: 5px 5px 1rem 1rem;
     display: grid;
-    grid-template-columns: 4fr 1fr;
-    grid-template-rows: 1fr;
+    grid-template-columns: 5fr 1fr;
+    gap: .5em;
+    padding: .5em;
+    background: #fff;
 }
 
 .chat-messages {
-    padding: 0;
     display: flex;
-    flex-direction: column;
     flex-wrap: nowrap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex-direction: column;
 }
 
 .my-chat-message {
@@ -102,6 +103,7 @@
 }
 
 .chat-user-avatar {
+    cursor: pointer;
     width: 55px;
     height: 55px;
     margin-bottom: -10px;

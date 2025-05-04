@@ -54,10 +54,12 @@ export default function CreateChat({ownerId}) {
     return (
         <div>
             <form onSubmit={handleSubmit}>
+                <h3>Создать новый чат</h3>
                 <label htmlFor="chatTitle" id="chatTitle"/>
                 <input type="text"
                        id="chatTitle"
                        name="chatTitle"
+                       placeholder="Название чата"
                        onChange={handleChange}
                        value={formData.chatTitle}/>
 
