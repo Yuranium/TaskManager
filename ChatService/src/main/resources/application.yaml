@@ -15,3 +15,4 @@ spring:
   data:
     mongodb:
       uri: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DATABASE:web-chat}?authSource=admin
+      auto-index-creation: true

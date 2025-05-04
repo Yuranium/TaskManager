@@ -71,6 +71,8 @@
 
 .my-chat-message-content {
     list-style: none;
+    min-width: 25px;
+    overflow-wrap: anywhere;
     padding: .5em 1em 1.3em .5em;
     background-color: #80d0b2;
     border-radius: 10px 10px 0 10px;
@@ -112,6 +114,8 @@
 
 .chat-message-content {
     list-style: none;
+    min-width: 25px;
+    overflow-wrap: anywhere;
     padding: .5em 1em 1.3em .5em;
     background-color: #ececec;
     border-radius: 10px 10px 10px 0;

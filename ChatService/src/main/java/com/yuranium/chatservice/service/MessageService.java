@@ -1,11 +1,14 @@
 package com.yuranium.chatservice.service;
 
+import com.mongodb.client.result.DeleteResult;
 import com.yuranium.chatservice.enums.MessageType;
 import com.yuranium.chatservice.models.document.MessageDocument;
 import com.yuranium.chatservice.util.exception.MessageNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -22,10 +25,21 @@ public class MessageService
 
     public List<MessageDocument> getAllMessages(UUID chatId, Pageable pageable)
     {
-        Query query = Query.query(Criteria.where("chatId").is(chatId))
-                .with(pageable);
+        if (chatId == null)
+            throw new IllegalArgumentException(
+                    "The chatId is null, cannot load the messages"
+            );
 
-        return mongoTemplate.find(query, MessageDocument.class);
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.match(Criteria.where("chatId").is(chatId)),
+                Aggregation.sort(Sort.by(Sort.Direction.DESC, "dateCreated")),
+                Aggregation.skip(pageable.getOffset()),
+                Aggregation.limit(pageable.getPageSize()),
+                Aggregation.sort(Sort.by(Sort.Direction.ASC, "dateCreated"))
+        );
+        return mongoTemplate
+                .aggregate(aggregation, MessageDocument.class, MessageDocument.class)
+                .getMappedResults();
     }
 
     public MessageDocument insertMessage(MessageDocument message)
@@ -40,15 +54,16 @@ public class MessageService
                 .build());
     }
 
-    public void deleteMessage(UUID messageId, UUID chatId)
+    public void deleteMessage(UUID messageId)
     {
-        MessageDocument message = mongoTemplate.findById(messageId, MessageDocument.class);
+        DeleteResult result = mongoTemplate.remove(
+                Query.query(Criteria.where("_id").is(messageId)),
+                MessageDocument.class);
 
-        if (message.getChatId().equals(chatId))
-            mongoTemplate.remove(message);
-        else throw new MessageNotFoundException(
-                String.format("The message with id=%s was not found in chat with chatId=%s",
-                        messageId, chatId)
+        if (result.getDeletedCount() == 0)
+            throw new MessageNotFoundException(
+                String.format("The message with id=%s was not found",
+                        messageId)
         );
     }
 }

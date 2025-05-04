@@ -29,8 +29,7 @@ public class WebSocketController
 
         return messageService.getAllMessages(
                 UUID.fromString(params.get("chatId")),
-                PageRequest.of(pageNumber, size,
-                        Sort.by("dateCreated")));
+                PageRequest.of(pageNumber, size));
     }
 
     @MessageMapping("/chat.send")
@@ -40,9 +39,11 @@ public class WebSocketController
         return messageService.insertMessage(message);
     }
 
-    @MessageMapping("/chat/delete-message")
-    public void deleteMessage(UUID messageId, UUID chatId)
+    @MessageMapping("/chat.delete")
+    @SendTo("/topic/messages/delete")
+    public UUID deleteMessage(@Payload UUID messageId)
     {
-        messageService.deleteMessage(messageId, chatId);
+        messageService.deleteMessage(messageId);
+        return messageId;
     }
 }

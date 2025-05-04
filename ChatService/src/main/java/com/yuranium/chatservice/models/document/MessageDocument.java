@@ -26,6 +26,7 @@ public class MessageDocument
     @Field(name = "messageType")
     private MessageType type;
 
+    @Indexed
     @CreatedDate
     @Field(name = "dateCreated", targetType = FieldType.TIMESTAMP)
     private LocalDateTime dateCreated;
