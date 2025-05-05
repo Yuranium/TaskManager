@@ -14,7 +14,7 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DATABASE:web-chat}?authSource=admin
+      uri: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DATABASE:web-chat}?authSource=admin&retryWrites=false
       auto-index-creation: true
 
   kafka:
@@ -23,3 +23,6 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       bootstrap-servers: ${BOOTSTRAP_HOST_1:localhost}:${BOOTSTRAP_PORT_1:9092},${BOOTSTRAP_HOST_2:localhost}:${BOOTSTRAP_PORT_2:9094}
       isolation-level: READ_COMMITTED
+      properties:
+        spring.json.trusted.packages: com.yuranium.core.events
+        spring.json.use.type.headers: true

@@ -34,7 +34,7 @@ public class KafkaProducer
         ProducerRecord<String, Object> record = new ProducerRecord<>(
                 environment.getProperty("kafka.topic-names.user-create"),
                 new UserCreatedEvent(user.getId(), user.getUsername(),
-                        user.getAvatars().isEmpty() ? new byte[0] :
+                        user.getAvatars().isEmpty() ? null :
                         user.getAvatars().get(0).getBinaryData()));
 
         record.headers().add("messageId", UUID.randomUUID().toString().getBytes());
@@ -48,7 +48,7 @@ public class KafkaProducer
         ProducerRecord<String, Object> record = new ProducerRecord<>(
                 environment.getProperty("kafka.topic-names.user-update"),
                 new UserCreatedEvent(user.getId(), user.getUsername(),
-                        avatars.isEmpty() ? new byte[0] : avatars.get(avatars.size() - 1)
+                        avatars.isEmpty() ? null : avatars.get(avatars.size() - 1)
                                 .getBinaryData()));
 
         record.headers().add("messageId", UUID.randomUUID().toString().getBytes());

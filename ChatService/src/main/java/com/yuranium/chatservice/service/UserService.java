@@ -53,7 +53,8 @@ public class UserService
     public void deleteUser(Long id)
     {
         mongoTemplate.remove(
-                Query.query(Criteria.where("_id").is(id))
+                Query.query(Criteria.where("_id").is(id)),
+                UserDocument.class
         );
     }
 }

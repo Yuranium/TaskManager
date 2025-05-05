@@ -37,6 +37,8 @@ public class KafkaConfig
         config.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG,
                 environment.getProperty("spring.kafka.consumer.isolation-level",
                         "READ_COMMITED").toLowerCase());
+        config.put(JsonDeserializer.TRUSTED_PACKAGES, "com.yuranium.core.events");
+        config.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, true);
 
         return new DefaultKafkaConsumerFactory<>(config);
     }

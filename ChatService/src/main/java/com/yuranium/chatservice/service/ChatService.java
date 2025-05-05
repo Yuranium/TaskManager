@@ -52,7 +52,8 @@ public class ChatService
     public void deleteChat(UUID chatId)
     {
         mongoTemplate.remove(Query.query(
-                Criteria.where("_id").is(chatId))
+                Criteria.where("_id").is(chatId)),
+                ChatDocument.class
         );
     }
 }
