@@ -2,7 +2,8 @@ package com.yuranium.authservice.service.kafka;
 
 import com.yuranium.authservice.models.entity.AvatarEntity;
 import com.yuranium.authservice.models.entity.UserEntity;
-import com.yuranium.authservice.models.kafka.UserCreatedEvent;
+import com.yuranium.core.events.UserCreatedEvent;
+import com.yuranium.core.events.UserUpdatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.core.env.Environment;
@@ -33,7 +34,7 @@ public class KafkaProducer
     {
         ProducerRecord<String, Object> record = new ProducerRecord<>(
                 environment.getProperty("kafka.topic-names.user-create"),
-                new UserCreatedEvent(user.getId(), user.getUsername(),
+                new UserUpdatedEvent(user.getId(), user.getUsername(),
                         user.getAvatars().get(0).getBinaryData()));
 
         record.headers().add("messageId", UUID.randomUUID().toString().getBytes());

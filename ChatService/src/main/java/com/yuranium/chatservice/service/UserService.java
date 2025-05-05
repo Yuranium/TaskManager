@@ -1,7 +1,7 @@
 package com.yuranium.chatservice.service;
 
-import com.yuranium.chatservice.models.auxiliary.UserCreatedEvent;
 import com.yuranium.chatservice.models.document.UserDocument;
+import com.yuranium.core.events.UserCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;

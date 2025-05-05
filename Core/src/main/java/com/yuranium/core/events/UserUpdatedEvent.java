@@ -1,8 +1,8 @@
-package com.yuranium.chatservice.models.auxiliary;
+package com.yuranium.core.events;
 
 import java.io.Serializable;
 
-public record UserCreatedEvent(
+public record UserUpdatedEvent(
 
         Long id,
 

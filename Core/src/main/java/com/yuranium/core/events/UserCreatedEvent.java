@@ -1,4 +1,4 @@
-package com.yuranium.authservice.models.kafka;
+package com.yuranium.core.events;
 
 import java.io.Serializable;
 

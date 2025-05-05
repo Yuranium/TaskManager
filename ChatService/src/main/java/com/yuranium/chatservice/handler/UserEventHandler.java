@@ -1,8 +1,9 @@
 package com.yuranium.chatservice.handler;
 
-import com.yuranium.chatservice.models.auxiliary.UserCreatedEvent;
 import com.yuranium.chatservice.models.document.UserDocument;
 import com.yuranium.chatservice.service.UserService;
+import com.yuranium.core.events.UserCreatedEvent;
+import com.yuranium.core.events.UserUpdatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -37,7 +38,7 @@ public class UserEventHandler
     public void updateUserEvent(@Payload ConsumerRecord<String, Object> kafkaUser,
                                 @Header("messageId") String messageId)
     {
-        final var user = (UserCreatedEvent) kafkaUser.value();
+        final var user = (UserUpdatedEvent) kafkaUser.value();
 
         UserDocument newUser = UserDocument.builder()
                 .id(user.id())
