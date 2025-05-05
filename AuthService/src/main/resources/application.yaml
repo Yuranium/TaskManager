@@ -43,6 +43,7 @@ spring:
       properties:
         enable:
           idempotence: true
+      transaction-id-prefix: -auth-service-${random.value}-
 
   security:
     oauth2:

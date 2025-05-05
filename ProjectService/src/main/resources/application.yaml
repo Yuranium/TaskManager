@@ -35,7 +35,9 @@ spring:
       properties:
         enable:
           idempotence: true
+      transaction-id-prefix: -project-service-${random.value}-
     consumer:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       bootstrap-servers: ${BOOTSTRAP_HOST_1:localhost}:${BOOTSTRAP_PORT_1:9092},${BOOTSTRAP_HOST_2:localhost}:${BOOTSTRAP_PORT_2:9094}
+      isolation-level: READ_COMMITTED

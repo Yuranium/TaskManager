@@ -24,7 +24,7 @@ public class UserEventHandler
     private final UserService userService;
 
     @Transactional
-    @KafkaListener(topics = "user-created-events-topic")
+    @KafkaListener(topics = "user-created-events-topic", groupId = "user-create")
     public void createUserEvent(@Payload ConsumerRecord<String, Object> kafkaUser,
                                 @Header("messageId") String messageId)
     {
@@ -34,7 +34,7 @@ public class UserEventHandler
     }
 
     @Transactional
-    @KafkaListener(topics = "user-updated-events-topic")
+    @KafkaListener(topics = "user-updated-events-topic", groupId = "user-update")
     public void updateUserEvent(@Payload ConsumerRecord<String, Object> kafkaUser,
                                 @Header("messageId") String messageId)
     {
@@ -50,7 +50,7 @@ public class UserEventHandler
     }
 
     @Transactional
-    @KafkaListener(topics = "user-deleted-events-topic")
+    @KafkaListener(topics = "user-deleted-events-topic", groupId = "user-delete")
     public void deleteUserEvent(@Payload ConsumerRecord<String, Object> userId,
                                 @Header("messageId") String messageId)
     {
