@@ -112,8 +112,10 @@ export default function Account() {
     if (!userData)
         return <Navigate to="/404"/>;
 
-    const deleteAccount = () =>
-        axios.delete(`http://${backHost}:${backPort}/api/auth/user/delete/${userId}`)
+    const deleteAccount = async () => {
+        await axios.delete(`http://${backHost}:${backPort}/api/auth/user/delete/${userId}`);
+        logout();
+    }
 
     return (
         <div className="main">

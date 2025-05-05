@@ -5,7 +5,6 @@ import './login-form.css'
 import Button from "../button/button";
 import Oauth2Icon from "./oauth2-icon";
 import {FaEyeSlash, FaRegEye} from "react-icons/fa";
-import LoadingData from "../info/loading-data/loading-data";
 
 export default function LoginForm()
 {

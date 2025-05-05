@@ -66,7 +66,7 @@ public class UserEntity
             this.dateRegistration = LocalDateTime.now();
 
         if (this.activity == null)
-            this.activity = false;
+            this.activity = true;
     }
 
     public void setAvatars(List<AvatarEntity> avatars)

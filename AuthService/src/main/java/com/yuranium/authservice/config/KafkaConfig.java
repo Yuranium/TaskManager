@@ -7,6 +7,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -29,7 +30,7 @@ public class KafkaConfig
     {
         return new NewTopic(
                 environment.getProperty("kafka.topic-names.user-delete"),
-                2, (short) 2);
+                1, (short) 2);
     }
 
     @Bean
@@ -37,7 +38,7 @@ public class KafkaConfig
     {
         return new NewTopic(
                 environment.getProperty("kafka.topic-names.user-create"),
-                1, (short) 1
+                1, (short) 2
         );
     }
 
@@ -46,7 +47,7 @@ public class KafkaConfig
     {
         return new NewTopic(
                 environment.getProperty("kafka.topic-names.user-update"),
-                1, (short) 1
+                1, (short) 2
         );
     }
 
@@ -61,6 +62,8 @@ public class KafkaConfig
     {
         Map<String, Object> settings = new HashMap<>();
 
+        settings.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
+                environment.getProperty("spring.kafka.producer.bootstrap-servers"));
         settings.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         settings.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         settings.put(ProducerConfig.RETRIES_CONFIG,
@@ -80,7 +83,8 @@ public class KafkaConfig
         return new KafkaTransactionManager<>(producerFactory);
     }
 
-    @Bean
+    @Primary
+    @Bean("transactionManager")
     JpaTransactionManager transactionManager(EntityManagerFactory managerFactory)
     {
         return new JpaTransactionManager(managerFactory);

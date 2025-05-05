@@ -8,7 +8,6 @@ import {FaEyeSlash, FaRegEye} from "react-icons/fa";
 import axios, {HttpStatusCode} from "axios";
 import {useAuth} from "../../../hooks/auth";
 import Oauth2Icon from "../oauth2-icon";
-import LoadingData from "../../info/loading-data/loading-data";
 
 export default function RegisterForm({isEdit = false, initUserData = {}, onSubmit, ...props})
 {
@@ -82,7 +81,8 @@ export default function RegisterForm({isEdit = false, initUserData = {}, onSubmi
             payload.append('username', formData.username);
             payload.append('name', formData.name === null ? '' : formData.name);
             payload.append('lastName', formData.lastName === null ? '' : formData.lastName);
-            payload.append('avatars', formData.avatars);
+            if (formData.avatars)
+                payload.append('avatars', formData.avatars);
 
             if (!isEdit) {
                 payload.append('password', formData.password);
@@ -244,8 +244,7 @@ export default function RegisterForm({isEdit = false, initUserData = {}, onSubmi
                 {errors.submit && <div className="form-error">{errors.submit}</div>}
 
                 <Button type="submit" disabled={loading}>
-                    {loading ? <LoadingData defaultName="Загрузка"
-                                            defaultFont/> : isEdit ? 'Изменить данные' : 'Зарегистрироваться'}
+                    {loading ? 'Загрузка...' : isEdit ? 'Изменить данные' : 'Зарегистрироваться'}
                 </Button>
             </form>
         </div>

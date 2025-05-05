@@ -49,7 +49,7 @@ public class UserService implements UserDetailsService
                         ));
     }
 
-    @Transactional
+    @Transactional("transactionManager")
     public UserDto createUser(UserInputDto userDto)
     {
         if (userRepository.findByEmail(userDto.email()).isPresent())
@@ -61,16 +61,16 @@ public class UserService implements UserDetailsService
         userEntity.setAvatars(avatarService.multipartToEntity(userDto.avatars()));
         userEntity.setPassword(passwordEncoder.encode(userDto.password()));
 
-        avatarService.saveAll(userEntity.getAvatars());
+        if (userDto.avatars() != null)
+            avatarService.saveAll(userEntity.getAvatars());
         roleService.saveAll(userEntity.getRoles());
-
         UserEntity user = userRepository.save(userEntity);
         kafkaProducer.sendCreateUserEvent(user);
 
         return userMapper.toUserDto(user);
     }
 
-    @Transactional
+    @Transactional("transactionManager")
     public UserDto updateUser(Long id, UserUpdateDto userDto)
     {
         UserEntity userEntity = userRepository.findById(id)
@@ -98,7 +98,7 @@ public class UserService implements UserDetailsService
         );
     }
 
-    @Transactional
+    @Transactional("transactionManager")
     public void updateUserAvatar(Long id, MultipartFile file)
     {
         UserEntity userEntity = userRepository.findById(id)
@@ -112,7 +112,7 @@ public class UserService implements UserDetailsService
         kafkaProducer.sendUpdateUserEvent(userEntity);
     }
 
-    @Transactional
+    @Transactional("transactionManager")
     public void deleteUser(Long id)
     {
         if (userRepository.findById(id).isPresent())

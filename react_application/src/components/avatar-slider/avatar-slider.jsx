@@ -57,7 +57,7 @@ export default function AvatarSlider({ data, baseUrl })
                         </ModalWindow>
                     </SwiperSlide>
                 ))}
-                {data.length !== 0 && isOwner && (
+                {isOwner && (
                     <div className="avatar-upload">
                         <input
                             type="file"
