@@ -6,7 +6,6 @@ import com.yuranium.projectservice.repository.ProcessedRepository;
 import com.yuranium.projectservice.service.KafkaProducer;
 import com.yuranium.projectservice.service.ProjectService;
 import lombok.RequiredArgsConstructor;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -27,21 +26,20 @@ public class UserDeleteEventHandler
 
     @Transactional
     @KafkaListener(topics = "user-deleted-events-topic", groupId = "user-delete")
-    public void deleteProject(@Payload ConsumerRecord<String, Object> userId,
+    public void deleteProject(@Payload Long userId,
                               @Header("messageId") String messageId)
     {
         if (processedRepository.findByMessageId(UUID.fromString(messageId)).isPresent())
             return;
 
-        final var user = userId.value();
-        projectService.deleteAllProject((Long) user);
+        projectService.deleteAllProject(userId);
         kafkaProducer.sendDeleteProjectsEvent(
-                projectService.getAllByUserId((Long) user).stream()
+                projectService.getAllByUserId(userId).stream()
                         .map(ProjectEntity::getId)
                         .toList()
         );
         processedRepository.save(
                 new ProcessedEventEntity(UUID.fromString(messageId),
-                        (Long) user));
+                        userId));
     }
 }

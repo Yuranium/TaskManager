@@ -3,13 +3,13 @@ package com.yuranium.authservice.service.kafka;
 import com.yuranium.authservice.models.entity.AvatarEntity;
 import com.yuranium.authservice.models.entity.UserEntity;
 import com.yuranium.core.events.UserCreatedEvent;
+import com.yuranium.core.events.UserUpdatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.core.env.Environment;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -43,13 +43,18 @@ public class KafkaProducer
 
     public void sendUpdateUserEvent(UserEntity user)
     {
-        List<AvatarEntity> avatars = user.getAvatars();
+        byte[] avatarData = null;
+        if (!user.getAvatars().isEmpty())
+        {
+            AvatarEntity last = user.getAvatars()
+                    .get(user.getAvatars().size() - 1);
+            avatarData = last.getBinaryData();
+        }
 
         ProducerRecord<String, Object> record = new ProducerRecord<>(
                 environment.getProperty("kafka.topic-names.user-update"),
-                new UserCreatedEvent(user.getId(), user.getUsername(),
-                        avatars.isEmpty() ? null : avatars.get(avatars.size() - 1)
-                                .getBinaryData()));
+                new UserUpdatedEvent(user.getId(), user.getUsername(),
+                        avatarData));
 
         record.headers().add("messageId", UUID.randomUUID().toString().getBytes());
         kafkaTemplate.send(record);

@@ -4,7 +4,6 @@ import com.yuranium.taskservice.entity.ProcessedEventEntity;
 import com.yuranium.taskservice.repository.ProcessedRepository;
 import com.yuranium.taskservice.sevice.TaskService;
 import lombok.RequiredArgsConstructor;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -24,31 +23,29 @@ public class ProjectDeleteEventHandler
 
     @Transactional
     @KafkaListener(topics = "project-deleted-events-topic", groupId = "project-delete")
-    public void deleteProject(@Payload ConsumerRecord<String, Object> projectId,
+    public void deleteProject(@Payload UUID projectId,
                               @Header("messageId") String messageId)
     {
         if (processedRepository.findByMessageId(UUID.fromString(messageId)).isPresent())
             return;
 
-        final var project = projectId.value();
-        taskService.deleteAllTask((UUID) project);
+        taskService.deleteAllTask(projectId);
         processedRepository.save(
-                new ProcessedEventEntity(UUID.fromString(messageId),
-                        (UUID) project));
+                new ProcessedEventEntity(UUID.fromString(messageId), projectId));
     }
 
     @Transactional
     @KafkaListener(topics = "projects-deleted-events-topic", groupId = "project-delete")
-    public void deleteProjects(@Payload ConsumerRecord<String, Object> projectsId,
-                              @Header("messageId") String messageId)
+    public void deleteProjects(@Payload List<UUID> projectsId,
+                               @Header("messageId") String messageId)
     {
         if (processedRepository.findByMessageId(UUID.fromString(messageId)).isPresent())
             return;
 
-        final var project = projectsId.value();
-        taskService.deleteAllTask((List<UUID>) project);
+        taskService.deleteAllTask(projectsId);
         processedRepository.save(
                 new ProcessedEventEntity(UUID.fromString(messageId),
-                        ((List<UUID>) project).get(0)));
+                        projectsId.get(0)
+                ));
     }
 }

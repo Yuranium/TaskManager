@@ -21,13 +21,7 @@ public class UserEventHandler
     public void createUserEvent(@Payload UserCreatedEvent userEvent,
                                 @Header("messageId") String messageId)
     {
-        try {
-            log.info("Handling user created event: {}", userEvent);
-            userService.createUser(userEvent);
-        } catch (Exception e) {
-            log.error("Ошибка при обработке UserCreatedEvent: {}", userEvent, e);
-            throw e;
-        }
+        userService.createUser(userEvent);
     }
 
     @KafkaListener(topics = "user-updated-events-topic", groupId = "user-update")
@@ -41,12 +35,6 @@ public class UserEventHandler
     public void deleteUserEvent(@Payload Long userId,
                                 @Header("messageId") String messageId)
     {
-        try {
-            log.info("Handling user deleted event: {}", userId);
-            userService.deleteUser(userId);
-        } catch (Exception e) {
-            log.error("Ошибка при обработке UserCreatedEvent: {}", userId, e);
-            throw e;
-        }
+        userService.deleteUser(userId);
     }
 }

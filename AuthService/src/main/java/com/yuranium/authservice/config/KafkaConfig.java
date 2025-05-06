@@ -72,6 +72,7 @@ public class KafkaConfig
                 environment.getProperty("spring.kafka.producer.properties.enable.idempotence"));
         settings.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG,
                 environment.getProperty("spring.kafka.producer.transaction-id-prefix"));
+        settings.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "gzip");
 
         return new DefaultKafkaProducerFactory<>(settings);
     }

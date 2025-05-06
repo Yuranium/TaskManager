@@ -6,6 +6,7 @@ import com.yuranium.authservice.models.dto.UserDto;
 import com.yuranium.authservice.models.dto.UserInfoDto;
 import com.yuranium.authservice.models.dto.UserInputDto;
 import com.yuranium.authservice.models.dto.UserUpdateDto;
+import com.yuranium.authservice.models.entity.AvatarEntity;
 import com.yuranium.authservice.models.entity.UserEntity;
 import com.yuranium.authservice.repository.UserRepository;
 import com.yuranium.authservice.service.kafka.KafkaProducer;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -80,21 +82,21 @@ public class UserService implements UserDetailsService
                                 id
                         )
                 ));
-        UserEntity updateUser = userMapper.toEntity(userDto);
-        updateUser.setId(userEntity.getId());
-        updateUser.setPassword(userEntity.getPassword());
-        updateUser.setEmail(userEntity.getEmail());
-        updateUser.setDateRegistration(userEntity.getDateRegistration());
+        userEntity.setUsername(userDto.username());
+        userEntity.setName(userDto.name());
+        userEntity.setLastName(userDto.lastName());
 
-        userEntity.getAvatars().addAll(avatarService.multipartToEntity(userDto.avatars()));
-        updateUser.setAvatars(userEntity.getAvatars());
-        updateUser.setRoles(userEntity.getRoles());
+        if (userDto.avatars() != null)
+        {
+            List<AvatarEntity> newAvatars = avatarService.multipartToEntity(userDto.avatars());
+            avatarService.saveAll(newAvatars);
+            userEntity.getAvatars().addAll(newAvatars);
+            userEntity.setAvatars(userEntity.getAvatars());
+        }
 
-        if (!userEntity.getUsername().equals(updateUser.getUsername()) || userDto.avatars() != null) // todo возможно пересмотреть логику
-            kafkaProducer.sendUpdateUserEvent(userEntity);
-
+        kafkaProducer.sendUpdateUserEvent(userEntity);
         return userMapper.toUserDto(
-                userRepository.save(updateUser)
+                userRepository.save(userEntity)
         );
     }
 
@@ -108,7 +110,10 @@ public class UserService implements UserDetailsService
                                 id
                         )
                 ));
-        avatarService.updateAvatars(userEntity, file);
+        List<AvatarEntity> newAvatars = avatarService.multipartToEntity(List.of(file));
+        avatarService.saveAll(newAvatars);
+        userEntity.getAvatars().addAll(newAvatars);
+        userEntity.setAvatars(userEntity.getAvatars());
         kafkaProducer.sendUpdateUserEvent(userEntity);
     }
 

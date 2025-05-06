@@ -10,6 +10,7 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
@@ -88,6 +89,8 @@ public class KafkaConfig
     {
         Map<String, Object> settings = new HashMap<>();
 
+        settings.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
+                environment.getProperty("spring.kafka.consumer.bootstrap-servers"));
         settings.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         settings.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         settings.put(ProducerConfig.RETRIES_CONFIG,
@@ -108,6 +111,7 @@ public class KafkaConfig
     }
 
     @Bean
+    @Primary
     JpaTransactionManager transactionManager(EntityManagerFactory managerFactory)
     {
         return new JpaTransactionManager(managerFactory);
