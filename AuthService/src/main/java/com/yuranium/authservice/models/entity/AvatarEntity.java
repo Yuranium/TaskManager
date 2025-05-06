@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -28,13 +28,13 @@ public class AvatarEntity
     private String contentType;
 
     @Column(name = "size")
-    private Long size;
+    private Integer size;
 
     @Column(name = "binary_data", columnDefinition = "BYTEA")
     private byte[] binaryData = new byte[0];
 
-    @Column(name = "date_added", columnDefinition = "DATE")
-    private LocalDate dateAdded;
+    @Column(name = "date_added", columnDefinition = "TIMESTAMP")
+    private LocalDateTime dateAdded;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user")
@@ -43,7 +43,9 @@ public class AvatarEntity
     @PrePersist
     private void prePersist()
     {
-        this.size = (long) binaryData.length;
-        this.dateAdded = LocalDate.now();
+        this.size = binaryData.length;
+
+        if (this.dateAdded == null)
+            this.dateAdded = LocalDateTime.now();
     }
 }
