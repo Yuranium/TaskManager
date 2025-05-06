@@ -1,17 +1,15 @@
 package com.yuranium.chatservice.controller;
 
 import com.yuranium.chatservice.models.document.MessageDocument;
+import com.yuranium.chatservice.service.ChatService;
 import com.yuranium.chatservice.service.MessageService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @Controller
@@ -20,30 +18,57 @@ public class WebSocketController
 {
     private final MessageService messageService;
 
-    @MessageMapping("/chat.history")
-    @SendTo("/topic/history")
-    public List<MessageDocument> getAllMessages(Map<String, String> params)
-    {
-        int pageNumber = Integer.parseInt(params.getOrDefault("pageNumber", "0"));
-        int size = Integer.parseInt(params.getOrDefault("size", "100"));
+    private final ChatService chatService;
 
-        return messageService.getAllMessages(
-                UUID.fromString(params.get("chatId")),
-                PageRequest.of(pageNumber, size));
+    private final SimpMessagingTemplate template;
+
+    @MessageMapping("/chat/{chatId}/send-message")
+    public void processMessage(@DestinationVariable UUID chatId,
+                               @Payload MessageDocument message) // todo изменить @SendTo на конкретный путь
+    {
+        template.convertAndSend(
+                String.format("/topic/chats/%s/new-message", chatId),
+                messageService.insertMessage(message)
+        );
     }
 
-    @MessageMapping("/chat.send")
-    @SendTo("/topic/messages")
-    public MessageDocument processMessage(@Payload MessageDocument message)
-    {
-        return messageService.insertMessage(message);
-    }
-
-    @MessageMapping("/chat.delete")
-    @SendTo("/topic/messages/delete")
-    public UUID deleteMessage(@Payload UUID messageId)
+    @MessageMapping("/chat/{chatId}/delete-message")
+    public void deleteMessage(@DestinationVariable UUID chatId,
+                              @Payload UUID messageId)
     {
         messageService.deleteMessage(messageId);
-        return messageId;
+        template.convertAndSend(
+                String.format("/topic/chats/%s/delete-message", chatId),
+                "Сообщение удалено" // todo убрать хардкод
+        );
+    }
+
+    @MessageMapping("/chat/{chatId}/add-user")
+    public void addUserToChat(@DestinationVariable UUID chatId,
+                                         @Payload Long userId)
+    {
+        template.convertAndSend(
+                String.format("/topic/chats/%s/new-user", chatId),
+                chatService.addUserToChat(chatId, userId)
+        );
+    }
+
+    @MessageMapping("/chat/{chatId}/delete-user")
+    public void deleteUserFromChat(@DestinationVariable UUID chatId,
+                                   @Payload Long userId)
+    {
+        template.convertAndSend(
+                String.format("/topic/chats/%s/delete-user", chatId),
+                chatService.deleteUserFromChat(chatId, userId)
+        );
+    }
+
+    @MessageMapping("/chat/{chatId}/delete")
+    public void deleteChat(@DestinationVariable UUID chatId)
+    {
+        template.convertAndSend(
+                String.format("/topic/chats/%s/delete", chatId),
+                chatService.deleteChat(chatId)
+        );
     }
 }
