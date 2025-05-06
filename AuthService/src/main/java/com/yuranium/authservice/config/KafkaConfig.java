@@ -30,7 +30,7 @@ public class KafkaConfig
     {
         return new NewTopic(
                 environment.getProperty("kafka.topic-names.user-delete"),
-                1, (short) 2);
+                2, (short) 2);
     }
 
     @Bean
@@ -84,8 +84,8 @@ public class KafkaConfig
         return new KafkaTransactionManager<>(producerFactory);
     }
 
+    @Bean
     @Primary
-    @Bean("transactionManager")
     JpaTransactionManager transactionManager(EntityManagerFactory managerFactory)
     {
         return new JpaTransactionManager(managerFactory);

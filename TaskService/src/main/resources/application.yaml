@@ -32,10 +32,3 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       bootstrap-servers: ${BOOTSTRAP_HOST_1:localhost}:${BOOTSTRAP_PORT_1:9092},${BOOTSTRAP_HOST_2:localhost}:${BOOTSTRAP_PORT_2:9094}
       isolation-level: READ_COMMITTED
-
-logging:
-  level:
-    org:
-      springframework:
-        kafka: TRACE
-        transaction: TRACE

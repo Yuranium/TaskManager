@@ -25,7 +25,7 @@ public class UserDeleteEventHandler
     private final KafkaProducer kafkaProducer;
 
     @Transactional
-    @KafkaListener(topics = "user-deleted-events-topic", groupId = "user-delete")
+    @KafkaListener(topics = "user-deleted-events-topic", groupId = "project-user-delete")
     public void deleteProject(@Payload Long userId,
                               @Header("messageId") String messageId)
     {

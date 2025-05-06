@@ -17,21 +17,21 @@ public class UserEventHandler
 {
     private final UserService userService;
 
-    @KafkaListener(topics = "user-created-events-topic", groupId = "user-create")
+    @KafkaListener(topics = "user-created-events-topic", groupId = "chat-user-create")
     public void createUserEvent(@Payload UserCreatedEvent userEvent,
                                 @Header("messageId") String messageId)
     {
         userService.createUser(userEvent);
     }
 
-    @KafkaListener(topics = "user-updated-events-topic", groupId = "user-update")
+    @KafkaListener(topics = "user-updated-events-topic", groupId = "chat-user-update")
     public void updateUserEvent(@Payload UserUpdatedEvent userEvent,
                                 @Header("messageId") String messageId)
     {
         userService.updateUser(userEvent);
     }
 
-    @KafkaListener(topics = "user-deleted-events-topic", groupId = "user-delete")
+    @KafkaListener(topics = "user-deleted-events-topic", groupId = "chat-user-delete")
     public void deleteUserEvent(@Payload Long userId,
                                 @Header("messageId") String messageId)
     {

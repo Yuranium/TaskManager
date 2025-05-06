@@ -22,7 +22,7 @@ public class ProjectDeleteEventHandler
     private final ProcessedRepository processedRepository;
 
     @Transactional
-    @KafkaListener(topics = "project-deleted-events-topic", groupId = "project-delete")
+    @KafkaListener(topics = "project-deleted-events-topic", groupId = "task-project-delete")
     public void deleteProject(@Payload UUID projectId,
                               @Header("messageId") String messageId)
     {
@@ -35,11 +35,12 @@ public class ProjectDeleteEventHandler
     }
 
     @Transactional
-    @KafkaListener(topics = "projects-deleted-events-topic", groupId = "project-delete")
+    @KafkaListener(topics = "projects-deleted-events-topic", groupId = "task-projects-delete")
     public void deleteProjects(@Payload List<UUID> projectsId,
                                @Header("messageId") String messageId)
     {
-        if (processedRepository.findByMessageId(UUID.fromString(messageId)).isPresent())
+        if (processedRepository.findByMessageId(
+                UUID.fromString(messageId)).isPresent() || projectsId.isEmpty())
             return;
 
         taskService.deleteAllTask(projectsId);
