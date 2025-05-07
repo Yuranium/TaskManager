@@ -5,17 +5,42 @@ import {useNavigate} from "react-router-dom";
 import {useAuth} from "../../hooks/auth";
 import Stomp from 'stompjs';
 import SockJS from 'sockjs-client';
+import axios from "axios";
 
 export default function WebChat() {
     const {user} = useAuth();
-    const dataFetched = useRef(false);
+    const navigate = useNavigate();
     const [messages, setMessages] = useState([]);
-    const [draft, setDraft] = useState('');
+    const [draft, setDraft] = useState("");
     const stompRef = useRef(null);
     const listRef = useRef(null);
-    const navigate = useNavigate();
-    const chatId = '00000000-0000-0000-0000-000000000001';
+
+    const chatId = "00000000-0000-0000-0000-000000000001";
+
     const webSocketUri = process.env.REACT_APP_WEBSOCKET_URL;
+    const backHost = process.env.REACT_APP_BACKEND_HOST;
+    const backPort = process.env.REACT_APP_BACKEND_PORT;
+
+    useEffect(() => {
+        const loadHistory = async () => {
+            try {
+                const res = await axios.get(
+                    `http://${backHost}:${backPort}/api/chat/messages/all`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('jwtToken')}`
+                        },
+                        params: {chatId}
+                    }
+                );
+                setMessages(res.data);
+            } catch (err) {
+                console.error("Ошибка загрузки истории сообщений:", err);
+            }
+        }
+
+        loadHistory();
+    }, [chatId, backHost, backPort]);
 
     useEffect(() => {
         const socket = new SockJS(webSocketUri);
@@ -24,41 +49,27 @@ export default function WebChat() {
         stompClient.connect({}, () => {
             stompRef.current = stompClient;
 
-            stompClient.subscribe('/topic/messages', frame => {
-                const msg = JSON.parse(frame.body);
-                setMessages(prev => {
-                    if (prev.some(m => m.id === msg.id)) return prev;
-                    return [...prev, msg];
-                });
-            });
-            stompClient.subscribe('/topic/history', frame => {
-                const hist = JSON.parse(frame.body);
-                setMessages(hist);
-            });
-
-            if (!dataFetched.current) {
-                dataFetched.current = true;
-                stompClient.subscribe('/topic/history', frame => {
-                    const hist = JSON.parse(frame.body);
-                    setMessages(hist);
-                });
-                stompClient.send(
-                    '/app/chat.history',
-                    {},
-                    JSON.stringify({ chatId })
-                );
-            }
-        }, error => {
-            console.error('STOMP connect error', error);
+            stompClient.subscribe(
+                `/topic/chats/${chatId}/new-message`,
+                frame => {
+                    const msg = JSON.parse(frame.body);
+                    setMessages(prev => {
+                        if (prev.some(m => m.id === msg.id)) return prev;
+                        return [...prev, msg];
+                    });
+                }
+            );
+        }, err => {
+            console.error("STOMP connect error", err);
         });
 
         return () => {
             if (stompClient && stompClient.connected) {
                 stompClient.disconnect();
-                console.log('STOMP disconnected');
+                console.log("STOMP disconnected");
             }
         };
-    }, []);
+    }, [webSocketUri, chatId]);
 
     useLayoutEffect(() => {
         const el = listRef.current;
@@ -69,24 +80,18 @@ export default function WebChat() {
         if (!draft.trim()) return;
         const client = stompRef.current;
         if (!client || !client.connected) {
-            console.warn('STOMP not connected yet');
+            console.warn("STOMP not connected yet");
             return;
         }
-
         const message = {
             chatId,
+            action: "NEW_MESSAGE",
+            type: 'TEXT_MESSAGE',
             ownerId: user.id,
             content: draft.trim(),
-            dateCreated: new Date().toISOString(),
         };
-
-        client.send(
-            '/app/chat.send',
-            {},
-            JSON.stringify(message)
-        );
-
-        setDraft('');
+        client.send("/app/chat/send-message", {}, JSON.stringify(message));
+        setDraft("");
     };
 
     return (

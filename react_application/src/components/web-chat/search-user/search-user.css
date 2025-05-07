@@ -1,0 +1,40 @@
+.input-user-search-group {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5px;
+}
+
+.suggested-options {
+    position: absolute;
+}
+
+.suggested-user {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: .5rem 1em;
+    background-color: #cccccc;
+    border-radius: .5em;
+}
+
+.suggested-user-avatar {
+    max-width: 70px;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.user-search-username {
+    padding: 0 1em;
+}
+
+.add-user-to-chat-button {
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity .5s ease;
+    display: flex;
+}
+
+.add-user-to-chat-button:hover {
+    opacity: 1;
+}

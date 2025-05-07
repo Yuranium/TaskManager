@@ -1,7 +1,7 @@
 import {useState} from "react";
-import Button from "../button/button";
+import Button from "../../button/button";
 import axios from "axios";
-import {useAuth} from "../../hooks/auth";
+import {useAuth} from "../../../hooks/auth";
 
 export default function CreateChat() {
     const {user} = useAuth();
@@ -57,10 +57,10 @@ export default function CreateChat() {
         <div>
             <form onSubmit={handleSubmit}>
                 <h3>Создать новый чат</h3>
-                <label htmlFor="chatTitle" id="chatTitle"/>
+                <label htmlFor="chat-title"/>
                 <input type="text"
-                       id="chatTitle"
-                       name="chatTitle"
+                       id="chat-title"
+                       name="chat-title"
                        placeholder="Название чата"
                        onChange={handleChange}
                        value={formData.chatTitle}/>
