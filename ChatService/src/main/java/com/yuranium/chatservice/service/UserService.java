@@ -4,6 +4,7 @@ import com.yuranium.chatservice.models.document.UserDocument;
 import com.yuranium.core.events.UserCreatedEvent;
 import com.yuranium.core.events.UserUpdatedEvent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -18,11 +19,13 @@ public class UserService
 {
     private final MongoTemplate mongoTemplate;
 
-    public List<UserDocument> searchByPrefix(String usernamePrefix)
+    public List<UserDocument> searchByPrefix(String usernamePrefix,
+                                             Pageable pageable)
     {
         String regex = "^" + Pattern.quote(usernamePrefix);
         return mongoTemplate.find(
-                Query.query(Criteria.where("username").regex(regex, "i")),
+                Query.query(Criteria.where("username")
+                        .regex(regex, "i")).with(pageable),
                 UserDocument.class
         );
     }

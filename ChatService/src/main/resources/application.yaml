@@ -1,10 +1,6 @@
 server:
   port: ${CHAT_PORT:8083}
 
-web-chat:
-  user-join-message: Пользователь с id=%s присоединился к беседе!
-  user-leave-message: Пользователь с id=%s вышел из беседы
-
 websocket:
   endpoints: /ws
   allow-origins: ${ALLOW_ORIGIN:http://localhost:3000}

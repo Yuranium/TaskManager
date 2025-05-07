@@ -3,7 +3,7 @@ package com.yuranium.chatservice.controller;
 import com.yuranium.chatservice.models.document.ChatDocument;
 import com.yuranium.chatservice.models.document.MessageDocument;
 import com.yuranium.chatservice.models.document.UserDocument;
-import com.yuranium.chatservice.service.ChatService;
+import com.yuranium.chatservice.service.ChatServiceImpl;
 import com.yuranium.chatservice.service.MessageService;
 import com.yuranium.chatservice.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,16 +23,19 @@ public class ChatController
 {
     private final UserService userService;
 
-    private final ChatService chatService;
+    private final ChatServiceImpl chatService;
 
     private final MessageService messageService;
 
     @GetMapping("/user/search")
     public ResponseEntity<List<UserDocument>> searchUser(
-            @RequestParam String usernamePrefix)
+            @RequestParam String usernamePrefix,
+            @RequestParam(required = false, defaultValue = "0") int pageNumber,
+            @RequestParam(required = false, defaultValue = "50") int size)
     {
         return new ResponseEntity<>(
-                userService.searchByPrefix(usernamePrefix),
+                userService.searchByPrefix(usernamePrefix,
+                        PageRequest.of(pageNumber, size)),
                 HttpStatus.OK
         );
     }
@@ -56,7 +59,8 @@ public class ChatController
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
             @RequestParam(required = false, defaultValue = "50") int size)
     {
-        return new ResponseEntity<>(messageService.getAllMessages(chatId,
+        return new ResponseEntity<>(
+                messageService.getAllMessages(chatId,
                 PageRequest.of(pageNumber, size)), HttpStatus.OK
         );
     }

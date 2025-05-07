@@ -1,8 +1,10 @@
 import {useState} from "react";
 import Button from "../button/button";
 import axios from "axios";
+import {useAuth} from "../../hooks/auth";
 
-export default function CreateChat({ownerId}) {
+export default function CreateChat() {
+    const {user} = useAuth();
     const [formData, setFormData] = useState({
         chatTitle: '',
         maxChatTitleLength: ''
@@ -43,8 +45,8 @@ export default function CreateChat({ownerId}) {
         const backPort = process.env.REACT_APP_BACKEND_PORT;
 
         try {
-            await axios.post(`http://${backHost}:${backPort}/api/auth/registration`,
-                {params: {title: formData.chatTitle, ownerId}});
+            await axios.post(`http://${backHost}:${backPort}/api/chat/create-chat`,
+                {params: {title: formData.chatTitle, ownerId: user.id}});
 
         } catch (err) {
             setErrors({submit: 'Ошибка при регистрации'});

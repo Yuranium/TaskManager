@@ -1,8 +1,8 @@
 package com.yuranium.chatservice.service;
 
 import com.mongodb.client.result.DeleteResult;
-import com.yuranium.chatservice.enums.MessageType;
 import com.yuranium.chatservice.models.document.MessageDocument;
+import com.yuranium.chatservice.models.dto.MessageInputDto;
 import com.yuranium.chatservice.util.exception.MessageNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +10,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -42,28 +41,35 @@ public class MessageService
                 .getMappedResults();
     }
 
-    public MessageDocument insertMessage(MessageDocument message)
+    public MessageDocument insertMessage(MessageInputDto message)
     {
         return mongoTemplate.insert(MessageDocument.builder()
                 .id(UUID.randomUUID())
-                .type(MessageType.TEXT_MESSAGE)
+                .type(message.type())
                 .dateCreated(LocalDateTime.now())
-                .ownerId(message.getOwnerId())
-                .content(message.getContent())
-                .chatId(message.getChatId())
+                .ownerId(message.ownerId())
+                .content(message.content())
+                .chatId(message.chatId())
                 .build());
     }
 
-    public void deleteMessage(UUID messageId)
+    public MessageDocument deleteMessage(UUID messageId)
     {
-        DeleteResult result = mongoTemplate.remove(
-                Query.query(Criteria.where("_id").is(messageId)),
-                MessageDocument.class);
+        MessageDocument message = mongoTemplate.findById(messageId, MessageDocument.class);
+        DeleteResult result = mongoTemplate.remove(message);
 
         if (result.getDeletedCount() == 0)
             throw new MessageNotFoundException(
                 String.format("The message with id=%s was not found",
                         messageId)
         );
+
+        return MessageDocument.builder()
+                .dateCreated(LocalDateTime.now())
+                .content(String.format(
+                        "Сообщение '%s' удалено",
+                        message.getContent())
+                )
+                .build();
     }
 }
