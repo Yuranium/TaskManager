@@ -3,6 +3,7 @@ package com.yuranium.chatservice.service;
 import com.mongodb.client.result.DeleteResult;
 import com.yuranium.chatservice.models.document.MessageDocument;
 import com.yuranium.chatservice.models.dto.MessageInputDto;
+import com.yuranium.chatservice.models.dto.OutputMessage;
 import com.yuranium.chatservice.util.exception.MessageNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +23,7 @@ public class MessageService
 {
     private final MongoTemplate mongoTemplate;
 
-    public List<MessageDocument> getAllMessages(UUID chatId, Pageable pageable)
+    public List<OutputMessage> getAllMessages(UUID chatId, Pageable pageable)
     {
         if (chatId == null)
             throw new IllegalArgumentException(
@@ -30,14 +31,26 @@ public class MessageService
             );
 
         Aggregation aggregation = Aggregation.newAggregation(
-                Aggregation.match(Criteria.where("chatId").is(chatId)),
+                Aggregation.match(Criteria.where("chatId").is(chatId.toString())),
                 Aggregation.sort(Sort.by(Sort.Direction.DESC, "dateCreated")),
                 Aggregation.skip(pageable.getOffset()),
                 Aggregation.limit(pageable.getPageSize()),
-                Aggregation.sort(Sort.by(Sort.Direction.ASC, "dateCreated"))
+                Aggregation.lookup(
+                        "users",
+                        "ownerId",
+                        "_id",
+                        "userInfo"
+                ),
+                Aggregation.unwind("userInfo"),
+                Aggregation.sort(Sort.by(Sort.Direction.ASC, "dateCreated")),
+                Aggregation.project()
+                        .andInclude("id","type","dateCreated","content","chatId")
+                        .and("ownerId").as("ownerId")
+                        .and("userInfo.username").as("username")
+                        .and("userInfo.avatarData").as("avatarData")
         );
         return mongoTemplate
-                .aggregate(aggregation, MessageDocument.class, MessageDocument.class)
+                .aggregate(aggregation, "messages", OutputMessage.class)
                 .getMappedResults();
     }
 

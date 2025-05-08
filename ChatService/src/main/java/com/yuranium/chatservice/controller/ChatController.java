@@ -1,8 +1,8 @@
 package com.yuranium.chatservice.controller;
 
 import com.yuranium.chatservice.models.document.ChatDocument;
-import com.yuranium.chatservice.models.document.MessageDocument;
 import com.yuranium.chatservice.models.document.UserDocument;
+import com.yuranium.chatservice.models.dto.OutputMessage;
 import com.yuranium.chatservice.service.ChatServiceImpl;
 import com.yuranium.chatservice.service.MessageService;
 import com.yuranium.chatservice.service.UserService;
@@ -54,7 +54,7 @@ public class ChatController
     }
 
     @GetMapping("/messages/all")
-    public ResponseEntity<List<MessageDocument>> getAllMessages(
+    public ResponseEntity<List<OutputMessage>> getAllMessages(
             @RequestParam UUID chatId,
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
             @RequestParam(required = false, defaultValue = "50") int size)

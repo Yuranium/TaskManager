@@ -10,10 +10,12 @@ import axios from "axios";
 export default function WebChat() {
     const {user} = useAuth();
     const navigate = useNavigate();
+    const [chats, setChats] = useState([]);
     const [messages, setMessages] = useState([]);
     const [draft, setDraft] = useState("");
     const stompRef = useRef(null);
     const listRef = useRef(null);
+    const didFetch = useRef(false);
 
     const chatId = "00000000-0000-0000-0000-000000000001";
 
@@ -21,28 +23,36 @@ export default function WebChat() {
     const backHost = process.env.REACT_APP_BACKEND_HOST;
     const backPort = process.env.REACT_APP_BACKEND_PORT;
 
-    useEffect(() => {
-        const loadHistory = async () => {
-            try {
-                const res = await axios.get(
-                    `http://${backHost}:${backPort}/api/chat/messages/all`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${localStorage.getItem('jwtToken')}`
-                        },
-                        params: {chatId}
-                    }
-                );
-                setMessages(res.data);
-            } catch (err) {
-                console.error("Ошибка загрузки истории сообщений:", err);
-            }
+    const fetchData = async () => {
+        try {
+            const chatRes = await axios.get(
+                `http://${backHost}:${backPort}/api/chat/all`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('jwtToken')}`
+                    },
+                    params: {userId: user.id}
+                }
+            );
+            setChats(chatRes.data)
+
+            const messagesRes = await axios.get(
+                `http://${backHost}:${backPort}/api/chat/messages/all`,
+
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('jwtToken')}`
+                    },
+                    params: {chatId}
+                }
+            );
+            setMessages(messagesRes.data);
+        } catch (err) {
+            console.error("Ошибка загрузки истории сообщений:", err);
         }
+    }
 
-        loadHistory();
-    }, [chatId, backHost, backPort]);
-
-    useEffect(() => {
+    const connectToWebSocket = () => {
         const socket = new SockJS(webSocketUri);
         const stompClient = Stomp.over(socket);
 
@@ -69,12 +79,23 @@ export default function WebChat() {
                 console.log("STOMP disconnected");
             }
         };
-    }, [webSocketUri, chatId]);
+    }
+
+    useEffect(() => {
+        if (!didFetch.current && user) {
+            didFetch.current = true;
+            fetchData();
+            connectToWebSocket();
+        }
+    }, [chatId, backHost, backPort]);
 
     useLayoutEffect(() => {
         const el = listRef.current;
         if (el) el.scrollTop = el.scrollHeight;
     }, [messages]);
+
+    // if (chats.length === 0)
+    //     return <CreateChat userId={user.id}/>
 
     const send = () => {
         if (!draft.trim()) return;
@@ -94,42 +115,68 @@ export default function WebChat() {
         setDraft("");
     };
 
+    const groupMessagesByDate = (messages) => {
+        return messages.reduce((groups, message) => {
+            const date = new Date(message.dateCreated);
+            const dateKey = date.toLocaleDateString('ru-RU', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+
+            if (!groups[dateKey]) {
+                groups[dateKey] = [];
+            }
+            groups[dateKey].push(message);
+            return groups;
+        }, {});
+    };
+
     return (
         <div className="web-chat-container-open">
             <h3 className="web-chat-header">Task-Manager</h3>
             <div className="messages-wrapper" ref={listRef}>
-                <p></p>
                 <ul className="chat-messages">
-                    {messages.map(m => (
-                        <li key={m.id}
-                            className={m.ownerId === user.id ? 'my-chat-message' : 'chat-message'}>
-                            {m.ownerId !== user.id && (
-                                <img src="/default-avatar.png"
-                                     className="chat-user-avatar"
-                                     alt="avatar"
-                                     role="button"
-                                     onClick={() => navigate(`/account/${m.ownerId}`)}/>
-                            )}
-                            <div className={m.ownerId === user.id
-                                ? 'my-chat-message-content'
-                                : 'chat-message-content'}>
-                                <span>{m.content}</span>
-                                <span className="timestamp-sended">
-                                  {new Date(m.dateCreated).toLocaleTimeString([], {
-                                      hour: '2-digit', minute: '2-digit',
-                                  })}
-                                </span>
+                    {Object.entries(groupMessagesByDate(messages)).map(([date, dayMessages]) => (
+                        <>
+                            <div className="message-date-header">
+                                {date}
                             </div>
-                            {m.ownerId === user.id && (
-                                <img
-                                    src="/default-avatar.png"
-                                    className="chat-user-avatar"
-                                    alt="avatar"
-                                    role="button"
-                                    onClick={() => navigate(`/account/${m.ownerId}`)}
-                                />
-                            )}
-                        </li>
+                            {dayMessages.map(m => (
+                                <li key={m.id}
+                                    className={m.ownerId === user.id ? 'my-chat-message' : 'chat-message'}>
+                                    {m.ownerId !== user.id && (
+                                        <>
+                                            <div className="web-chat-username">{m.username}</div>
+                                            <img src={m.avatarData ? `data:image/jpeg;base64,${m.avatarData}`
+                                                : '/default-avatar.png'}
+                                                 className="chat-user-avatar"
+                                                 role="button"
+                                                 onClick={() => navigate(`/account/${m.ownerId}`)}/>
+                                        </>
+                                    )}
+                                    <div className={m.ownerId === user.id
+                                        ? 'my-chat-message-content'
+                                        : 'chat-message-content'}>
+                                        <span>{m.content}</span>
+                                        <span className="timestamp-sended">
+                                          {new Date(m.dateCreated).toLocaleTimeString([], {
+                                              hour: '2-digit', minute: '2-digit',
+                                          })}
+                                        </span>
+                                    </div>
+                                    {m.ownerId === user.id && (
+                                        <img
+                                            src={m.avatarData ? `data:image/jpeg;base64,${m.avatarData}`
+                                                : '/default-avatar.png'}
+                                            className="chat-user-avatar"
+                                            role="button"
+                                            onClick={() => navigate(`/account/${m.ownerId}`)}
+                                        />
+                                    )}
+                                </li>
+                            ))}
+                        </>
                     ))}
                 </ul>
             </div>

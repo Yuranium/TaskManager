@@ -39,6 +39,6 @@ public class MessageDocument
     private String content;
 
     @Indexed
-    @Field(name = "chatId", targetType = FieldType.STRING)
+    @Field(name = "chatId")
     private UUID chatId;
 }

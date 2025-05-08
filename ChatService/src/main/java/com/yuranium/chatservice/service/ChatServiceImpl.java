@@ -27,6 +27,7 @@ public class ChatServiceImpl implements ChatService
         return mongoTemplate.insert(ChatDocument.builder()
                 .id(UUID.randomUUID())
                 .title(title)
+                .dateCreated(LocalDateTime.now())
                 .ownerId(ownerId)
                 .build()
         );

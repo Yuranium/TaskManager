@@ -2,6 +2,7 @@ import {useState} from "react";
 import Button from "../../button/button";
 import axios from "axios";
 import {useAuth} from "../../../hooks/auth";
+import './create-chat.css'
 
 export default function CreateChat() {
     const {user} = useAuth();
@@ -30,7 +31,7 @@ export default function CreateChat() {
             errs.chatTitle = 'Нужно заполнить';
 
         if (formData.chatTitle.length >= 50)
-            errs.maxChatTitleLength = 'Название больше, чем 50 символов!'
+            errs.maxChatTitleLength = 'Название больше, чем 50 символов'
 
         return errs;
     };
@@ -54,13 +55,13 @@ export default function CreateChat() {
     };
 
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
+        <div className="create-chat-container">
+            <form onSubmit={handleSubmit} className="create-chat-form">
                 <h3>Создать новый чат</h3>
                 <label htmlFor="chat-title"/>
                 <input type="text"
                        id="chat-title"
-                       name="chat-title"
+                       name="chatTitle"
                        placeholder="Название чата"
                        onChange={handleChange}
                        value={formData.chatTitle}/>
@@ -69,7 +70,7 @@ export default function CreateChat() {
                 {errors.maxChatTitleLength && <div className="field-error">{errors.maxChatTitleLength}</div>}
                 {errors.submit && <div className="form-error">{errors.submit}</div>}
 
-                <Button type="submit" style={{fontWeight: "normal"}}>Создать чат</Button>
+                <Button type="submit">Создать чат</Button>
             </form>
         </div>
     )

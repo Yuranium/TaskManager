@@ -18,7 +18,7 @@ public class UserDocument
     @Id
     private Long id;
 
-    @Indexed
+    @Indexed(unique = true)
     @Field(name = "username", targetType = FieldType.STRING)
     private String username;
 

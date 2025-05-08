@@ -3,7 +3,7 @@ export default function Button({children, isActive = true, onClickFunction, ...p
         <button type={props.type || "button"}
             style={props.style}
             className={isActive ? `button` : `button disabled`}
-            onClick={onClickFunction}>
+            onClick={() => onClickFunction?.()}>
             {children}
         </button>
     )
