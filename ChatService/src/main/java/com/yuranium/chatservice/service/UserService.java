@@ -19,15 +19,14 @@ public class UserService
 {
     private final MongoTemplate mongoTemplate;
 
-    public List<UserDocument> searchByPrefix(String usernamePrefix,
-                                             Pageable pageable)
+    public List<UserDocument> searchUser(String inputUsername, Pageable pageable)
     {
-        String regex = "^" + Pattern.quote(usernamePrefix);
-        return mongoTemplate.find(
-                Query.query(Criteria.where("username")
-                        .regex(regex, "i")).with(pageable),
-                UserDocument.class
-        );
+        String escaped = Pattern.quote(inputUsername);
+        Pattern regex = Pattern.compile(escaped, Pattern.CASE_INSENSITIVE);
+
+        Query query = Query.query(Criteria.where("username").regex(regex))
+                .with(pageable);
+        return mongoTemplate.find(query, UserDocument.class);
     }
 
     public UserDocument createUser(UserCreatedEvent user)

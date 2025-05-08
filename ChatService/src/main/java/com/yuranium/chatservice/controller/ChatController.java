@@ -29,12 +29,12 @@ public class ChatController
 
     @GetMapping("/user/search")
     public ResponseEntity<List<UserDocument>> searchUser(
-            @RequestParam String usernamePrefix,
+            @RequestParam String inputUsername,
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
             @RequestParam(required = false, defaultValue = "50") int size)
     {
         return new ResponseEntity<>(
-                userService.searchByPrefix(usernamePrefix,
+                userService.searchUser(inputUsername,
                         PageRequest.of(pageNumber, size)),
                 HttpStatus.OK
         );

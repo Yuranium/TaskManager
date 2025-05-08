@@ -25,7 +25,7 @@ export default function SearchUser() {
                 try {
                     const response = await axios.get(
                         `http://${backHost}:${backPort}/api/chat/user/search`,
-                        {params: {usernamePrefix: inputData}}
+                        {params: {inputUsername: inputData}}
                     );
 
                     if (response.status === HttpStatusCode.Ok)
@@ -68,12 +68,15 @@ export default function SearchUser() {
                              onClick={() => navigate(`/account/${user.id}`)}>
                             <img className="suggested-user-avatar"
                                  src="/default-avatar.png"
-                                 alt="user-avatar"/>
+                                 alt="user-avatar"
+                                 title="Профиль пользователя"/>
                             <div className="user-search-username">{user.username}</div>
+                            <div className="add-user-to-chat-button-wrapper">
                             <div className="add-user-to-chat-button"
                                  role="button"
                                  onClick={() => addUserToChat(user.id)}>
                                 <LuCirclePlus/>
+                            </div>
                             </div>
                         </div>
                     ))
