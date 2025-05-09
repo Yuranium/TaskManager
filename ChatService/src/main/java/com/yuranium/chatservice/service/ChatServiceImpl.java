@@ -6,6 +6,8 @@ import com.yuranium.chatservice.models.document.MessageDocument;
 import com.yuranium.chatservice.models.document.UserDocument;
 import com.yuranium.chatservice.models.dto.ResponseMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -19,10 +21,12 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = "chat")
 public class ChatServiceImpl implements ChatService
 {
     private final MongoTemplate mongoTemplate;
 
+    @Cacheable(key = "#ownerId")
     public ChatDocument createChat(String title, Long ownerId)
     {
         return mongoTemplate.insert(ChatDocument.builder()
@@ -35,6 +39,7 @@ public class ChatServiceImpl implements ChatService
         );
     }
 
+    @Cacheable(key = "userId")
     public List<ChatDocument> getAllChats(Long userId, Pageable pageable)
     {
        return mongoTemplate.find(

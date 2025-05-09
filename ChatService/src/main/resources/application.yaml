@@ -22,6 +22,11 @@ spring:
       uri: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DATABASE:web-chat}?authSource=admin&retryWrites=false
       auto-index-creation: true
 
+  cache:
+    redis:
+      cache-null-values: false
+      time-to-live: 600
+
   kafka:
     consumer:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer

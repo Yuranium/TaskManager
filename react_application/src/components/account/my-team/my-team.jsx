@@ -27,7 +27,8 @@ export default function MyTeam() {
             <h1 className="my-team-header">Моя команда:</h1>
             {
                 users.map(member => (
-                    <div className="current-member">
+                    <div className="current-member"
+                         key={member.id}>
                         <img className="member-avatar"
                              src="/default-avatar.png"
                              alt="member-avatar"

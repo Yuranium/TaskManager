@@ -5,6 +5,7 @@ import com.yuranium.chatservice.models.document.UserDocument;
 import com.yuranium.core.events.UserCreatedEvent;
 import com.yuranium.core.events.UserUpdatedEvent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -59,6 +60,7 @@ public class UserService
         );
     }
 
+    @Cacheable(value = "users", key = "#userId")
     public List<UserDocument> myTeam(Long userId, Pageable pageable)
     {
         Set<Long> userIds = mongoTemplate.find(
