@@ -2,8 +2,10 @@ package com.yuranium.chatservice.service;
 
 import com.mongodb.client.result.DeleteResult;
 import com.yuranium.chatservice.models.document.MessageDocument;
+import com.yuranium.chatservice.models.document.UserDocument;
 import com.yuranium.chatservice.models.dto.MessageInputDto;
 import com.yuranium.chatservice.models.dto.OutputMessage;
+import com.yuranium.chatservice.models.dto.ResponseMessage;
 import com.yuranium.chatservice.util.exception.MessageNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +33,7 @@ public class MessageService
             );
 
         Aggregation aggregation = Aggregation.newAggregation(
-                Aggregation.match(Criteria.where("chatId").is(chatId.toString())),
+                Aggregation.match(Criteria.where("chatId").is(chatId)),
                 Aggregation.sort(Sort.by(Sort.Direction.DESC, "dateCreated")),
                 Aggregation.skip(pageable.getOffset()),
                 Aggregation.limit(pageable.getPageSize()),
@@ -44,8 +46,9 @@ public class MessageService
                 Aggregation.unwind("userInfo"),
                 Aggregation.sort(Sort.by(Sort.Direction.ASC, "dateCreated")),
                 Aggregation.project()
-                        .andInclude("id","type","dateCreated","content","chatId")
+                        .andInclude("id", "dateCreated", "content", "chatId")
                         .and("ownerId").as("ownerId")
+                        .and("messageType").as("type")
                         .and("userInfo.username").as("username")
                         .and("userInfo.avatarData").as("avatarData")
         );
@@ -54,9 +57,10 @@ public class MessageService
                 .getMappedResults();
     }
 
-    public MessageDocument insertMessage(MessageInputDto message)
+    public ResponseMessage insertMessage(MessageInputDto message)
     {
-        return mongoTemplate.insert(MessageDocument.builder()
+        UserDocument user = mongoTemplate.findById(message.ownerId(), UserDocument.class);
+        MessageDocument result = mongoTemplate.insert(MessageDocument.builder()
                 .id(UUID.randomUUID())
                 .type(message.type())
                 .dateCreated(LocalDateTime.now())
@@ -64,6 +68,10 @@ public class MessageService
                 .content(message.content())
                 .chatId(message.chatId())
                 .build());
+        OutputMessage outputMessage = new OutputMessage(result);
+        outputMessage.setUsername(user.getUsername());
+        outputMessage.setAvatarData(user.getBinaryData());
+        return outputMessage;
     }
 
     public MessageDocument deleteMessage(UUID messageId)

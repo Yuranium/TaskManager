@@ -30,7 +30,7 @@ public class ChatDocument
     @Field(name = "dateCreated", targetType = FieldType.TIMESTAMP)
     private LocalDateTime dateCreated;
 
-    @Field(name = "usersIds", targetType = FieldType.ARRAY)
+    @Field(name = "userIds", targetType = FieldType.ARRAY)
     private List<Long> userIds;
 
     @Indexed

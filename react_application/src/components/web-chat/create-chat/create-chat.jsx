@@ -4,7 +4,7 @@ import axios from "axios";
 import {useAuth} from "../../../hooks/auth";
 import './create-chat.css'
 
-export default function CreateChat() {
+export default function CreateChat({onCreate}) {
     const {user} = useAuth();
     const [formData, setFormData] = useState({
         chatTitle: '',
@@ -46,9 +46,10 @@ export default function CreateChat() {
         const backPort = process.env.REACT_APP_BACKEND_PORT;
 
         try {
-            await axios.post(`http://${backHost}:${backPort}/api/chat/create-chat`,
-                {params: {title: formData.chatTitle, ownerId: user.id}});
-
+            const response = await axios.post(
+                `http://${backHost}:${backPort}/api/chat/create-chat`, null,
+                {params: {chatTitle: formData.chatTitle, ownerId: user.id}});
+            onCreate(response.data)
         } catch (err) {
             setErrors({submit: 'Ошибка при регистрации'});
         }

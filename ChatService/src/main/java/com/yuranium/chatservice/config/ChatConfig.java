@@ -1,8 +1,8 @@
 package com.yuranium.chatservice.config;
 
 import com.yuranium.chatservice.enums.ChatAction;
-import com.yuranium.chatservice.models.document.MessageDocument;
 import com.yuranium.chatservice.models.dto.MessageInputDto;
+import com.yuranium.chatservice.models.dto.ResponseMessage;
 import com.yuranium.chatservice.service.ChatService;
 import com.yuranium.chatservice.service.MessageService;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +23,9 @@ public class ChatConfig
     private final ChatService chatService;
 
     @Bean
-    EnumMap<ChatAction, Function<MessageInputDto, MessageDocument>> chatHandlers()
+    EnumMap<ChatAction, Function<MessageInputDto, ResponseMessage>> chatHandlers()
     {
-        EnumMap<ChatAction, Function<MessageInputDto, MessageDocument>> handlers = new EnumMap<>(ChatAction.class);
+        EnumMap<ChatAction, Function<MessageInputDto, ResponseMessage>> handlers = new EnumMap<>(ChatAction.class);
 
         handlers.put(ChatAction.NEW_MESSAGE, messageService::insertMessage);
         handlers.put(ChatAction.DELETE_MESSAGE, message -> messageService.deleteMessage(message.messageId()));

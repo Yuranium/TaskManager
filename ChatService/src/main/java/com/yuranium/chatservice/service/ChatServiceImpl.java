@@ -4,12 +4,12 @@ import com.yuranium.chatservice.enums.MessageType;
 import com.yuranium.chatservice.models.document.ChatDocument;
 import com.yuranium.chatservice.models.document.MessageDocument;
 import com.yuranium.chatservice.models.document.UserDocument;
+import com.yuranium.chatservice.models.dto.ResponseMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -29,6 +29,7 @@ public class ChatServiceImpl implements ChatService
                 .title(title)
                 .dateCreated(LocalDateTime.now())
                 .ownerId(ownerId)
+                .userIds(List.of(ownerId))
                 .build()
         );
     }
@@ -36,16 +37,20 @@ public class ChatServiceImpl implements ChatService
     public List<ChatDocument> getAllChats(Long userId, Pageable pageable)
     {
        return mongoTemplate.find(
-               Query.query(Criteria.where("userIds").is(userId))
+               Query.query(Criteria.where("userIds")
+                               .elemMatch(Criteria.where("$eq").is(userId)))
                        .with(pageable), ChatDocument.class);
     }
 
-    public MessageDocument addUserToChat(UUID chatId, Long userId)
+    public ResponseMessage addUserToChat(UUID chatId, Long userId)
     {
-        Query query = Query.query(Criteria.where("_id").is(chatId));
-        Update update = new Update().addToSet("userIds", userId);
-        mongoTemplate.updateFirst(query, update, ChatDocument.class);
-
+       ChatDocument chatDocument = mongoTemplate.findById(chatId, ChatDocument.class);
+       if (chatDocument.getUserIds().contains(userId))
+           throw new UnsupportedOperationException(
+                   String.format("The user with id=%d already exists in this chat", userId)
+           );
+        chatDocument.getUserIds().add(userId);
+        mongoTemplate.save(chatDocument);
         UserDocument user = mongoTemplate.findById(userId, UserDocument.class);
 
         return mongoTemplate.save(MessageDocument.builder()
@@ -60,12 +65,19 @@ public class ChatServiceImpl implements ChatService
                 .build());
     }
 
-    public MessageDocument deleteUserFromChat(UUID chatId, Long userId)
+    public ResponseMessage deleteUserFromChat(UUID chatId, Long userId)
     {
-        Query query = Query.query(Criteria.where("_id").is(chatId));
-        Update update = new Update().pull("userIds", userId);
-        mongoTemplate.updateFirst(query, update, ChatDocument.class);
+        ChatDocument chatDocument = mongoTemplate.findById(chatId, ChatDocument.class);
 
+        if (!chatDocument.getUserIds().contains(userId))
+            throw new UnsupportedOperationException(
+                    String.format(
+                            "The user with id=%d cannot be deleted, because he is absent",
+                            userId
+                    )
+            );
+        chatDocument.getUserIds().remove(userId);
+        mongoTemplate.save(chatDocument);
         UserDocument user = mongoTemplate.findById(userId, UserDocument.class);
 
         return MessageDocument.builder()
@@ -80,7 +92,7 @@ public class ChatServiceImpl implements ChatService
                 .build();
     }
 
-    public MessageDocument deleteChat(UUID chatId, Long ownerId)
+    public ResponseMessage deleteChat(UUID chatId, Long ownerId)
     {
         ChatDocument chat = mongoTemplate.findById(chatId, ChatDocument.class);
         if (chat.getOwnerId().longValue() == ownerId.longValue())

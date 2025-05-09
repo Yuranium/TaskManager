@@ -18,7 +18,7 @@
     right: 5em;
     bottom: 5em;
     width: 30%;
-    height: 65%;
+    height: 75%;
     display: grid;
     grid-template-rows: auto 1fr auto;
     z-index: 100;
@@ -46,6 +46,31 @@
     color: #666;
     font-size: 0.9em;
     position: relative;
+}
+
+.new-user-message {
+    text-align: center;
+    color: #666;
+}
+
+.web-chat-options {
+    display: grid;
+    column-gap: 3%;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 2fr;
+    padding: .3em .3em 0;
+    max-height: 2%;
+}
+
+.web-chat-options select {
+    margin: .5em 0;
+}
+
+.add-user-to-chat-icon {
+    grid-column: 2;
+    align-self: center;
+    justify-self: end;
+    width: 100%;
 }
 
 .message-date-header::before,

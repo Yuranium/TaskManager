@@ -1,7 +1,7 @@
 package com.yuranium.chatservice.service;
 
 import com.yuranium.chatservice.models.document.ChatDocument;
-import com.yuranium.chatservice.models.document.MessageDocument;
+import com.yuranium.chatservice.models.dto.ResponseMessage;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -13,9 +13,9 @@ public interface ChatService
 
     List<ChatDocument> getAllChats(Long userId, Pageable pageable);
 
-    MessageDocument addUserToChat(UUID chatId, Long userId);
+    ResponseMessage addUserToChat(UUID chatId, Long userId);
 
-    MessageDocument deleteUserFromChat(UUID chatId, Long userId);
+    ResponseMessage deleteUserFromChat(UUID chatId, Long userId);
 
-    MessageDocument deleteChat(UUID chatId, Long ownerId);
+    ResponseMessage deleteChat(UUID chatId, Long ownerId);
 }

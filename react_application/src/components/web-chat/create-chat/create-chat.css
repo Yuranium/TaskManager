@@ -1,6 +1,7 @@
 .create-chat-container {
     display: flex;
     justify-content: center;
+    align-content: center;
     width: 100%;
 }
 
@@ -9,4 +10,5 @@
     flex-direction: column;
     gap: 2%;
     padding: .5em;
+    width: 100%;
 }

@@ -2,28 +2,46 @@ package com.yuranium.chatservice.models.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.yuranium.chatservice.enums.MessageType;
+import com.yuranium.chatservice.models.document.MessageDocument;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record OutputMessage(
+public class OutputMessage implements Serializable, ResponseMessage
+{
+    private UUID id;
 
-        UUID id,
+    private MessageType type;
 
-        MessageType type,
+    private LocalDateTime dateCreated;
 
-        LocalDateTime dateCreated,
+    private Long ownerId;
 
-        Long ownerId,
+    private String username;
 
-        String username,
+    private byte[] avatarData;
 
-        byte[] avatarData,
+    private String content;
 
-        String content,
+    private UUID chatId;
 
-        UUID chatId
-
-) implements Serializable {}
+    public OutputMessage(MessageDocument messageDocument)
+    {
+        this.id = messageDocument.getId();
+        this.type = messageDocument.getType();
+        this.dateCreated = messageDocument.getDateCreated();
+        this.ownerId = messageDocument.getOwnerId();
+        this.content = messageDocument.getContent();
+        this.chatId = messageDocument.getChatId();
+    }
+}

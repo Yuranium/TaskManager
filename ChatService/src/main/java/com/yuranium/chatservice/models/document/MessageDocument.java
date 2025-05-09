@@ -1,6 +1,7 @@
 package com.yuranium.chatservice.models.document;
 
 import com.yuranium.chatservice.enums.MessageType;
+import com.yuranium.chatservice.models.dto.ResponseMessage;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -18,7 +19,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Document(collection = "messages")
-public class MessageDocument
+public class MessageDocument implements ResponseMessage
 {
     @Id
     private UUID id;
