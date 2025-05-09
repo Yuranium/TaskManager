@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -49,20 +50,22 @@ public class ChatServiceImpl implements ChatService
            throw new UnsupportedOperationException(
                    String.format("The user with id=%d already exists in this chat", userId)
            );
-        chatDocument.getUserIds().add(userId);
-        mongoTemplate.save(chatDocument);
-        UserDocument user = mongoTemplate.findById(userId, UserDocument.class);
-
-        return mongoTemplate.save(MessageDocument.builder()
-                .id(UUID.randomUUID())
-                .type(MessageType.JOIN)
-                .dateCreated(LocalDateTime.now())
-                .content(String.format(
-                        "Пользователь '%s' присоединился к чату!",
-                        user.getUsername()
-                ))
-                .chatId(chatId)
-                .build());
+       mongoTemplate.updateFirst(
+               Query.query(Criteria.where("_id").is(chatId)),
+               new Update().addToSet("userIds", userId),
+               ChatDocument.class
+       );
+       UserDocument user = mongoTemplate.findById(userId, UserDocument.class);
+       return mongoTemplate.save(MessageDocument.builder()
+               .id(UUID.randomUUID())
+               .type(MessageType.JOIN)
+               .dateCreated(LocalDateTime.now())
+               .content(String.format(
+                       "Пользователь '%s' присоединился к чату!",
+                       user.getUsername()
+               ))
+               .chatId(chatId)
+               .build());
     }
 
     public ResponseMessage deleteUserFromChat(UUID chatId, Long userId)
@@ -76,10 +79,12 @@ public class ChatServiceImpl implements ChatService
                             userId
                     )
             );
-        chatDocument.getUserIds().remove(userId);
-        mongoTemplate.save(chatDocument);
+        mongoTemplate.updateFirst(
+                Query.query(Criteria.where("_id").is(chatId)),
+                new Update().pull("userIds", userId),
+                ChatDocument.class
+        );
         UserDocument user = mongoTemplate.findById(userId, UserDocument.class);
-
         return MessageDocument.builder()
                 .id(UUID.randomUUID())
                 .type(MessageType.LEAVE)

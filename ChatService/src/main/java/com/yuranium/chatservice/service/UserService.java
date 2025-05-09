@@ -1,5 +1,6 @@
 package com.yuranium.chatservice.service;
 
+import com.yuranium.chatservice.models.document.ChatDocument;
 import com.yuranium.chatservice.models.document.UserDocument;
 import com.yuranium.core.events.UserCreatedEvent;
 import com.yuranium.core.events.UserUpdatedEvent;
@@ -11,7 +12,9 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -54,5 +57,20 @@ public class UserService
                 Query.query(Criteria.where("_id").is(id)),
                 UserDocument.class
         );
+    }
+
+    public List<UserDocument> myTeam(Long userId, Pageable pageable)
+    {
+        Set<Long> userIds = mongoTemplate.find(
+                Query.query(Criteria.where("userIds")
+                        .elemMatch(Criteria.where("$eq").is(userId)))
+                        .with(pageable),
+                ChatDocument.class).stream()
+                .flatMap(chat -> chat.getUserIds().stream())
+                .collect(Collectors.toSet());
+
+        return mongoTemplate.find(Query.query(Criteria
+                .where("_id").in(userIds)),
+                UserDocument.class);
     }
 }

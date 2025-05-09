@@ -17,6 +17,8 @@ import RegisterForm from "../login-form/register-form/register-form";
 import OAuth2RedirectHandler from "../login-form/oauth2-redirect-handler";
 import Button from "../button/button";
 import ModalWindow from "../modal-window/modal-window";
+import WebChat from "../web-chat/web-chat";
+import MyTeam from "../account/my-team/my-team";
 
 export default function Navbar() {
     const {isAuthenticated, logout, user} = useAuth();
@@ -72,7 +74,7 @@ export default function Navbar() {
                                     </div>
                                 </li>
                                 <li>
-                                    <div className="my-team inner-list-item">
+                                    <div className="inner-list-item my-team">
                                         <Link to='/account/my-team'>Моя команда</Link>
                                     </div>
                                 </li>
@@ -121,6 +123,7 @@ export default function Navbar() {
                 <Route path="/login" element={<LoginForm/>}/>
                 <Route path="/register" element={<RegisterForm/>}/>
                 <Route path="/account/:userId" element={<ProtectedRoute><Account/></ProtectedRoute>}/>
+                <Route path="/account/my-team" element={<ProtectedRoute><MyTeam/></ProtectedRoute>}/>
                 <Route path="/create-project" element={<NewProjectForm/>}/>
                 <Route path="/update-project/:projectId" element={<NewProjectForm/>}/>
                 <Route path="/projects" element={<ProtectedRoute><ProjectShow/></ProtectedRoute>}/>
@@ -128,6 +131,7 @@ export default function Navbar() {
                 <Route path="/projects/:projectId" element={<ProjectPage/>}/>
                 <Route path="/projects/:projectId/tasks/:taskId" element={<TaskCard/>}/>
                 <Route path="/login/oauth2/code/:provider" element={<OAuth2RedirectHandler/>}/>
+                <Route path="/web-chat" element={<ProtectedRoute><WebChat/></ProtectedRoute>}/>
 
                 <Route path="/500" element={<Http500/>}/>
                 <Route path="/404" element={<Http404/>}/>

@@ -40,6 +40,19 @@ public class ChatController
         );
     }
 
+    @GetMapping("/user/my-team")
+    public ResponseEntity<List<UserDocument>> getMyTeam(
+            @RequestParam Long userId,
+            @RequestParam(required = false, defaultValue = "0") int pageNumber,
+            @RequestParam(required = false, defaultValue = "50") int size)
+    {
+        return new ResponseEntity<>(
+                userService.myTeam(userId,
+                        PageRequest.of(pageNumber, size)),
+                HttpStatus.OK
+        );
+    }
+
     @GetMapping("/all")
     public ResponseEntity<List<ChatDocument>> getAllChats(
             @RequestParam Long userId,
