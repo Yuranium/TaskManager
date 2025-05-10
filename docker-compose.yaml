@@ -67,9 +67,9 @@ services:
 
   redis:
     image: redis:latest
-    container_name: redis
+    container_name: redis-cache
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT}:6379"
 
 volumes:
   kafka-1_data:

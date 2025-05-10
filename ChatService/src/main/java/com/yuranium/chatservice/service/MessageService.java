@@ -8,10 +8,6 @@ import com.yuranium.chatservice.models.dto.OutputMessage;
 import com.yuranium.chatservice.models.dto.ResponseMessage;
 import com.yuranium.chatservice.util.exception.MessageNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -25,12 +21,10 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = "message")
 public class MessageService
 {
     private final MongoTemplate mongoTemplate;
 
-    @Cacheable(key = "#chatId")
     public List<OutputMessage> getAllMessages(UUID chatId, Pageable pageable)
     {
         if (chatId == null)
@@ -63,7 +57,6 @@ public class MessageService
                 .getMappedResults();
     }
 
-    @CachePut(key = "#message.chatId()")
     public ResponseMessage insertMessage(MessageInputDto message)
     {
         UserDocument user = mongoTemplate.findById(message.ownerId(), UserDocument.class);
@@ -81,7 +74,6 @@ public class MessageService
         return outputMessage;
     }
 
-    @CacheEvict(key = "#result.chatId")
     public MessageDocument deleteMessage(UUID messageId)
     {
         MessageDocument message = mongoTemplate.findById(messageId, MessageDocument.class);

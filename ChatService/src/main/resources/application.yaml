@@ -21,8 +21,12 @@ spring:
     mongodb:
       uri: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DATABASE:web-chat}?authSource=admin&retryWrites=false
       auto-index-creation: true
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
 
   cache:
+    type: redis
     redis:
       cache-null-values: false
       time-to-live: 600

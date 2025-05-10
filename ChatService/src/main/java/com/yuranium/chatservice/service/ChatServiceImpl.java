@@ -7,7 +7,9 @@ import com.yuranium.chatservice.models.document.UserDocument;
 import com.yuranium.chatservice.models.dto.ResponseMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -39,7 +41,7 @@ public class ChatServiceImpl implements ChatService
         );
     }
 
-    @Cacheable(key = "userId")
+    @Cacheable(key = "#userId")
     public List<ChatDocument> getAllChats(Long userId, Pageable pageable)
     {
        return mongoTemplate.find(
@@ -48,6 +50,8 @@ public class ChatServiceImpl implements ChatService
                        .with(pageable), ChatDocument.class);
     }
 
+
+    @CacheEvict(key = "#chatId")
     public ResponseMessage addUserToChat(UUID chatId, Long userId)
     {
        ChatDocument chatDocument = mongoTemplate.findById(chatId, ChatDocument.class);
@@ -65,6 +69,7 @@ public class ChatServiceImpl implements ChatService
                .id(UUID.randomUUID())
                .type(MessageType.JOIN)
                .dateCreated(LocalDateTime.now())
+               .ownerId(userId)
                .content(String.format(
                        "Пользователь '%s' присоединился к чату!",
                        user.getUsername()
@@ -73,6 +78,7 @@ public class ChatServiceImpl implements ChatService
                .build());
     }
 
+    @CacheEvict(key = "#chatId")
     public ResponseMessage deleteUserFromChat(UUID chatId, Long userId)
     {
         ChatDocument chatDocument = mongoTemplate.findById(chatId, ChatDocument.class);
@@ -90,18 +96,23 @@ public class ChatServiceImpl implements ChatService
                 ChatDocument.class
         );
         UserDocument user = mongoTemplate.findById(userId, UserDocument.class);
-        return MessageDocument.builder()
+        return mongoTemplate.save(MessageDocument.builder()
                 .id(UUID.randomUUID())
                 .type(MessageType.LEAVE)
                 .dateCreated(LocalDateTime.now())
+                .ownerId(userId)
                 .content(String.format(
                         "Пользователь '%s' покинул чат",
                         user.getUsername()
                 ))
                 .chatId(chatId)
-                .build();
+                .build());
     }
 
+    @Caching(evict = {
+            @CacheEvict(key = "#ownerId"),
+            @CacheEvict(key = "#chatId")
+    })
     public ResponseMessage deleteChat(UUID chatId, Long ownerId)
     {
         ChatDocument chat = mongoTemplate.findById(chatId, ChatDocument.class);
