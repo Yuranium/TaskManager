@@ -7,7 +7,6 @@ import com.yuranium.taskservice.enums.TaskStatus;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,7 +25,7 @@ public record TaskDto(
 
         @JsonFormat(shape = JsonFormat.Shape.STRING,
                 pattern = "yyyy-MM-dd", timezone = "UTC")
-        LocalDateTime dateAdded,
+        LocalDate dateAdded,
 
         @JsonFormat(shape = JsonFormat.Shape.STRING,
                 pattern = "yyyy-MM-dd", timezone = "UTC")

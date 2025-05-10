@@ -2,7 +2,7 @@ package com.yuranium.taskservice.dto;
 
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record TaskImageDto(
         Long id,
@@ -13,6 +13,6 @@ public record TaskImageDto(
 
         byte[] binaryData,
 
-        LocalDate dateAdded
+        LocalDateTime dateAdded
 
 ) implements Serializable {}

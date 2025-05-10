@@ -50,9 +50,9 @@ export default function Navbar() {
 
                     {isAuthenticated ? (
                         <li className="dropdown">
-                          <span className="link-wrap">
-                            <Link to={`/account/${user.id}`}>Аккаунт</Link>
-                          </span>
+                            <span className="link-wrap">
+                                <Link to={`/account/${user.id}`}>Аккаунт</Link>
+                            </span>
                             <ul className="dropdown-menu">
                                 <li>
                                     <div className="inner-list-item">
@@ -76,6 +76,11 @@ export default function Navbar() {
                                 <li>
                                     <div className="inner-list-item my-team">
                                         <Link to='/account/my-team'>Моя команда</Link>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div className="inner-list-item">
+                                        <Link to='/account/web-chat'>Групповой чат</Link>
                                     </div>
                                 </li>
                             </ul>
@@ -131,7 +136,7 @@ export default function Navbar() {
                 <Route path="/projects/:projectId" element={<ProjectPage/>}/>
                 <Route path="/projects/:projectId/tasks/:taskId" element={<TaskCard/>}/>
                 <Route path="/login/oauth2/code/:provider" element={<OAuth2RedirectHandler/>}/>
-                <Route path="/web-chat" element={<ProtectedRoute><WebChat/></ProtectedRoute>}/>
+                <Route path="/account/web-chat" element={<ProtectedRoute><WebChat/></ProtectedRoute>}/>
 
                 <Route path="/500" element={<Http500/>}/>
                 <Route path="/404" element={<Http404/>}/>
