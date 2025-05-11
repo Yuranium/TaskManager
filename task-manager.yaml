@@ -1,0 +1,613 @@
+openapi: 3.0.3
+info:
+  title: Task-Manager
+  description: |-
+    Приложения для отслеживания поставленных задач, координацией команды
+    через групповой чат, инфографикой и другими удобствами
+    
+    Ссылки:
+    - [Репозиторий проекта TaskManager](https://github.com/Yuranium/TaskManager)
+  version: 1.0.0
+  license:
+    name: MIT license
+    url: https://opensource.org/license/mit
+servers:
+  - url: 'http://localhost:8080/api'
+paths:
+  /auth/validate:
+    post:
+      tags:
+        - JWT валидация
+      summary: Валидация входящего JWT токена
+      description: Валидация входящего JWT токена в хедерах запроса
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: JWT токен
+          example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Токен корректный
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthValidationResponse'
+        401:
+          description: Токен некорректный
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthValidationResponse'
+      security:
+        - task_manager_auth:
+            - task_manager_auth
+
+  /auth/login:
+    post:
+      tags:
+        - Авторизация пользователя
+      summary: Авторизация пользователя в системе
+      requestBody:
+        description: Логин и пароль пользователя
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLoginDto'
+        required: true
+      responses:
+        '200':
+          description: Пользователь найден в системе и успешно авторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedJwt'
+        401:
+          description: Некорректные входные данные
+          content:
+            application/json:
+              schema:
+              # добавить
+        404:
+          description: Пользователь не найден в системе
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedJwt'
+
+  /auth/registration:
+    post:
+      tags:
+        - Регистрация нового пользователя
+      summary: Регистрация нового пользователя в системе
+      requestBody:
+        description: Данные пользователя при регистрации
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInputDto'
+        required: true
+      responses:
+        201:
+          description: Пользователь успешно зарегистрирован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        400:
+          description: Такой пользователь уже есть в системе
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestResponse400'
+
+  /auth/user/{id}:
+    get:
+      tags:
+        - Получение юзера по ID
+      summary: Просмотр аккаунта конкретного пользователя
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Уникальный идентификатор пользователя
+          schema:
+            type: integer
+            format: int64
+        - name: Authorization
+          in: header
+          required: true
+          description: JWT токен
+          example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+          schema:
+            type: string
+      responses:
+        200:
+          description: Пользователь есть в системе
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfoDto'
+        401:
+          description: Токен некорректный
+          content:
+            application/json:
+              schema:
+              # добавить
+        404:
+          description: Такого пользователя нет
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestResponse404'
+
+  /auth/user/update/{id}:
+    patch:
+      tags:
+        - Обновление данных пользователя по ID
+      summary: Обновление данных профиля пользователя
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Уникальный идентификатор пользователя
+          schema:
+            type: integer
+            format: int64
+        - name: Authorization
+          in: header
+          required: true
+          description: JWT токен
+          example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+          schema:
+            type: string
+      requestBody:
+        description: Новые данные пользователя
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateDto'
+        required: true
+      responses:
+        200:
+          description: Данные пользователя успешно обновлены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        401:
+          description: Токен некорректный
+          content:
+            application/json:
+              schema:
+              # добавить
+        404:
+          description: Такого пользователя нет
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestResponse404'
+
+  /auth/user/{id}/update-avatar:
+    patch:
+      tags:
+        - Обновление аватара пользователя по ID
+      summary: Обновление аватара пользователя и добавление к текущим аватарам
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Уникальный идентификатор пользователя
+          schema:
+            type: integer
+            format: int64
+        - name: Authorization
+          in: header
+          required: true
+          description: JWT токен
+          example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+          schema:
+            type: string
+      requestBody:
+        description: Новая файл аватара пользователя
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MultipartFile'
+        required: true
+      responses:
+        200:
+          description: Аватар пользователя успешно обновлён
+
+        401:
+          description: Токен некорректный
+          content:
+            application/json:
+              schema:
+              # добавить
+        404:
+          description: Такого пользователя нет
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestResponse404'
+
+  /auth/user/delete/{id}:
+    delete:
+      tags:
+        - Удаление аккаунта пользователя по ID
+      summary: Удаление профиля пользователя из системы
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Уникальный идентификатор пользователя
+          schema:
+            type: integer
+            format: int64
+        - name: Authorization
+          in: header
+          required: true
+          description: JWT токен
+          example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+          schema:
+            type: string
+      responses:
+        204:
+          description: Пользователь и все его данные успешно удалены
+        401:
+          description: Токен некорректный
+          content:
+            application/json:
+              schema:
+                # добавить
+        404:
+          description: Такого пользователя нет
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestResponse404'
+
+  /projects/allProjects:
+    get:
+      tags:
+        - Получение всех проектов пользователя
+      summary: Получение всех проектов для конкретного пользователя
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          description: Уникальный идентификатор пользователя
+          example: 1
+          schema:
+            type: integer
+            format: int64
+        - name: pageNumber
+          in: query
+          required: false
+          description: Номер страницы данных
+          example: 2
+          schema:
+            type: integer
+            format: int32
+        - name: size
+          in: query
+          required: false
+          description: Размер загружаемой страницы данных
+          example: 15
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+          description: Данные успешно загружены
+          content:
+            application/json:
+              schema:
+                #$ref: '#/components/schemas/Jwt'
+
+  /projects/{id}:
+    get:
+      tags:
+        - Получение проекта по ID
+      summary: Получение конкретного проекта
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Уникальный идентификатор проекта
+          example: '03b5fc81-2749-40df-94f5-1e74beafc953'
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Проект успешно найден
+          content:
+            application/json:
+              schema:
+                #$ref: '#/components/schemas/Jwt'
+        404:
+          description: Такого проекта нет
+          content:
+            application/json:
+              schema:
+                #$ref: '#/components/schemas/Jwt'
+
+  /projects/createProject:
+    post:
+      tags:
+        - Создание нового проекта
+      summary: Создание нового проекта для задач
+      requestBody:
+        description: Данные нового проекта
+        content:
+          application/json:
+            schema:
+              #$ref: '#/components/schemas/Jwt'
+        required: true
+      responses:
+        201:
+          description: Проект успешно создан
+          content:
+            application/json:
+              schema:
+                #$ref: '#/components/schemas/Jwt'
+
+  /project/update/{id}:
+    patch:
+      tags:
+        - Обновление данных проекта по ID
+      summary: Обновление имени, аватара, описания проекта
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Уникальный ID проекта
+          example: '03b5fc81-2749-40df-94f5-1e74beafc953'
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Новые данные проекта
+        content:
+          application/json:
+            schema:
+            #$ref: '#/components/schemas/Jwt'
+        required: true
+      responses:
+        200:
+          description: Проект успешно обновлён
+          content:
+            application/json:
+              schema:
+              #$ref: '#/components/schemas/Jwt'
+        404:
+          description: Такого проекта нет
+          content:
+            application/json:
+              schema:
+              #$ref: '#/components/schemas/Jwt'
+
+  /project/delete/{id}:
+    delete:
+      tags:
+        - Удаление проекта по ID
+      summary: Удаление проекта и каскадное удаление всех связанных задач
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Уникальный ID проекта
+          example: '03b5fc81-2749-40df-94f5-1e74beafc953'
+          schema:
+            type: string
+            format: uuid
+      responses:
+        204:
+          description: Проект и все его данные успешно удалены
+          content:
+            application/json:
+              schema:
+              #$ref: '#/components/schemas/Jwt'
+        404:
+          description: Такого проекта нет
+          content:
+            application/json:
+              schema:
+              #$ref: '#/components/schemas/Jwt'
+
+components:
+  schemas:
+    AuthValidationResponse:
+      type: object
+      properties:
+        valid:
+          type: boolean
+          example: true
+        userId:
+          type: integer
+          format: int64
+          example: 1
+        username:
+          type: string
+          example: example@example.com
+        roles:
+          type: array
+          example: ['ROLE_USER', 'ROLE_OWNER']
+
+    CreatedJwt:
+      type: object
+      properties:
+        token:
+          type: string
+          example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY...'
+
+    UserDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        username:
+          type: string
+          example: 'Yuranium'
+        email:
+          type: string
+          example: example@example.com
+
+    UserLoginDto:
+      type: object
+      properties:
+        username:
+          type: string
+          example: example@example.com
+        password:
+          type: string
+          example: 'myPassword'
+
+    UserInputDto:
+      type: object
+      properties:
+        username:
+          type: string
+          example: 'Yuranium'
+        name:
+          type: string
+          example: Юрий
+          required: false
+        lastName:
+          type: string
+          example: Петров
+          required: false
+        password:
+          type: string
+          example: 'MyPassword'
+          required: true
+        email:
+          type: string
+          example: example@example.com
+          required: true
+        avatars:
+          type: array
+          example: [ { AvatarObject1 }, { AvatarObject2 }, { AvatarObject3 }]
+          required: false
+
+    RestResponse400:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 400
+        status:
+          type: string
+          enum:
+            - OK
+            - BAD_REQUEST
+            - I_AM_TEAPOT
+            - FORBIDDEN
+        timestamp:
+          type: integer
+          format: int64
+          example: 2025-05-09T17:49:48.946
+        message:
+          type: string
+          example: The required object field is missing
+
+    RestResponse404:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 404
+        status:
+          type: string
+          enum:
+            - OK
+            - BAD_REQUEST
+            - I_AM_TEAPOT
+            - FORBIDDEN
+        timestamp:
+          type: integer
+          format: int64
+          example: 2025-05-09T17:49:48.946
+        message:
+          type: string
+          example: The entity with id=1 not found
+
+    UserInfoDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        username:
+          type: string
+          example: 'Yuranium'
+        name:
+          type: string
+          example: Юрий
+          required: false
+        lastName:
+          type: string
+          example: Петров
+          required: false
+        email:
+          type: string
+          example: example@example.com
+          required: true
+        dateRegistration:
+          type: integer
+          format: int64
+          example: 2025-05-09T17:49:48.946
+        activity:
+          type: boolean
+          example: false
+        avatars:
+          type: array
+          example: [ { AvatarObject1 }, { AvatarObject2 }, { AvatarObject3 } ]
+          required: false
+        roles:
+          type: array
+          example: [ { RoleObject1 }, { RoleObject2 }, { RoleObject3 } ]
+          required: false
+
+    UserUpdateDto:
+      type: object
+      properties:
+        username:
+          type: string
+          example: 'Yuranium'
+        name:
+          type: string
+          example: Юрий
+          required: false
+        lastName:
+          type: string
+          example: Петров
+          required: false
+        avatars:
+          type: array
+          example: [ { AvatarObject1 }, { AvatarObject2 }, { AvatarObject3 } ]
+          required: false
+        roles:
+          type: array
+          example: [ { RoleObject1 }, { RoleObject2 }, { RoleObject3 } ]
+          required: false
+
+    MultipartFile:
+      type: object
+      properties:
+        originalFileName:
+          type: string
+          example: image.png
+        contentType:
+          type: string
+          example: image/jpeg
+        binaryData:
+          type: array
+          example: [12, 13, 63, 8, 21, ...]

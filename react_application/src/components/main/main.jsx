@@ -134,13 +134,13 @@ export default function Main() {
                             <img className="slide-image" src="/main-slider/marketing.jpg" alt="marketing"/>
                         </div>
                         <div className="slide">
-                            <img className="slide-image" src="/main-slider/it.png" alt="it"/>
+                            <img className="slide-image" src="/main-slider/it.png" alt="IT development"/>
                         </div>
                         <div className="slide">
-                            <img className="slide-image" src="/main-slider/business-analytics.jpg" alt=""/>
+                            <img className="slide-image" src="/main-slider/business-analytics.jpg" alt="business-analytics"/>
                         </div>
                         <div className="slide">
-                            <img className="slide-image" src="/main-slider/business-analytics-1.jpg" alt=""/>
+                            <img className="slide-image" src="/main-slider/business-analytics-1.jpg" alt="business-analytics"/>
                         </div>
                     </div>
                     <div className="navigation">
