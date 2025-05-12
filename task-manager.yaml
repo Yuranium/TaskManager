@@ -370,7 +370,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProjectDto'
 
-  /project/update/{id}:
+  /projects/update/{id}:
     patch:
       tags:
         - Обновление данных проекта по ID
@@ -405,7 +405,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RestResponse404'
 
-  /project/delete/{id}:
+  /projects/delete/{id}:
     delete:
       tags:
         - Удаление проекта по ID
