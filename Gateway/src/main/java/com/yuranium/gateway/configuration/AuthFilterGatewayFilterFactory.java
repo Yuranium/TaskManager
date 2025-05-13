@@ -17,7 +17,8 @@ import reactor.core.publisher.Mono;
 import java.nio.charset.StandardCharsets;
 
 @Component
-public class AuthFilterGatewayFilterFactory extends AbstractGatewayFilterFactory<AuthFilterGatewayFilterFactory.Config>
+public class AuthFilterGatewayFilterFactory extends
+        AbstractGatewayFilterFactory<AuthFilterGatewayFilterFactory.Config>
 {
     private static final String BEARER = "Bearer ";
 
