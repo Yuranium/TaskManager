@@ -30,7 +30,7 @@ export default function MyTeam() {
                     <div className="current-member"
                          key={member.id}>
                         <img className="member-avatar"
-                             src="/default-avatar.png"
+                             src={`data:image/jpeg;base64,${member.binaryData}`}
                              alt="member-avatar"
                              role="button"
                              onClick={() => navigate(`/account/${member.id}`)}

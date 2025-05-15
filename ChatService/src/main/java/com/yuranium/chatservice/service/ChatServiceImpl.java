@@ -28,7 +28,6 @@ public class ChatServiceImpl implements ChatService
 {
     private final MongoTemplate mongoTemplate;
 
-    @Cacheable(key = "#ownerId")
     public ChatDocument createChat(String title, Long ownerId)
     {
         return mongoTemplate.insert(ChatDocument.builder()

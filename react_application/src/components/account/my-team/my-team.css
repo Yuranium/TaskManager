@@ -32,9 +32,14 @@
  }
 
 .member-avatar {
-    max-width: 100px;
+    width: 90px;
+    height: 90px;
     border-radius: 50%;
     cursor: pointer;
+    object-fit: cover;
+    object-position: center;
+    image-rendering: auto;
+    padding: 10px;
 }
 
 .member-username {

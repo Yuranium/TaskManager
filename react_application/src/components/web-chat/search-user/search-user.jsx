@@ -101,7 +101,7 @@ export default function SearchUser({onAddUser}) {
                             }}>
                             <img
                                 className="suggested-user-avatar"
-                                src="/default-avatar.png"
+                                src={`data:image/jpeg;base64,${user.binaryData}`}
                                 alt="user-avatar"
                                 title="Профиль пользователя"
                             />
