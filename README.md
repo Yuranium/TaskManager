@@ -2,7 +2,7 @@
 Приложение для создания и отслеживания своих задач, имея чат для обсуждения, клиентскую и серверную часть
 
 ## Архитектура
-![](/github/Task-Manager ахритектура.png)
+![](/github/Task-Manager-ахритектура.png)
 
 ## Используемые технологии
 ![](https://skillicons.dev/icons?i=java,idea,spring,postgres,mongo)
@@ -30,13 +30,24 @@
 * Перейти на **localhost:3000**
 
 ## Демо
-1) Главная страница ![](github/main-page.png)
-2) Страница логина ![](github/login-page.png)
-3) Страница регистрации ![](github/register-page.png)
-4) Страница профиля пользователя ![](github/account-page.png)
-5) Страница группового веб-чата ![](github/web-chat-page.png)
-6) Страница проектов ![](github/project-page.png)
-7) Страница задач ![](github/tasks-page.png)
-8) Кастомное модальное окно ![](github/modal-window-page.png)
-9) Инфографика по задачам и проектам ![](github/charts-page.png)
-10) Документация эндпоинтов через openAPI ![](github/open-api-1.png) ![](github/open-api-2.png)
+1) Главная страница  
+   ![](github/main-page.png)
+2) Страница логина  
+   ![](github/login-page.png)
+3) Страница регистрации  
+   ![](github/register-page.png)
+4) Страница профиля пользователя  
+   ![](github/account-page.png)
+5) Страница группового веб-чата  
+   ![](github/web-chat-page.png)
+6) Страница проектов  
+   ![](github/project-page.png)
+7) Страница задач  
+   ![](github/tasks-page.png)
+8) Кастомное модальное окно  
+   ![](github/modal-window-page.png)
+9) Инфографика по задачам и проектам  
+   ![](github/charts-page.png)
+10) Документация эндпоинтов через openAPI  
+    ![](github/open-api-1.png)  
+    ![](github/open-api-2.png)
