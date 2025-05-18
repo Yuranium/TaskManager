@@ -3,6 +3,7 @@ package com.yuranium.authservice.service;
 import com.yuranium.authservice.models.entity.UserEntity;
 import com.yuranium.authservice.models.oauth2.OAuth2UserInfo;
 import com.yuranium.authservice.repository.UserRepository;
+import com.yuranium.authservice.service.kafka.KafkaProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -31,6 +32,8 @@ public class MyOAuth2UserService extends DefaultOAuth2UserService
     private final PasswordEncoder passwordEncoder;
 
     private final RoleService roleService;
+
+    private final KafkaProducer kafkaProducer;
 
     @Value("${oauth2.github-registration-id}")
     private String githubRegistrationId;
@@ -107,6 +110,8 @@ public class MyOAuth2UserService extends DefaultOAuth2UserService
         userEntity.setActivity(true);
         userEntity.setRoles(new HashSet<>(Set.of(roleService.getRole(1))));
         roleService.saveAll(userEntity.getRoles());
+
+        kafkaProducer.sendCreateUserEvent(userEntity);
         return userRepository.save(userEntity);
     }
 
@@ -123,9 +128,10 @@ public class MyOAuth2UserService extends DefaultOAuth2UserService
     {
         StringBuilder stringBuilder = new StringBuilder();
         int passwordSize = new Random().nextInt(10, 20);
+        Random random = new Random();
 
         for (int i = 0; i < passwordSize; i++)
-            stringBuilder.append((char) new Random().nextInt(32, 127));
+            stringBuilder.append((char) random.nextInt(32, 127));
 
         return stringBuilder.toString();
     }

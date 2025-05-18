@@ -208,6 +208,9 @@ services:
       - REACT_APP_OAUTH2_SERVICES_LINK_LIST=yandex-icon.png,google-icon.png,github-icon.png
       - REACT_APP_OAUTH2_SERVICES_URI_LIST=/yandex,/google,/github
       - REACT_APP_WEBSOCKET_URL=${WEBSOCKET_URL:-http://localhost:8083/ws}
+      - REACT_APP_BACKEND_PROJECT_SERVICE_HOST=${BACKEND_HOST:-localhost}
+      - REACT_APP_BACKEND_HOST=${BACKEND_HOST:-localhost}
+      - REACT_APP_BACKEND_PORT=${BACKEND_PORT:-8080}
 
 volumes:
   kafka-1_data:
