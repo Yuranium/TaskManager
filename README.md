@@ -20,7 +20,7 @@
 ## Старт
 ### Локальный старт подразумевает, что на компьютере уже установлен PostgreSQL и NodeJS!
 1) #### ***Локальный старт***
-* Клонировать репозиторий `git clone git@github.com:Yuranium/TaskManager.git`
+* Клонировать репозиторий `git clone https://github.com/Yuranium/TaskManager.git`
 * Открыть через IDE
 * Скачать необходимые сервисы с помощью команды `docker-compose up --build`
 * Установить все необходимые для каждого сервиса переменные окружения
@@ -31,7 +31,7 @@
 * Перейти на **localhost:3000**
 
 2) #### ***Старт через Docker***
-* Клонировать репозиторий `git clone git@github.com:Yuranium/TaskManager.git`
+* Клонировать репозиторий `git clone https://github.com/Yuranium/TaskManager.git`
 * Создать файл .env и заполнить его в формате .env.example в корне проекта
 * Скачать необходимые сервисы с помощью команды `docker-compose up --build`
 * Перейти на **localhost:3000**
