@@ -40,7 +40,7 @@ public class ChatServiceImpl implements ChatService
         );
     }
 
-    @Cacheable(key = "#userId")
+    @Cacheable(key = "#userId", unless = "#result.size() == 0")
     public List<ChatDocument> getAllChats(Long userId, Pageable pageable)
     {
        return mongoTemplate.find(

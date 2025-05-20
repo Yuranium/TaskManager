@@ -111,8 +111,9 @@ public class MyOAuth2UserService extends DefaultOAuth2UserService
         userEntity.setRoles(new HashSet<>(Set.of(roleService.getRole(1))));
         roleService.saveAll(userEntity.getRoles());
 
+        userEntity = userRepository.save(userEntity);
         kafkaProducer.sendCreateUserEvent(userEntity);
-        return userRepository.save(userEntity);
+        return userEntity;
     }
 
     @Transactional(readOnly = true)

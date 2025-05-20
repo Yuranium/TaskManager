@@ -70,6 +70,8 @@ public class UserService
                 ChatDocument.class).stream()
                 .flatMap(chat -> chat.getUserIds().stream())
                 .collect(Collectors.toSet());
+        if (userIds.isEmpty())
+            userIds.add(userId);
 
         return mongoTemplate.find(Query.query(Criteria
                 .where("_id").in(userIds)),
